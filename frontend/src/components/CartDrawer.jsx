@@ -1,7 +1,7 @@
 import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-
+import { formatPrice } from '../utils/formatters';
 const CartDrawer = ({ isOpen, onClose }) => {
   const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
 
@@ -46,7 +46,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                   
                   <div className="cart-item-info">
                     <h4>{item.name}</h4>
-                    <p className="cart-item-price">{item.price ? `${item.price} ₺` : 'Fiyat Yok'}</p>
+                    <p className="cart-item-price">{item.price ? formatPrice(item.price) : 'Fiyat Yok'}</p>
                     
                     <div className="cart-item-actions">
                       <div className="quantity-controls">
@@ -69,7 +69,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
           <div className="drawer-footer">
             <div className="cart-total">
               <span>Ara Toplam:</span>
-              <span>{cartTotal.toFixed(2)} ₺</span>
+              <span>{formatPrice(cartTotal)}</span>
             </div>
             <button className="btn btn-primary btn-block">Siparişi Tamamla</button>
           </div>

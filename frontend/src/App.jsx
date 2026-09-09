@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import AddProductModal from './components/AddProductModal';
 import ProductCard from './components/ProductCard';
 import CartDrawer from './components/CartDrawer';
+import ProductDetailModal from './components/ProductDetailModal';
 import { CartProvider } from './context/CartContext';
 import './App.css';
 
@@ -13,6 +14,7 @@ function App() {
   const [error, setError] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     axios.get('https://localhost:7141/api/products')
@@ -51,6 +53,12 @@ function App() {
           onClose={() => setIsCartDrawerOpen(false)} 
         />
 
+        <ProductDetailModal 
+          product={selectedProduct} 
+          isOpen={!!selectedProduct} 
+          onClose={() => setSelectedProduct(null)} 
+        />
+
         <main className="main-container">
           <h1 className="page-title">Ürün Kataloğu</h1>
 
@@ -60,7 +68,11 @@ function App() {
           {!loading && !error && (
             <div className="product-grid">
               {products.map((item) => (
-                <ProductCard key={item.id} product={item} />
+                <ProductCard 
+                  key={item.id} 
+                  product={item} 
+                  onClick={(prod) => setSelectedProduct(prod)} 
+                />
               ))}
             </div>
           )}

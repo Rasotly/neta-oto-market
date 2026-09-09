@@ -1,11 +1,17 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import { formatPrice } from '../utils/formatters';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onClick }) => {
   const { addToCart } = useCart();
 
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    addToCart(product);
+  };
+
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={() => onClick(product)} style={{ cursor: 'pointer' }}>
       <div className="product-card-content">
         {product.imageUrl ? (
           <div className="product-image-wrapper">
@@ -20,7 +26,7 @@ const ProductCard = ({ product }) => {
         <p className="product-desc">{product.description || 'Açıklama girilmemiş.'}</p>
         
         <p className="product-price">
-          {product.price ? `${product.price} ₺` : 'Fiyat Belirtilmemiş'}
+          {product.price ? formatPrice(product.price) : 'Fiyat Belirtilmemiş'}
         </p>
         <p className="product-meta"><strong>Kategori:</strong> {product.category}</p>
         <div className="product-meta">
@@ -35,7 +41,7 @@ const ProductCard = ({ product }) => {
       <button 
         className="btn btn-add-cart w-full mt-auto" 
         disabled={!product.inStock}
-        onClick={() => addToCart(product)}
+        onClick={handleAddToCart}
       >
         {product.inStock ? 'Sepete Ekle' : 'Stokta Yok'}
       </button>
