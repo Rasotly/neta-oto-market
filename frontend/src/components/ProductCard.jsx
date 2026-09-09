@@ -1,8 +1,9 @@
 import React from 'react';
+import { Edit2, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatters';
 
-const ProductCard = ({ product, onClick }) => {
+const ProductCard = ({ product, onClick, onEdit, onDelete }) => {
   const { addToCart } = useCart();
 
   const handleAddToCart = (e) => {
@@ -10,8 +11,29 @@ const ProductCard = ({ product, onClick }) => {
     addToCart(product);
   };
 
+  const handleEdit = (e) => {
+    e.stopPropagation();
+    if (onEdit) onEdit(product);
+  };
+
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    if (onDelete) onDelete(product);
+  };
+
   return (
-    <div className="product-card" onClick={() => onClick(product)} style={{ cursor: 'pointer' }}>
+    <div className="product-card" onClick={() => onClick(product)} style={{ cursor: 'pointer', position: 'relative' }}>
+      
+      {/* Admin Actions */}
+      <div className="card-admin-actions">
+        <button className="admin-btn admin-btn-edit" onClick={handleEdit} title="Düzenle">
+          <Edit2 size={16} />
+        </button>
+        <button className="admin-btn admin-btn-delete" onClick={handleDelete} title="Sil">
+          <Trash2 size={16} />
+        </button>
+      </div>
+
       <div className="product-card-content">
         {product.imageUrl ? (
           <div className="product-image-wrapper">

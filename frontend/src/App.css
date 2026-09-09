@@ -447,6 +447,42 @@
   margin-top: auto;
 }
 
+/* Admin Actions on Product Card */
+.card-admin-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.admin-btn {
+  background-color: rgba(30, 30, 30, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-h);
+  padding: 0.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  backdrop-filter: blur(2px);
+}
+
+.admin-btn-edit:hover {
+  background-color: var(--accent);
+  color: #121212;
+  border-color: var(--accent);
+}
+
+.admin-btn-delete:hover {
+  background-color: #f44336;
+  color: white;
+  border-color: #f44336;
+}
+
 /* Navbar Cart Badge */
 .cart-btn-container {
   position: relative;
