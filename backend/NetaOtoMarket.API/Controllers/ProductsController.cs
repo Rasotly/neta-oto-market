@@ -1,34 +1,96 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NetaOtoMarket.API.Data;
 using NetaOtoMarket.API.Models;
 
-namespace NetaOtoMarket.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class ProductsController : ControllerBase
+namespace NetaOtoMarket.API.Controllers
 {
-    private static readonly List<Product> Products = new()
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductsController : ControllerBase
     {
-        new Product { Id = 1, Name = "CarPlay & Android Auto Multimedya Sistemi (9-10 inç)", Category = "Multimedya", InStock = true },
-        new Product { Id = 2, Name = "Orijinal Uyumlu OEM Yan Basamak Seti", Category = "Yan Basamak", InStock = true },
-        new Product { Id = 3, Name = "Ön & Arka Tampon Koruma Barları (Paslanmaz)", Category = "Koruma & Difüzör", InStock = true },
-        new Product { Id = 4, Name = "LED Işıklı / Çift Çıkış Spor Arka Difüzör", Category = "Koruma & Difüzör", InStock = true },
-        new Product { Id = 5, Name = "Komple Aero Bodykit ve Spoiler Paketi", Category = "Bodykit", InStock = true }
-    };
+        private readonly AppDbContext _context;
 
-    [HttpGet]
-    public IActionResult GetProducts([FromQuery] string? search)
-    {
-        if (string.IsNullOrWhiteSpace(search))
+        public ProductsController(AppDbContext context)
         {
-            return Ok(Products);
+            _context = context;
         }
 
-        var filtered = Products.Where(p =>
-            p.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-            p.Category.Contains(search, StringComparison.OrdinalIgnoreCase)
-        ).ToList();
+        // GET: api/products (Tüm ürünleri getir)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        {
+            return await _context.Products.ToListAsync();
+        }
 
-        return Ok(filtered);
+        // GET: api/products/5 (Tek bir ürünü getir)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> GetProduct(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return product;
+        }
+
+        // POST: api/products (Yeni ürün ekle)
+        [HttpPost]
+        public async Task<ActionResult<Product>> CreateProduct(Product product)
+        {
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+        }
+
+        // PUT: api/products/5 (Ürünü güncelle)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, Product product)
+        {
+            if (id != product.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(product).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Products.Any(e => e.Id == id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/products/5 (Ürünü sil)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }

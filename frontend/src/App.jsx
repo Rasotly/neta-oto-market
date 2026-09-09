@@ -1,72 +1,72 @@
-import { useState, useEffect } from 'react';
-import './App.css';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
   const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  // Backend'den ürünleri çeken fonksiyon
-  const fetchProducts = async (query = '') => {
-    setLoading(true);
-    try {
-      const url = query 
-        ? `https://localhost:7141/api/products?search=${encodeURIComponent(query)}`
-        : 'https://localhost:7141/api/products';
-      
-      const response = await fetch(url);
-      const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error('Veri çekilirken hata oluştu:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchProducts();
+    axios.get('https://localhost:7141/api/products')
+      .then((res) => {
+        setProducts(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Hata:', err);
+        setError('Ürünler yüklenemedi.');
+        setLoading(false);
+      });
   }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    fetchProducts(searchTerm);
-  };
-
   return (
-    <div className="container">
-      <header className="header">
-        <h1>Neta Oto Market</h1>
-        <p>Araç İçi Multimedya, Koruma ve Aksesuar Kataloğu</p>
-      </header>
+    <div style={{ padding: '2rem', fontFamily: 'sans-serif', backgroundColor: '#121212', color: '#fff', minHeight: '100vh' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>Neta Oto Market - Ürün Kataloğu</h1>
 
-      <form onSubmit={handleSearch} className="search-box">
-        <input
-          type="text"
-          placeholder="Ürün veya kategori ara (örn: Multimedya, Basamak)..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button type="submit">Ara</button>
-      </form>
+      {loading && <p style={{ textAlign: 'center' }}>Yükleniyor...</p>}
+      {error && <p style={{ textAlign: 'center', color: 'red' }}>{error}</p>}
 
-      {loading ? (
-        <p className="status-text">Yükleniyor...</p>
-      ) : (
-        <div className="product-grid">
-          {products.length > 0 ? (
-            products.map((item) => (
-              <div key={item.id} className="card">
-                <span className="badge">{item.category}</span>
-                <h3>{item.name}</h3>
-                <p className={item.inStock ? 'in-stock' : 'out-of-stock'}>
-                  {item.inStock ? '● Stokta Var' : '○ Stokta Yok'}
+      {!loading && !error && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+          {products.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                border: '1px solid #333',
+                borderRadius: '10px',
+                padding: '1rem',
+                backgroundColor: '#1e1e1e',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+              }}
+            >
+              <div>
+                {item.imageUrl ? (
+                  <img src={item.imageUrl} alt={item.name} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '6px', marginBottom: '1rem' }} />
+                ) : (
+                  <div style={{ width: '100%', height: '150px', backgroundColor: '#2a2a2a', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: '#777' }}>
+                    Görsel Yok
+                  </div>
+                )}
+                <h3 style={{ margin: '0 0 0.5rem 0' }}>{item.name}</h3>
+                <p style={{ color: '#aaa', fontSize: '0.9rem', margin: '0 0 1rem 0' }}>{item.description || 'Açıklama girilmemiş.'}</p>
+              </div>
+
+              <div>
+                <p style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', fontWeight: 'bold', color: '#4caf50' }}>
+                  {item.price ? `${item.price} ₺` : 'Fiyat Belirtilmemiş'}
+                </p>
+                <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', color: '#ccc' }}><strong>Kategori:</strong> {item.category}</p>
+                <p style={{ margin: 0, fontSize: '0.85rem' }}>
+                  <strong>Durum:</strong>{' '}
+                  <span style={{ color: item.inStock ? '#4caf50' : '#f44336' }}>
+                    {item.inStock ? 'Stokta Var' : 'Tükendi'}
+                  </span>
                 </p>
               </div>
-            ))
-          ) : (
-            <p className="status-text">Eşleşen ürün bulunamadı.</p>
-          )}
+            </div>
+          ))}
         </div>
       )}
     </div>

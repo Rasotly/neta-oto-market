@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using NetaOtoMarket.API.Data;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
@@ -8,7 +10,8 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
-
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -20,6 +23,10 @@ app.UseCors("AllowAll");
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+    });
 }
 
 app.UseHttpsRedirection();
