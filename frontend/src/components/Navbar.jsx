@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, Plus } from 'lucide-react';
 
-const Navbar = () => {
+const Navbar = ({ onAddProductClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -22,6 +22,10 @@ const Navbar = () => {
 
         {/* Right Icons - Desktop */}
         <div className="navbar-actions desktop-only">
+          <button className="icon-btn" onClick={onAddProductClick}>
+            <Plus size={24} />
+            <span className="icon-text">Ürün Ekle</span>
+          </button>
           <button className="icon-btn">
             <ShoppingCart size={24} />
             <span className="icon-text">Sepet</span>
@@ -50,6 +54,10 @@ const Navbar = () => {
             </button>
           </div>
           <div className="mobile-actions">
+            <button className="icon-btn" onClick={() => { onAddProductClick(); setIsMenuOpen(false); }}>
+              <Plus size={20} />
+              <span>Ürün Ekle</span>
+            </button>
             <button className="icon-btn">
               <ShoppingCart size={20} />
               <span>Sepetim</span>

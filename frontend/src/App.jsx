@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from './components/Navbar';
+import AddProductModal from './components/AddProductModal';
 import './App.css';
 
 function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     axios.get('https://localhost:7141/api/products')
@@ -21,9 +23,21 @@ function App() {
       });
   }, []);
 
+  const handleProductAdded = (newProduct) => {
+    // Listeyi yenilemeden yeni ürünü başa ekle
+    setProducts((prev) => [newProduct, ...prev]);
+    setIsAddModalOpen(false);
+  };
+
   return (
     <div className="app-wrapper">
-      <Navbar />
+      <Navbar onAddProductClick={() => setIsAddModalOpen(true)} />
+
+      <AddProductModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+        onProductAdded={handleProductAdded} 
+      />
 
       <main className="main-container">
         <h1 className="page-title">Ürün Kataloğu</h1>
