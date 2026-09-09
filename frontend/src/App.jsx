@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Navbar from './components/Navbar';
+import './App.css';
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -20,55 +22,50 @@ function App() {
   }, []);
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif', backgroundColor: '#121212', color: '#fff', minHeight: '100vh' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>Neta Oto Market - Ürün Kataloğu</h1>
+    <div className="app-wrapper">
+      <Navbar />
 
-      {loading && <p style={{ textAlign: 'center' }}>Yükleniyor...</p>}
-      {error && <p style={{ textAlign: 'center', color: 'red' }}>{error}</p>}
+      <main className="main-container">
+        <h1 className="page-title">Ürün Kataloğu</h1>
 
-      {!loading && !error && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-          {products.map((item) => (
-            <div
-              key={item.id}
-              style={{
-                border: '1px solid #333',
-                borderRadius: '10px',
-                padding: '1rem',
-                backgroundColor: '#1e1e1e',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}
-            >
-              <div>
-                {item.imageUrl ? (
-                  <img src={item.imageUrl} alt={item.name} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '6px', marginBottom: '1rem' }} />
-                ) : (
-                  <div style={{ width: '100%', height: '150px', backgroundColor: '#2a2a2a', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: '#777' }}>
-                    Görsel Yok
+        {loading && <p className="text-center">Yükleniyor...</p>}
+        {error && <p className="text-center text-error">{error}</p>}
+
+        {!loading && !error && (
+          <div className="product-grid">
+            {products.map((item) => (
+              <div key={item.id} className="product-card">
+                <div>
+                  {item.imageUrl ? (
+                    <div className="product-image-wrapper">
+                      <img src={item.imageUrl} alt={item.name} className="product-image" />
+                    </div>
+                  ) : (
+                    <div className="product-image-wrapper">
+                      <span className="product-image-placeholder">Görsel Yok</span>
+                    </div>
+                  )}
+                  <h3 className="product-title">{item.name}</h3>
+                  <p className="product-desc">{item.description || 'Açıklama girilmemiş.'}</p>
+                </div>
+
+                <div>
+                  <p className="product-price">
+                    {item.price ? `${item.price} ₺` : 'Fiyat Belirtilmemiş'}
+                  </p>
+                  <p className="product-meta"><strong>Kategori:</strong> {item.category}</p>
+                  <div className="product-meta">
+                    <strong>Durum:</strong>{' '}
+                    <span className={`status-badge ${item.inStock ? 'status-in-stock' : 'status-out-stock'}`}>
+                      {item.inStock ? 'Stokta Var' : 'Tükendi'}
+                    </span>
                   </div>
-                )}
-                <h3 style={{ margin: '0 0 0.5rem 0' }}>{item.name}</h3>
-                <p style={{ color: '#aaa', fontSize: '0.9rem', margin: '0 0 1rem 0' }}>{item.description || 'Açıklama girilmemiş.'}</p>
+                </div>
               </div>
-
-              <div>
-                <p style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', fontWeight: 'bold', color: '#4caf50' }}>
-                  {item.price ? `${item.price} ₺` : 'Fiyat Belirtilmemiş'}
-                </p>
-                <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', color: '#ccc' }}><strong>Kategori:</strong> {item.category}</p>
-                <p style={{ margin: 0, fontSize: '0.85rem' }}>
-                  <strong>Durum:</strong>{' '}
-                  <span style={{ color: item.inStock ? '#4caf50' : '#f44336' }}>
-                    {item.inStock ? 'Stokta Var' : 'Tükendi'}
-                  </span>
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </main>
     </div>
   );
 }
