@@ -9,6 +9,8 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
     price: '',
     description: '',
     imageUrl: '',
+    brand: '',
+    model: '',
     inStock: true
   });
   
@@ -56,6 +58,8 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
         price: '',
         description: '',
         imageUrl: '',
+        brand: '',
+        model: '',
         inStock: true
       });
       setIsSubmitting(false);
@@ -126,6 +130,29 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
                 step="0.01"
               />
               {errors.price && <span className="form-error">{errors.price}</span>}
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Marka</label>
+              <input 
+                type="text" 
+                name="brand" 
+                value={formData.brand} 
+                onChange={handleChange}
+                placeholder="Örn: Bosch, Sony"
+              />
+            </div>
+            <div className="form-group">
+              <label>Model / Uyumlu Araç</label>
+              <input 
+                type="text" 
+                name="model" 
+                value={formData.model} 
+                onChange={handleChange}
+                placeholder="Örn: Golf 7, Universal"
+              />
             </div>
           </div>
 

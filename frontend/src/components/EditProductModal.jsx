@@ -9,6 +9,8 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
     description: '',
     imageUrl: '',
     category: '',
+    brand: '',
+    model: '',
     inStock: true,
   });
 
@@ -23,6 +25,8 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
         description: product.description || '',
         imageUrl: product.imageUrl || '',
         category: product.category || '',
+        brand: product.brand || '',
+        model: product.model || '',
         inStock: product.inStock ?? true,
       });
     }
@@ -50,6 +54,8 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
       description: formData.description,
       imageUrl: formData.imageUrl,
       category: formData.category,
+      brand: formData.brand,
+      model: formData.model,
       inStock: formData.inStock,
     };
 
@@ -112,6 +118,29 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                 value={formData.category}
                 onChange={handleChange}
                 required
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="edit-brand">Marka</label>
+              <input
+                type="text"
+                id="edit-brand"
+                name="brand"
+                value={formData.brand}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="edit-model">Model / Uyumlu Araç</label>
+              <input
+                type="text"
+                id="edit-model"
+                name="model"
+                value={formData.model}
+                onChange={handleChange}
               />
             </div>
           </div>
