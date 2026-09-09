@@ -148,7 +148,7 @@
 
 .product-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   border-color: var(--accent);
 }
 
@@ -247,7 +247,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -263,7 +263,7 @@
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 }
 
 .modal-header {
@@ -458,10 +458,10 @@
 }
 
 .admin-btn {
-  background-color: rgba(30, 30, 30, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--border);
   border-radius: 4px;
-  color: var(--text-h);
+  color: #6b7280;
   padding: 0.4rem;
   cursor: pointer;
   display: flex;
@@ -469,6 +469,7 @@
   justify-content: center;
   transition: all 0.2s;
   backdrop-filter: blur(2px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .admin-btn-edit:hover {
@@ -536,7 +537,7 @@
   height: 100vh;
   background-color: var(--bg-card);
   border-left: 1px solid var(--border);
-  box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+  box-shadow: -5px 0 25px rgba(0,0,0,0.1);
   z-index: 1050;
   transition: right 0.3s ease-in-out;
   display: flex;
@@ -735,7 +736,7 @@
   z-index: 10;
   background-color: var(--bg-card);
   border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .product-detail-layout {
