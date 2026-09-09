@@ -1,16 +1,37 @@
 import React from 'react';
-import { Edit2, Trash2 } from 'lucide-react';
+import { Edit2, Trash2, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useFavorites } from '../context/FavoritesContext';
+import { toast } from 'react-hot-toast';
 import { formatPrice } from '../utils/formatters';
 
 const ProductCard = ({ product, onClick, onEdit, onDelete }) => {
   const { addToCart } = useCart();
   const { isAdmin } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
+
+  const isFav = isFavorite(product.id);
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
     addToCart(product);
+    toast.success('Ürün sepete eklendi!', {
+      style: {
+        background: '#fff',
+        color: '#4b5563',
+        border: '1px solid #e5e7eb',
+      },
+      iconTheme: {
+        primary: '#10b981',
+        secondary: '#fff',
+      },
+    });
+  };
+
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    toggleFavorite(product.id);
   };
 
   const handleEdit = (e) => {
@@ -37,6 +58,15 @@ const ProductCard = ({ product, onClick, onEdit, onDelete }) => {
           </button>
         </div>
       )}
+
+      {/* Favorite Button */}
+      <button 
+        className={`card-favorite-btn ${isFav ? 'active' : ''}`}
+        onClick={handleFavoriteClick}
+        title="Favorilere Ekle"
+      >
+        <Heart size={20} fill={isFav ? 'var(--accent)' : 'none'} color={isFav ? 'var(--accent)' : 'var(--text)'} />
+      </button>
 
       <div className="product-card-content">
         {product.imageUrl ? (

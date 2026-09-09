@@ -450,11 +450,43 @@
 /* Admin Actions on Product Card */
 .card-admin-actions {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 10px;
+  right: 10px;
   display: flex;
   gap: 0.5rem;
-  z-index: 10;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-card:hover .card-admin-actions {
+  opacity: 1;
+}
+
+.card-favorite-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+.card-favorite-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.card-favorite-btn.active {
+  border-color: var(--accent);
 }
 
 .admin-btn {
@@ -485,27 +517,36 @@
 }
 
 /* Navbar Cart Badge */
-.cart-btn-container {
+.cart-btn-container,
+.favorite-btn-container {
   position: relative;
 }
 
-.cart-icon-wrapper {
+.cart-icon-wrapper,
+.favorite-icon-wrapper {
   position: relative;
-  display: inline-flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.cart-badge {
+.cart-badge,
+.favorite-badge {
   position: absolute;
-  top: -6px;
+  top: -8px;
   right: -8px;
-  background-color: #f44336;
+  background-color: var(--accent);
   color: white;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 10px;
+  height: 18px;
   min-width: 18px;
-  text-align: center;
+  padding: 0 4px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 /* Cart Drawer */

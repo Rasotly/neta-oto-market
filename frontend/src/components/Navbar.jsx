@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Search, ShoppingCart, User, Menu, X, Plus } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, Plus, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useFavorites } from '../context/FavoritesContext';
 
-const Navbar = ({ onAddProductClick, onCartClick, onLoginClick }) => {
+const Navbar = ({ onAddProductClick, onCartClick, onLoginClick, showOnlyFavorites, onToggleFavorites }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cartItemCount } = useCart();
   const { isAdmin, logout } = useAuth();
+  const { favoritesCount } = useFavorites();
 
   return (
     <nav className="navbar">
@@ -32,6 +34,15 @@ const Navbar = ({ onAddProductClick, onCartClick, onLoginClick }) => {
               <span className="icon-text">Ürün Ekle</span>
             </button>
           )}
+          
+          <button className={`icon-btn favorite-btn-container ${showOnlyFavorites ? 'active' : ''}`} onClick={onToggleFavorites}>
+            <div className="favorite-icon-wrapper">
+              <Heart size={24} fill={showOnlyFavorites ? 'var(--accent)' : 'none'} color={showOnlyFavorites ? 'var(--accent)' : 'var(--text)'} />
+              {favoritesCount > 0 && <span className="favorite-badge">{favoritesCount}</span>}
+            </div>
+            <span className="icon-text">Favoriler</span>
+          </button>
+
           <button className="icon-btn cart-btn-container" onClick={onCartClick}>
             <div className="cart-icon-wrapper">
               <ShoppingCart size={24} />
@@ -55,6 +66,12 @@ const Navbar = ({ onAddProductClick, onCartClick, onLoginClick }) => {
 
         {/* Mobile Menu Toggle */}
         <div className="mobile-toggle">
+          <button className="icon-btn favorite-btn-container mobile-cart-btn" onClick={onToggleFavorites}>
+            <div className="favorite-icon-wrapper">
+              <Heart size={28} fill={showOnlyFavorites ? 'var(--accent)' : 'none'} color={showOnlyFavorites ? 'var(--accent)' : 'var(--text)'} />
+              {favoritesCount > 0 && <span className="favorite-badge">{favoritesCount}</span>}
+            </div>
+          </button>
           <button className="icon-btn cart-btn-container mobile-cart-btn" onClick={onCartClick}>
             <div className="cart-icon-wrapper">
               <ShoppingCart size={28} />
