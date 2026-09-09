@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from './components/Navbar';
 import AddProductModal from './components/AddProductModal';
+import ProductCard from './components/ProductCard';
+import CartDrawer from './components/CartDrawer';
+import { CartProvider } from './context/CartContext';
 import './App.css';
 
 function App() {
@@ -9,6 +12,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
 
   useEffect(() => {
     axios.get('https://localhost:7141/api/products')
@@ -24,63 +28,45 @@ function App() {
   }, []);
 
   const handleProductAdded = (newProduct) => {
-    // Listeyi yenilemeden yeni ürünü başa ekle
     setProducts((prev) => [newProduct, ...prev]);
     setIsAddModalOpen(false);
   };
 
   return (
-    <div className="app-wrapper">
-      <Navbar onAddProductClick={() => setIsAddModalOpen(true)} />
+    <CartProvider>
+      <div className="app-wrapper">
+        <Navbar 
+          onAddProductClick={() => setIsAddModalOpen(true)} 
+          onCartClick={() => setIsCartDrawerOpen(true)}
+        />
 
-      <AddProductModal 
-        isOpen={isAddModalOpen} 
-        onClose={() => setIsAddModalOpen(false)} 
-        onProductAdded={handleProductAdded} 
-      />
+        <AddProductModal 
+          isOpen={isAddModalOpen} 
+          onClose={() => setIsAddModalOpen(false)} 
+          onProductAdded={handleProductAdded} 
+        />
 
-      <main className="main-container">
-        <h1 className="page-title">Ürün Kataloğu</h1>
+        <CartDrawer 
+          isOpen={isCartDrawerOpen} 
+          onClose={() => setIsCartDrawerOpen(false)} 
+        />
 
-        {loading && <p className="text-center">Yükleniyor...</p>}
-        {error && <p className="text-center text-error">{error}</p>}
+        <main className="main-container">
+          <h1 className="page-title">Ürün Kataloğu</h1>
 
-        {!loading && !error && (
-          <div className="product-grid">
-            {products.map((item) => (
-              <div key={item.id} className="product-card">
-                <div>
-                  {item.imageUrl ? (
-                    <div className="product-image-wrapper">
-                      <img src={item.imageUrl} alt={item.name} className="product-image" />
-                    </div>
-                  ) : (
-                    <div className="product-image-wrapper">
-                      <span className="product-image-placeholder">Görsel Yok</span>
-                    </div>
-                  )}
-                  <h3 className="product-title">{item.name}</h3>
-                  <p className="product-desc">{item.description || 'Açıklama girilmemiş.'}</p>
-                </div>
+          {loading && <p className="text-center">Yükleniyor...</p>}
+          {error && <p className="text-center text-error">{error}</p>}
 
-                <div>
-                  <p className="product-price">
-                    {item.price ? `${item.price} ₺` : 'Fiyat Belirtilmemiş'}
-                  </p>
-                  <p className="product-meta"><strong>Kategori:</strong> {item.category}</p>
-                  <div className="product-meta">
-                    <strong>Durum:</strong>{' '}
-                    <span className={`status-badge ${item.inStock ? 'status-in-stock' : 'status-out-stock'}`}>
-                      {item.inStock ? 'Stokta Var' : 'Tükendi'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </main>
-    </div>
+          {!loading && !error && (
+            <div className="product-grid">
+              {products.map((item) => (
+                <ProductCard key={item.id} product={item} />
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    </CartProvider>
   );
 }
 

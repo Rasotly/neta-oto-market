@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Search, ShoppingCart, User, Menu, X, Plus } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
-const Navbar = ({ onAddProductClick }) => {
+const Navbar = ({ onAddProductClick, onCartClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { cartItemCount } = useCart();
 
   return (
     <nav className="navbar">
@@ -26,8 +28,11 @@ const Navbar = ({ onAddProductClick }) => {
             <Plus size={24} />
             <span className="icon-text">Ürün Ekle</span>
           </button>
-          <button className="icon-btn">
-            <ShoppingCart size={24} />
+          <button className="icon-btn cart-btn-container" onClick={onCartClick}>
+            <div className="cart-icon-wrapper">
+              <ShoppingCart size={24} />
+              {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
+            </div>
             <span className="icon-text">Sepet</span>
           </button>
           <button className="icon-btn login-btn">
@@ -38,6 +43,12 @@ const Navbar = ({ onAddProductClick }) => {
 
         {/* Mobile Menu Toggle */}
         <div className="mobile-toggle">
+          <button className="icon-btn cart-btn-container mobile-cart-btn" onClick={onCartClick}>
+            <div className="cart-icon-wrapper">
+              <ShoppingCart size={28} />
+              {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
+            </div>
+          </button>
           <button className="icon-btn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
@@ -57,10 +68,6 @@ const Navbar = ({ onAddProductClick }) => {
             <button className="icon-btn" onClick={() => { onAddProductClick(); setIsMenuOpen(false); }}>
               <Plus size={20} />
               <span>Ürün Ekle</span>
-            </button>
-            <button className="icon-btn">
-              <ShoppingCart size={20} />
-              <span>Sepetim</span>
             </button>
             <button className="icon-btn login-btn">
               <User size={20} />
