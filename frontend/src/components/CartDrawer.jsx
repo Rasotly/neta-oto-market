@@ -2,7 +2,7 @@ import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatters';
-const CartDrawer = ({ isOpen, onClose }) => {
+const CartDrawer = ({ isOpen, onClose, onCheckout }) => {
   const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
 
   return (
@@ -71,7 +71,12 @@ const CartDrawer = ({ isOpen, onClose }) => {
               <span>Ara Toplam:</span>
               <span>{formatPrice(cartTotal)}</span>
             </div>
-            <button className="btn btn-primary btn-block">Siparişi Tamamla</button>
+            <button 
+              className="btn btn-primary btn-block" 
+              onClick={onCheckout}
+            >
+              Siparişi Tamamla
+            </button>
           </div>
         )}
       </div>

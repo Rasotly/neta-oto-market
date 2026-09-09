@@ -39,6 +39,10 @@ export const CartProvider = ({ children }) => {
     });
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
   const cartTotal = useMemo(() => {
     return cartItems.reduce((total, item) => total + (item.price || 0) * item.quantity, 0);
   }, [cartItems]);
@@ -54,6 +58,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         updateQuantity,
+        clearCart,
         cartTotal,
         cartItemCount,
       }}

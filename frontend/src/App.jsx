@@ -7,6 +7,7 @@ import ProductCard from './components/ProductCard';
 import CartDrawer from './components/CartDrawer';
 import ProductDetailModal from './components/ProductDetailModal';
 import FilterBar from './components/FilterBar';
+import CheckoutModal from './components/CheckoutModal';
 import { CartProvider } from './context/CartContext';
 import { PackageOpen } from 'lucide-react';
 import './App.css';
@@ -18,6 +19,7 @@ function App() {
   
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -130,6 +132,15 @@ function App() {
         <CartDrawer 
           isOpen={isCartDrawerOpen} 
           onClose={() => setIsCartDrawerOpen(false)} 
+          onCheckout={() => {
+            setIsCartDrawerOpen(false);
+            setIsCheckoutModalOpen(true);
+          }}
+        />
+
+        <CheckoutModal
+          isOpen={isCheckoutModalOpen}
+          onClose={() => setIsCheckoutModalOpen(false)}
         />
 
         <ProductDetailModal 
