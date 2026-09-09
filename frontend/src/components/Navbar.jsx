@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Search, ShoppingCart, User, Menu, X, Plus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
-const Navbar = ({ onAddProductClick, onCartClick }) => {
+const Navbar = ({ onAddProductClick, onCartClick, onLoginClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cartItemCount } = useCart();
+  const { isAdmin, logout } = useAuth();
 
   return (
     <nav className="navbar">
@@ -24,10 +26,12 @@ const Navbar = ({ onAddProductClick, onCartClick }) => {
 
         {/* Right Icons - Desktop */}
         <div className="navbar-actions desktop-only">
-          <button className="icon-btn" onClick={onAddProductClick}>
-            <Plus size={24} />
-            <span className="icon-text">Ürün Ekle</span>
-          </button>
+          {isAdmin && (
+            <button className="icon-btn" onClick={onAddProductClick}>
+              <Plus size={24} />
+              <span className="icon-text">Ürün Ekle</span>
+            </button>
+          )}
           <button className="icon-btn cart-btn-container" onClick={onCartClick}>
             <div className="cart-icon-wrapper">
               <ShoppingCart size={24} />
@@ -35,10 +39,18 @@ const Navbar = ({ onAddProductClick, onCartClick }) => {
             </div>
             <span className="icon-text">Sepet</span>
           </button>
-          <button className="icon-btn login-btn">
-            <User size={24} />
-            <span className="icon-text">Giriş</span>
-          </button>
+          
+          {isAdmin ? (
+            <button className="icon-btn login-btn" onClick={logout}>
+              <User size={24} />
+              <span className="icon-text">Çıkış Yap</span>
+            </button>
+          ) : (
+            <button className="icon-btn login-btn" onClick={onLoginClick}>
+              <User size={24} />
+              <span className="icon-text">Giriş</span>
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -65,14 +77,24 @@ const Navbar = ({ onAddProductClick, onCartClick }) => {
             </button>
           </div>
           <div className="mobile-actions">
-            <button className="icon-btn" onClick={() => { onAddProductClick(); setIsMenuOpen(false); }}>
-              <Plus size={20} />
-              <span>Ürün Ekle</span>
-            </button>
-            <button className="icon-btn login-btn">
-              <User size={20} />
-              <span>Giriş Yap</span>
-            </button>
+            {isAdmin && (
+              <button className="icon-btn" onClick={() => { onAddProductClick(); setIsMenuOpen(false); }}>
+                <Plus size={20} />
+                <span>Ürün Ekle</span>
+              </button>
+            )}
+            
+            {isAdmin ? (
+              <button className="icon-btn login-btn" onClick={() => { logout(); setIsMenuOpen(false); }}>
+                <User size={20} />
+                <span>Çıkış Yap</span>
+              </button>
+            ) : (
+              <button className="icon-btn login-btn" onClick={() => { onLoginClick(); setIsMenuOpen(false); }}>
+                <User size={20} />
+                <span>Giriş Yap</span>
+              </button>
+            )}
           </div>
         </div>
       )}

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Edit2, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { formatPrice } from '../utils/formatters';
 
 const ProductCard = ({ product, onClick, onEdit, onDelete }) => {
   const { addToCart } = useCart();
+  const { isAdmin } = useAuth();
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
@@ -25,14 +27,16 @@ const ProductCard = ({ product, onClick, onEdit, onDelete }) => {
     <div className="product-card" onClick={() => onClick(product)} style={{ cursor: 'pointer', position: 'relative' }}>
       
       {/* Admin Actions */}
-      <div className="card-admin-actions">
-        <button className="admin-btn admin-btn-edit" onClick={handleEdit} title="Düzenle">
-          <Edit2 size={16} />
-        </button>
-        <button className="admin-btn admin-btn-delete" onClick={handleDelete} title="Sil">
-          <Trash2 size={16} />
-        </button>
-      </div>
+      {isAdmin && (
+        <div className="card-admin-actions">
+          <button className="admin-btn admin-btn-edit" onClick={handleEdit} title="Düzenle">
+            <Edit2 size={16} />
+          </button>
+          <button className="admin-btn admin-btn-delete" onClick={handleDelete} title="Sil">
+            <Trash2 size={16} />
+          </button>
+        </div>
+      )}
 
       <div className="product-card-content">
         {product.imageUrl ? (

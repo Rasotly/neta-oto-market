@@ -8,7 +8,9 @@ import CartDrawer from './components/CartDrawer';
 import ProductDetailModal from './components/ProductDetailModal';
 import FilterBar from './components/FilterBar';
 import CheckoutModal from './components/CheckoutModal';
+import LoginModal from './components/LoginModal';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
 import { PackageOpen } from 'lucide-react';
 import './App.css';
 
@@ -20,6 +22,7 @@ function App() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -100,12 +103,14 @@ function App() {
   }, [products, filters]);
 
   return (
-    <CartProvider>
-      <div className="app-wrapper">
-        <Navbar 
-          onAddProductClick={() => setIsAddModalOpen(true)} 
-          onCartClick={() => setIsCartDrawerOpen(true)}
-        />
+    <AuthProvider>
+      <CartProvider>
+        <div className="app-wrapper">
+          <Navbar 
+            onAddProductClick={() => setIsAddModalOpen(true)} 
+            onCartClick={() => setIsCartDrawerOpen(true)}
+            onLoginClick={() => setIsLoginModalOpen(true)}
+          />
         
         <FilterBar 
           categories={uniqueCategories}
@@ -141,6 +146,11 @@ function App() {
         <CheckoutModal
           isOpen={isCheckoutModalOpen}
           onClose={() => setIsCheckoutModalOpen(false)}
+        />
+
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
         />
 
         <ProductDetailModal 
@@ -182,7 +192,8 @@ function App() {
           )}
         </main>
       </div>
-    </CartProvider>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
