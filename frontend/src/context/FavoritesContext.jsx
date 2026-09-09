@@ -23,19 +23,19 @@ export const FavoritesProvider = ({ children }) => {
   }, [favoriteIds]);
 
   const toggleFavorite = (productId) => {
-    setFavoriteIds((prev) => {
-      if (prev.includes(productId)) {
-        toast.success("Favorilerden çıkarıldı", {
-          icon: '💔',
-        });
-        return prev.filter(id => id !== productId);
-      } else {
-        toast.success("Favorilere eklendi!", {
-          icon: '❤️',
-        });
-        return [...prev, productId];
-      }
-    });
+    const isAlreadyFav = favoriteIds.includes(productId);
+    
+    if (isAlreadyFav) {
+      toast.success("Favorilerden çıkarıldı", {
+        icon: '💔',
+      });
+      setFavoriteIds((prev) => prev.filter(id => id !== productId));
+    } else {
+      toast.success("Favorilere eklendi!", {
+        icon: '❤️',
+      });
+      setFavoriteIds((prev) => [...prev, productId]);
+    }
   };
 
   const isFavorite = (productId) => {
