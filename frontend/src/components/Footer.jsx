@@ -1,62 +1,54 @@
 import React from 'react';
-import { MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail, Map, Store } from 'lucide-react';
+import { FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="site-footer">
-      <div className="footer-container">
-        <div className="footer-grid">
-          {/* Column 1 */}
-          <div className="footer-col">
-            <h3 className="footer-brand">Neta Oto Market</h3>
-            <p className="footer-desc">
-              Aracınız için en kaliteli aksesuar ve multimedya çözümleri.
-            </p>
-          </div>
-
-          {/* Column 2 */}
-          <div className="footer-col">
-            <h4 className="footer-heading">Kategoriler</h4>
-            <ul className="footer-links">
-              <li><a href="#">Dış Aksesuar</a></li>
-              <li><a href="#">İç Trim</a></li>
-              <li><a href="#">Multimedya</a></li>
-              <li><a href="#">Aydınlatma</a></li>
-            </ul>
-          </div>
-
-          {/* Column 3 */}
-          <div className="footer-col">
-            <h4 className="footer-heading">Müşteri Hizmetleri</h4>
-            <ul className="footer-links">
-              <li><a href="#">İade Koşulları</a></li>
-              <li><a href="#">Kargo Takibi</a></li>
-              <li><a href="#">S.S.S.</a></li>
-            </ul>
-          </div>
-
-          {/* Column 4 */}
-          <div className="footer-col">
-            <h4 className="footer-heading">İletişim</h4>
-            <ul className="footer-contact">
-              <li>
-                <MapPin size={18} />
-                <span>Örnek Sanayi Sitesi, 1. Blok No: 15, İstanbul</span>
-              </li>
-              <li>
-                <Phone size={18} />
-                <span>+90 555 555 55 55</span>
-              </li>
-              <li>
-                <Mail size={18} />
-                <span>info@netaotomarket.com</span>
-              </li>
-            </ul>
-          </div>
+    <footer className="footer-hard-reset">
+      <div className="footer-hr-container">
+        <h2 className="footer-hr-title">Bize Ulaşın</h2>
+        
+        <div className="footer-hr-contact">
+          <a href="https://www.google.com/maps/search/?api=1&query=17+Ağustos+Mah.+17+Ağustos+Cad.+No:8+Kartepe+Kocaeli" target="_blank" rel="noopener noreferrer" className="footer-hr-contact-link">
+            <MapPin size={20} className="footer-hr-icon" />
+            <span>17 Ağustos Mah. 17 Ağustos Cad. No:8 Kartepe / Kocaeli</span>
+          </a>
+          <a href="tel:+905536495353" className="footer-hr-contact-link">
+            <Phone size={20} className="footer-hr-icon" />
+            <span>0553 649 53 53</span>
+          </a>
+          <a href="mailto:netaotomarket@gmail.com" className="footer-hr-contact-link">
+            <Mail size={20} className="footer-hr-icon" />
+            <span>netaotomarket@gmail.com</span>
+          </a>
         </div>
-      </div>
-      <div className="footer-bottom">
-        <p>© 2026 Neta Oto Market. Tüm hakları saklıdır.</p>
+
+        <div className="footer-hr-actions">
+          <a href="tel:+905536495353" className="footer-hr-btn footer-hr-btn-phone">
+            <Phone size={18} />
+            Hemen Ara
+          </a>
+          <a href="mailto:netaotomarket@gmail.com" className="footer-hr-btn footer-hr-btn-mail">
+            <Mail size={18} />
+            E-posta Gönder
+          </a>
+          <a href="https://www.google.com/maps/search/?api=1&query=17+Ağustos+Mah.+17+Ağustos+Cad.+No:8+Kartepe+Kocaeli" target="_blank" rel="noopener noreferrer" className="footer-hr-btn footer-hr-btn-map">
+            <Map size={18} />
+            Haritalarda Aç
+          </a>
+          <a href="https://netaotomarket.sahibinden.com" target="_blank" rel="noopener noreferrer" className="footer-hr-btn footer-hr-btn-store">
+            <Store size={18} />
+            Sahibinden
+          </a>
+          <a href="https://www.instagram.com/netaotomarket/" target="_blank" rel="noopener noreferrer" className="footer-hr-btn footer-hr-btn-ig">
+            <FaInstagram size={18} />
+            Instagram
+          </a>
+        </div>
+
+        <div className="footer-hr-bottom">
+          <p>© 2026 Neta Oto Market. Tüm Hakları Saklıdır.</p>
+        </div>
       </div>
     </footer>
   );
