@@ -99,7 +99,12 @@ const DiscountCodes = () => {
           </select>
           <button 
             className="btn btn-primary" 
-            style={{ whiteSpace: 'nowrap' }}
+            style={{ 
+              whiteSpace: 'nowrap', 
+              fontSize: '0.875rem', 
+              padding: '0.4rem 1rem', 
+              height: 'auto' 
+            }}
             onClick={() => {
               if (isAdding) {
                 resetForm();
@@ -108,7 +113,7 @@ const DiscountCodes = () => {
               }
             }}
           >
-            {isAdding ? <XCircle size={18} /> : <Plus size={18} />}
+            {isAdding ? <XCircle size={16} /> : <Plus size={16} />}
             {isAdding ? 'İptal' : 'Yeni Kod Oluştur'}
           </button>
         </div>

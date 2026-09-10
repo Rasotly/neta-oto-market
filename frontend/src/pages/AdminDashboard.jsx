@@ -220,8 +220,17 @@ const AdminDashboard = () => {
                     <option value="in-stock">Stokta Var</option>
                     <option value="out-of-stock">Stokta Yok</option>
                   </select>
-                  <button className="btn btn-primary" onClick={handleAddClick} style={{ whiteSpace: 'nowrap' }}>
-                    <Plus size={18} />
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={handleAddClick} 
+                    style={{ 
+                      whiteSpace: 'nowrap',
+                      fontSize: '0.875rem', 
+                      padding: '0.4rem 1rem', 
+                      height: 'auto' 
+                    }}
+                  >
+                    <Plus size={16} />
                     Yeni Ürün Ekle
                   </button>
                 </div>
