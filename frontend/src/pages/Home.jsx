@@ -38,7 +38,13 @@ function Home() {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
+    setFilters(prev => {
+      const updated = { ...prev, [name]: value };
+      if (name === 'brand') {
+        updated.model = ''; // Reset model when brand changes
+      }
+      return updated;
+    });
   };
 
   const handleClearFilters = () => {
@@ -49,15 +55,6 @@ function Home() {
   const uniqueCategories = useMemo(() => {
     return [...new Set(products.map(p => p.category).filter(Boolean))].sort();
   }, [products]);
-
-  const uniqueBrands = useMemo(() => {
-    return [...new Set(products.map(p => p.brand).filter(Boolean))].sort();
-  }, [products]);
-
-  const uniqueModels = useMemo(() => {
-    const baseProducts = filters.brand ? products.filter(p => p.brand === filters.brand) : products;
-    return [...new Set(baseProducts.map(p => p.model).filter(Boolean))].sort();
-  }, [products, filters.brand]);
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
@@ -82,8 +79,6 @@ function Home() {
     
       <FilterBar 
         categories={uniqueCategories}
-        brands={uniqueBrands}
-        models={uniqueModels}
         filters={filters}
         onFilterChange={handleFilterChange}
         onClearFilters={handleClearFilters}

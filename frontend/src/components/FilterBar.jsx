@@ -1,7 +1,8 @@
 import React from 'react';
 import { FilterX } from 'lucide-react';
+import { getSortedBrands, getModelsForBrand } from '../utils/carData';
 
-const FilterBar = ({ categories, brands, models, filters, onFilterChange, onClearFilters }) => {
+const FilterBar = ({ categories, filters, onFilterChange, onClearFilters }) => {
   return (
     <div className="filter-bar-container">
       <div className="filter-bar-content">
@@ -25,8 +26,8 @@ const FilterBar = ({ categories, brands, models, filters, onFilterChange, onClea
             onChange={onFilterChange}
           >
             <option value="">Marka Seç</option>
-            {brands.map((b, i) => (
-              <option key={i} value={b}>{b}</option>
+            {getSortedBrands().map(brand => (
+              <option key={brand} value={brand}>{brand}</option>
             ))}
           </select>
 
@@ -35,11 +36,18 @@ const FilterBar = ({ categories, brands, models, filters, onFilterChange, onClea
             name="model"
             value={filters.model}
             onChange={onFilterChange}
+            disabled={!filters.brand}
           >
-            <option value="">Model Seç</option>
-            {models.map((m, i) => (
-              <option key={i} value={m}>{m}</option>
-            ))}
+            {!filters.brand ? (
+              <option value="">Önce Marka Seçiniz</option>
+            ) : (
+              <>
+                <option value="">Model Seç</option>
+                {getModelsForBrand(filters.brand).map(model => (
+                  <option key={model} value={model}>{model}</option>
+                ))}
+              </>
+            )}
           </select>
         </div>
 

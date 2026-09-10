@@ -3,6 +3,7 @@ import { X, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useProducts } from '../context/ProductContext';
+import { getSortedBrands, getModelsForBrand } from '../utils/carData';
 
 const AddProductModal = ({ isOpen, onClose, editProduct }) => {
   const { addProductToState, updateProductInState } = useProducts();
@@ -62,10 +63,18 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    setFormData(prev => {
+      const updated = {
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      };
+      
+      if (name === 'brand') {
+        updated.model = ''; // Reset model when brand changes
+      }
+      
+      return updated;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -217,13 +226,9 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
                     className="modern-select"
                   >
                     <option value="">Seçiniz</option>
-                    <option value="Honda">Honda</option>
-                    <option value="BMW">BMW</option>
-                    <option value="Audi">Audi</option>
-                    <option value="Volkswagen">Volkswagen</option>
-                    <option value="Mercedes">Mercedes-Benz</option>
-                    <option value="Toyota">Toyota</option>
-                    <option value="Universal">Universal (Tüm Araçlar)</option>
+                    {getSortedBrands().map(brand => (
+                      <option key={brand} value={brand}>{brand}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="form-group">
@@ -233,14 +238,18 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
                     value={formData.model} 
                     onChange={handleChange}
                     className="modern-select"
+                    disabled={!formData.brand}
                   >
-                    <option value="">Seçiniz</option>
-                    <option value="Civic">Civic</option>
-                    <option value="F30">F30</option>
-                    <option value="Golf 7">Golf 7</option>
-                    <option value="A3">A3</option>
-                    <option value="Corolla">Corolla</option>
-                    <option value="Tüm Modeller">Tüm Modeller</option>
+                    {!formData.brand ? (
+                      <option value="">Önce Marka Seçiniz</option>
+                    ) : (
+                      <>
+                        <option value="">Seçiniz</option>
+                        {getModelsForBrand(formData.brand).map(model => (
+                          <option key={model} value={model}>{model}</option>
+                        ))}
+                      </>
+                    )}
                   </select>
                 </div>
               </div>
