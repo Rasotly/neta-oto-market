@@ -1618,6 +1618,13 @@
   gap: 0.25rem;
 }
 
+.admin-sidebar-divider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 1rem 0;
+  width: 100%;
+}
+
 .admin-nav-item:hover {
   background-color: #f3f4f6;
   color: #111827;

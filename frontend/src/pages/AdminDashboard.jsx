@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight, Tags, Star, PieChart, Settings } from 'lucide-react';
 import AddProductModal from '../components/AddProductModal';
 import EditProductModal from '../components/EditProductModal';
 import { formatPrice } from '../utils/formatters';
@@ -19,6 +19,7 @@ const AdminDashboard = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [isControlPanelOpen, setIsControlPanelOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState('Ürünler');
 
   useEffect(() => {
     if (isAdmin) {
@@ -95,25 +96,75 @@ const AdminDashboard = () => {
               {isControlPanelOpen && (
                 <ul className="admin-subnav-list">
                   <li>
-                    <button className="admin-nav-item active">
+                    <button 
+                      className={`admin-nav-item ${activeTab === 'Ürünler' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('Ürünler')}
+                    >
                       <Package size={18} />
                       Ürünler
                     </button>
                   </li>
                   <li>
-                    <button className="admin-nav-item">
+                    <button 
+                      className={`admin-nav-item ${activeTab === 'Kategoriler & Markalar' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('Kategoriler & Markalar')}
+                    >
+                      <Tags size={18} />
+                      Kategoriler & Markalar
+                    </button>
+                  </li>
+                  <li>
+                    <button 
+                      className={`admin-nav-item ${activeTab === 'Siparişler' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('Siparişler')}
+                    >
                       <ShoppingCart size={18} />
                       Siparişler
                     </button>
                   </li>
                   <li>
-                    <button className="admin-nav-item">
+                    <button 
+                      className={`admin-nav-item ${activeTab === 'Müşteriler' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('Müşteriler')}
+                    >
                       <Users size={18} />
                       Müşteriler
                     </button>
                   </li>
+                  <li>
+                    <button 
+                      className={`admin-nav-item ${activeTab === 'Kampanyalar' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('Kampanyalar')}
+                    >
+                      <Star size={18} />
+                      Kampanyalar
+                    </button>
+                  </li>
+                  <li>
+                    <button 
+                      className={`admin-nav-item ${activeTab === 'Raporlar' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('Raporlar')}
+                    >
+                      <PieChart size={18} />
+                      Raporlar
+                    </button>
+                  </li>
                 </ul>
               )}
+            </li>
+          </ul>
+
+          <div className="admin-sidebar-divider"></div>
+          
+          <ul className="admin-nav-list">
+            <li>
+              <button 
+                className={`admin-nav-item ${activeTab === 'Site Ayarları' ? 'active' : ''}`}
+                onClick={() => setActiveTab('Site Ayarları')}
+              >
+                <Settings size={18} />
+                Site Ayarları
+              </button>
             </li>
           </ul>
         </div>
