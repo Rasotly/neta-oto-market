@@ -1,14 +1,12 @@
 import React from 'react';
-import { Edit2, Trash2, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { toast } from 'react-hot-toast';
 import { formatPrice } from '../utils/formatters';
 
-const ProductCard = ({ product, onClick, onEdit, onDelete }) => {
+const ProductCard = ({ product, onClick }) => {
   const { addToCart } = useCart();
-  const { isAdmin } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const isFav = isFavorite(product.id);
@@ -34,31 +32,8 @@ const ProductCard = ({ product, onClick, onEdit, onDelete }) => {
     toggleFavorite(product.id);
   };
 
-  const handleEdit = (e) => {
-    e.stopPropagation();
-    if (onEdit) onEdit(product);
-  };
-
-  const handleDelete = (e) => {
-    e.stopPropagation();
-    if (onDelete) onDelete(product);
-  };
-
   return (
     <div className="product-card" onClick={() => onClick(product)} style={{ cursor: 'pointer', position: 'relative' }}>
-      
-      {/* Admin Actions */}
-      {isAdmin && (
-        <div className="card-admin-actions">
-          <button className="admin-btn admin-btn-edit" onClick={handleEdit} title="Düzenle">
-            <Edit2 size={16} />
-          </button>
-          <button className="admin-btn admin-btn-delete" onClick={handleDelete} title="Sil">
-            <Trash2 size={16} />
-          </button>
-        </div>
-      )}
-
       {/* Favorite Button */}
       <button 
         className={`card-favorite-btn ${isFav ? 'active' : ''}`}

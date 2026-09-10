@@ -7,11 +7,14 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(() => {
+    return localStorage.getItem('isAdmin') === 'true';
+  });
 
   const login = (username, password) => {
     if (username === 'admin' && password === '123456') {
       setIsAdmin(true);
+      localStorage.setItem('isAdmin', 'true');
       return { success: true };
     }
     return { success: false, message: 'Hatalı kullanıcı adı veya şifre' };
@@ -19,6 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setIsAdmin(false);
+    localStorage.removeItem('isAdmin');
   };
 
   return (

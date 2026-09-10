@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const LoginModal = ({ isOpen, onClose }) => {
   const { login } = useAuth();
+  const navigate = useNavigate();
   
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -20,6 +22,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       setUsername('');
       setPassword('');
       onClose();
+      navigate('/admin');
     } else {
       setError(result.message);
     }

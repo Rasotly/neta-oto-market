@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Menu, X, Plus } from 'lucide-react';
+import { Search, Menu, X } from 'lucide-react';
 import { RiShoppingCart2Line } from "react-icons/ri";
 import { IoPersonSharp, IoPersonOutline } from "react-icons/io5";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
@@ -7,7 +7,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
 
-const Navbar = ({ onAddProductClick, onCartClick, onLoginClick, showOnlyFavorites, onToggleFavorites }) => {
+const Navbar = ({ onCartClick, onLoginClick, showOnlyFavorites, onToggleFavorites }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cartItemCount } = useCart();
   const { isAdmin, logout } = useAuth();
@@ -31,13 +31,7 @@ const Navbar = ({ onAddProductClick, onCartClick, onLoginClick, showOnlyFavorite
 
         {/* Right Icons - Desktop */}
         <div className="navbar-actions desktop-only">
-          {isAdmin && (
-            <button className="icon-btn" onClick={onAddProductClick}>
-              <Plus size={24} />
-              <span className="icon-text">Ürün Ekle</span>
-            </button>
-          )}
-          
+
           <button className={`icon-btn favorite-btn-container ${showOnlyFavorites ? 'active' : ''}`} onClick={onToggleFavorites}>
             <div className="favorite-icon-wrapper nav-heart-wrapper">
               <FaRegHeart className="heart-outline" size={22} />
@@ -105,13 +99,7 @@ const Navbar = ({ onAddProductClick, onCartClick, onLoginClick, showOnlyFavorite
             </button>
           </div>
           <div className="mobile-actions">
-            {isAdmin && (
-              <button className="icon-btn" onClick={() => { onAddProductClick(); setIsMenuOpen(false); }}>
-                <Plus size={20} />
-                <span>Ürün Ekle</span>
-              </button>
-            )}
-            
+
             {isAdmin ? (
               <button className="icon-btn login-btn" onClick={() => { logout(); setIsMenuOpen(false); }}>
                 <div className="nav-person-wrapper">
