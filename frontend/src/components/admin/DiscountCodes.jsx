@@ -11,6 +11,13 @@ const DiscountCodes = () => {
   const [discountType, setDiscountType] = useState('percentage');
   const [discountValue, setDiscountValue] = useState('');
   const [isActive, setIsActive] = useState(true);
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  const filteredCodes = discountCodes.filter(code => {
+    if (filterStatus === 'active') return code.isActive;
+    if (filterStatus === 'passive') return !code.isActive;
+    return true;
+  });
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -69,16 +76,42 @@ const DiscountCodes = () => {
     <div className="discount-codes-container">
       <div className="admin-toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h2 className="admin-page-title">İndirim Kodları & Kampanyalar</h2>
-        <button className="btn btn-primary" onClick={() => {
-          if (isAdding) {
-            resetForm();
-          } else {
-            setIsAdding(true);
-          }
-        }}>
-          {isAdding ? <XCircle size={18} /> : <Plus size={18} />}
-          {isAdding ? 'İptal' : 'Yeni Kod Oluştur'}
-        </button>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <select 
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            style={{ 
+              padding: '0.4rem 2rem 0.4rem 0.8rem', 
+              height: 'auto', 
+              width: 'auto',
+              border: '1px solid #d1d5db',
+              borderRadius: '0.375rem',
+              fontSize: '0.875rem',
+              backgroundColor: '#fff',
+              color: '#374151',
+              cursor: 'pointer',
+              outline: 'none'
+            }}
+          >
+            <option value="all">Tümü</option>
+            <option value="active">Aktif Olanlar</option>
+            <option value="passive">Pasif Olanlar</option>
+          </select>
+          <button 
+            className="btn btn-primary" 
+            style={{ whiteSpace: 'nowrap' }}
+            onClick={() => {
+              if (isAdding) {
+                resetForm();
+              } else {
+                setIsAdding(true);
+              }
+            }}
+          >
+            {isAdding ? <XCircle size={18} /> : <Plus size={18} />}
+            {isAdding ? 'İptal' : 'Yeni Kod Oluştur'}
+          </button>
+        </div>
       </div>
 
       {isAdding && (
@@ -155,7 +188,7 @@ const DiscountCodes = () => {
             </tr>
           </thead>
           <tbody>
-            {discountCodes.map((code) => (
+            {filteredCodes.map((code) => (
               <tr key={code.id}>
                 <td><strong>{code.code}</strong></td>
                 <td>{code.discountType === 'percentage' ? 'Yüzde İndirimi' : 'Sabit Tutar'}</td>
@@ -199,7 +232,7 @@ const DiscountCodes = () => {
                 </td>
               </tr>
             ))}
-            {discountCodes.length === 0 && (
+            {filteredCodes.length === 0 && (
               <tr>
                 <td colSpan="5" className="text-center" style={{ padding: '2rem' }}>
                   Henüz bir indirim kodu oluşturulmadı.
