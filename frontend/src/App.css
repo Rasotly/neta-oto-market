@@ -114,12 +114,6 @@
   font-size: 0.8rem;
 }
 
-.login-btn {
-  color: var(--accent);
-}
-.login-btn:hover {
-  color: var(--accent-hover);
-}
 
 .mobile-toggle {
   display: none;
@@ -523,10 +517,78 @@
   border-color: #f44336;
 }
 
-/* Navbar Cart Badge */
+/* Navbar Cart & Favorite Badge */
 .cart-btn-container,
 .favorite-btn-container {
   position: relative;
+}
+
+.cart-icon-wrapper,
+.favorite-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Navbar Heart Hover Fill Effect */
+.heart-outline, .heart-solid {
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.heart-solid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  color: #f44336; /* Red color on hover */
+}
+
+.favorite-btn-container:hover .heart-outline {
+  opacity: 0;
+}
+
+.favorite-btn-container:hover .heart-solid {
+  opacity: 1;
+}
+
+.favorite-btn-container.active .heart-solid {
+  opacity: 1;
+  color: var(--accent); /* Keep it orange when "Favorites Only" mode is active */
+}
+
+.favorite-btn-container.active .heart-outline {
+  opacity: 0;
+}
+
+/* Navbar Person Hover Fill Effect */
+.nav-person-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.person-outline, .person-solid {
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.person-solid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  color: var(--accent); /* Orange color on hover */
+}
+
+.login-btn:hover .person-outline {
+  opacity: 0;
+}
+
+.login-btn:hover .person-solid {
+  opacity: 1;
 }
 
 .cart-icon-wrapper,

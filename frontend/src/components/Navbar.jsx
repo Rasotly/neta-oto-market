@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Search, ShoppingCart, User, Menu, X, Plus, Heart } from 'lucide-react';
+import { Search, Menu, X, Plus } from 'lucide-react';
+import { RiShoppingCart2Line } from "react-icons/ri";
+import { IoPersonSharp, IoPersonOutline } from "react-icons/io5";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
@@ -36,8 +39,9 @@ const Navbar = ({ onAddProductClick, onCartClick, onLoginClick, showOnlyFavorite
           )}
           
           <button className={`icon-btn favorite-btn-container ${showOnlyFavorites ? 'active' : ''}`} onClick={onToggleFavorites}>
-            <div className="favorite-icon-wrapper">
-              <Heart size={24} fill={showOnlyFavorites ? 'var(--accent)' : 'none'} color={showOnlyFavorites ? 'var(--accent)' : 'var(--text)'} />
+            <div className="favorite-icon-wrapper nav-heart-wrapper">
+              <FaRegHeart className="heart-outline" size={22} />
+              <FaHeart className="heart-solid" size={22} />
               {favoritesCount > 0 && <span className="favorite-badge">{favoritesCount}</span>}
             </div>
             <span className="icon-text">Favoriler</span>
@@ -45,7 +49,7 @@ const Navbar = ({ onAddProductClick, onCartClick, onLoginClick, showOnlyFavorite
 
           <button className="icon-btn cart-btn-container" onClick={onCartClick}>
             <div className="cart-icon-wrapper">
-              <ShoppingCart size={24} />
+              <RiShoppingCart2Line size={26} />
               {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
             </div>
             <span className="icon-text">Sepet</span>
@@ -53,12 +57,18 @@ const Navbar = ({ onAddProductClick, onCartClick, onLoginClick, showOnlyFavorite
           
           {isAdmin ? (
             <button className="icon-btn login-btn" onClick={logout}>
-              <User size={24} />
+              <div className="nav-person-wrapper">
+                <IoPersonOutline className="person-outline" size={26} />
+                <IoPersonSharp className="person-solid" size={26} />
+              </div>
               <span className="icon-text">Çıkış Yap</span>
             </button>
           ) : (
             <button className="icon-btn login-btn" onClick={onLoginClick}>
-              <User size={24} />
+              <div className="nav-person-wrapper">
+                <IoPersonOutline className="person-outline" size={26} />
+                <IoPersonSharp className="person-solid" size={26} />
+              </div>
               <span className="icon-text">Giriş</span>
             </button>
           )}
@@ -67,14 +77,15 @@ const Navbar = ({ onAddProductClick, onCartClick, onLoginClick, showOnlyFavorite
         {/* Mobile Menu Toggle */}
         <div className="mobile-toggle">
           <button className="icon-btn favorite-btn-container mobile-cart-btn" onClick={onToggleFavorites}>
-            <div className="favorite-icon-wrapper">
-              <Heart size={28} fill={showOnlyFavorites ? 'var(--accent)' : 'none'} color={showOnlyFavorites ? 'var(--accent)' : 'var(--text)'} />
+            <div className="favorite-icon-wrapper nav-heart-wrapper">
+              <FaRegHeart className="heart-outline" size={24} />
+              <FaHeart className="heart-solid" size={24} />
               {favoritesCount > 0 && <span className="favorite-badge">{favoritesCount}</span>}
             </div>
           </button>
           <button className="icon-btn cart-btn-container mobile-cart-btn" onClick={onCartClick}>
             <div className="cart-icon-wrapper">
-              <ShoppingCart size={28} />
+              <RiShoppingCart2Line size={28} />
               {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
             </div>
           </button>
@@ -103,12 +114,18 @@ const Navbar = ({ onAddProductClick, onCartClick, onLoginClick, showOnlyFavorite
             
             {isAdmin ? (
               <button className="icon-btn login-btn" onClick={() => { logout(); setIsMenuOpen(false); }}>
-                <User size={20} />
+                <div className="nav-person-wrapper">
+                  <IoPersonOutline className="person-outline" size={28} />
+                  <IoPersonSharp className="person-solid" size={28} />
+                </div>
                 <span>Çıkış Yap</span>
               </button>
             ) : (
               <button className="icon-btn login-btn" onClick={() => { onLoginClick(); setIsMenuOpen(false); }}>
-                <User size={20} />
+                <div className="nav-person-wrapper">
+                  <IoPersonOutline className="person-outline" size={28} />
+                  <IoPersonSharp className="person-solid" size={28} />
+                </div>
                 <span>Giriş Yap</span>
               </button>
             )}
