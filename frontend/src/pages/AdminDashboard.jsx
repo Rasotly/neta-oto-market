@@ -23,6 +23,13 @@ const AdminDashboard = () => {
   
   const [isControlPanelOpen, setIsControlPanelOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('Ürünler');
+  const [productFilterStatus, setProductFilterStatus] = useState('all');
+
+  const filteredProducts = products.filter(p => {
+    if (productFilterStatus === 'in-stock') return p.inStock;
+    if (productFilterStatus === 'out-of-stock') return !p.inStock;
+    return true;
+  });
 
   const confirmDelete = async () => {
     if (!deletingProduct) return;
@@ -192,10 +199,32 @@ const AdminDashboard = () => {
             <>
               <div className="admin-toolbar">
                 <h2 className="admin-page-title">Ürün Listesi</h2>
-                <button className="btn btn-primary" onClick={handleAddClick}>
-                  <Plus size={18} />
-                  Yeni Ürün Ekle
-                </button>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <select 
+                    value={productFilterStatus}
+                    onChange={(e) => setProductFilterStatus(e.target.value)}
+                    style={{ 
+                      padding: '0.4rem 2rem 0.4rem 0.8rem', 
+                      height: 'auto', 
+                      width: 'auto',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '0.375rem',
+                      fontSize: '0.875rem',
+                      backgroundColor: '#fff',
+                      color: '#374151',
+                      cursor: 'pointer',
+                      outline: 'none'
+                    }}
+                  >
+                    <option value="all">Tümü</option>
+                    <option value="in-stock">Stokta Var</option>
+                    <option value="out-of-stock">Stokta Yok</option>
+                  </select>
+                  <button className="btn btn-primary" onClick={handleAddClick} style={{ whiteSpace: 'nowrap' }}>
+                    <Plus size={18} />
+                    Yeni Ürün Ekle
+                  </button>
+                </div>
               </div>
 
               {loading && <p className="text-gray-500">Yükleniyor...</p>}
@@ -215,12 +244,12 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {products.length === 0 ? (
+                      {filteredProducts.length === 0 ? (
                         <tr>
                           <td colSpan="6" className="text-center py-8 text-gray-500">Hiç ürün bulunamadı.</td>
                         </tr>
                       ) : (
-                        products.map((product) => (
+                        filteredProducts.map((product) => (
                           <tr key={product.id}>
                             <td className="w-20">
                               {product.imageUrl ? (
