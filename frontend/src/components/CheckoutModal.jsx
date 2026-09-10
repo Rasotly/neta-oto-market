@@ -1,21 +1,40 @@
 import React, { useState } from 'react';
-import { X, CheckCircle, Package } from 'lucide-react';
+import { X, CheckCircle, Package, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatters';
 
 const CheckoutModal = ({ isOpen, onClose }) => {
   const { cartItems, cartTotal, clearCart } = useCart();
   
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phone: '',
+    cityDistrict: '',
+    address: ''
+  });
+  
+  const [errors, setErrors] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   if (!isOpen) return null;
 
-  const shippingFee = cartTotal > 500 ? 0 : 49.90;
-  const grandTotal = cartTotal + shippingFee;
+  const grandTotal = cartTotal;
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errors) setErrors(false);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Check if any field is empty
+    if (!formData.fullName.trim() || !formData.phone.trim() || !formData.cityDistrict.trim() || !formData.address.trim()) {
+      setErrors(true);
+      return;
+    }
+
     setIsSubmitting(true);
     
     // Yükleme simülasyonu
@@ -27,108 +46,124 @@ const CheckoutModal = ({ isOpen, onClose }) => {
   };
 
   const handleClose = () => {
-    // State'leri sıfırla ve kapat
     setIsSuccess(false);
     setIsSubmitting(false);
+    setErrors(false);
+    setFormData({ fullName: '', phone: '', cityDistrict: '', address: '' });
     onClose();
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content checkout-modal-content">
-        <div className="modal-header">
-          <h2>{isSuccess ? 'İşlem Başarılı' : 'Teslimat ve Ödeme'}</h2>
-          {!isSubmitting && (
-            <button className="icon-btn modal-close-btn" onClick={handleClose} type="button">
-              <X size={24} />
-            </button>
-          )}
-        </div>
+    <div className="checkout-backdrop">
+      <div className="checkout-dialog">
+        {!isSuccess && (
+          <button className="checkout-close-btn" onClick={handleClose} type="button">
+            <X size={24} />
+          </button>
+        )}
 
         {isSuccess ? (
-          <div className="checkout-success">
-            <CheckCircle size={80} className="success-icon" />
-            <h3>Siparişiniz Başarıyla Alındı!</h3>
-            <p>Bizi tercih ettiğiniz için teşekkür ederiz. Sipariş detaylarınız e-posta adresinize gönderilecektir.</p>
-            <button className="btn btn-primary mt-4" onClick={handleClose}>
+          <div className="checkout-success-view">
+            <CheckCircle size={96} className="checkout-success-icon" />
+            <h2 className="checkout-success-title">Siparişiniz Başarıyla Alındı!</h2>
+            <p className="checkout-success-desc">Müşteri temsilcimiz sipariş onayı için WhatsApp üzerinden sizinle iletişime geçecektir.</p>
+            <button className="checkout-success-btn" onClick={handleClose}>
               Alışverişe Dön
             </button>
           </div>
         ) : (
-          <div className="checkout-layout">
-            <div className="checkout-form-section">
-              <form id="checkout-form" onSubmit={handleSubmit}>
-                <h3 className="section-title">Müşteri Bilgileri</h3>
-                <div className="form-group">
-                  <label>Ad Soyad *</label>
-                  <input type="text" name="fullName" required placeholder="Örn: Ahmet Yılmaz" />
+          <div className="checkout-grid">
+            <div className="checkout-form-side">
+              <h2 className="checkout-side-title">Teslimat Bilgileri</h2>
+              <form id="checkout-form" onSubmit={handleSubmit} className="checkout-form">
+                
+                <div className="checkout-input-group">
+                  <label className="checkout-label">Ad Soyad</label>
+                  <input 
+                    type="text" 
+                    name="fullName" 
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    className={`checkout-input ${errors && !formData.fullName.trim() ? 'input-error' : ''}`} 
+                    placeholder="Örn: Ahmet Yılmaz" 
+                  />
                 </div>
-                <div className="form-group">
-                  <label>Telefon Numarası *</label>
-                  <input type="tel" name="phone" required placeholder="05XX XXX XX XX" />
-                </div>
-                <div className="form-group">
-                  <label>Açık Adres *</label>
-                  <textarea name="address" rows="3" required placeholder="Teslimat adresinizi giriniz..."></textarea>
+                
+                <div className="checkout-input-group">
+                  <label className="checkout-label">Telefon Numarası</label>
+                  <input 
+                    type="tel" 
+                    name="phone" 
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className={`checkout-input ${errors && !formData.phone.trim() ? 'input-error' : ''}`} 
+                    placeholder="05XX XXX XX XX" 
+                  />
                 </div>
 
-                <h3 className="section-title mt-4">Ödeme Bilgileri</h3>
-                <div className="form-group">
-                  <label>Kart Numarası *</label>
-                  <input type="text" name="cardNumber" required placeholder="XXXX XXXX XXXX XXXX" maxLength="19" />
+                <div className="checkout-input-group">
+                  <label className="checkout-label">İl / İlçe</label>
+                  <input 
+                    type="text" 
+                    name="cityDistrict" 
+                    value={formData.cityDistrict}
+                    onChange={handleChange}
+                    className={`checkout-input ${errors && !formData.cityDistrict.trim() ? 'input-error' : ''}`} 
+                    placeholder="Örn: Kadıköy / İstanbul" 
+                  />
                 </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Son Kullanma *</label>
-                    <input type="text" name="expiry" required placeholder="AA/YY" maxLength="5" />
-                  </div>
-                  <div className="form-group">
-                    <label>CVV *</label>
-                    <input type="text" name="cvv" required placeholder="XXX" maxLength="3" />
-                  </div>
+                
+                <div className="checkout-input-group">
+                  <label className="checkout-label">Açık Adres</label>
+                  <textarea 
+                    name="address" 
+                    rows="3" 
+                    value={formData.address}
+                    onChange={handleChange}
+                    className={`checkout-textarea ${errors && !formData.address.trim() ? 'input-error' : ''}`} 
+                    placeholder="Teslimat adresinizi detaylıca giriniz..."
+                  />
                 </div>
+
               </form>
             </div>
 
-            <div className="checkout-summary-section">
-              <h3 className="section-title">Sipariş Özeti</h3>
-              <div className="checkout-items">
+            <div className="checkout-summary-side">
+              <h2 className="checkout-side-title">Sipariş Özeti</h2>
+              
+              <div className="checkout-items-mini">
                 {cartItems.map((item) => (
-                  <div key={item.id} className="checkout-item">
-                    <div className="checkout-item-info">
-                      <span className="checkout-item-name">{item.name}</span>
-                      <span className="checkout-item-qty">x{item.quantity}</span>
+                  <div key={item.id} className="checkout-item-mini">
+                    <div className="checkout-item-mini-img">
+                      {item.imageUrl ? <img src={item.imageUrl} alt={item.name} /> : <Package size={24} />}
                     </div>
-                    <span className="checkout-item-price">{formatPrice(item.price * item.quantity)}</span>
+                    <div className="checkout-item-mini-info">
+                      <span className="checkout-item-mini-name">{item.name}</span>
+                      <span className="checkout-item-mini-qty">x{item.quantity}</span>
+                    </div>
+                    <span className="checkout-item-mini-price">{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 ))}
               </div>
               
-              <div className="checkout-totals">
-                <div className="checkout-total-row">
-                  <span>Ara Toplam</span>
-                  <span>{formatPrice(cartTotal)}</span>
-                </div>
-                <div className="checkout-total-row">
-                  <span>Kargo Ücreti</span>
-                  <span>{shippingFee === 0 ? 'Ücretsiz' : formatPrice(shippingFee)}</span>
-                </div>
-                <div className="checkout-total-row grand-total">
-                  <span>Genel Toplam</span>
-                  <span>{formatPrice(grandTotal)}</span>
-                </div>
+              <div className="checkout-grand-total">
+                <span>Genel Toplam</span>
+                <span>{formatPrice(grandTotal)}</span>
               </div>
 
               <button 
                 type="submit" 
                 form="checkout-form" 
-                className="btn btn-primary btn-checkout-submit w-full"
+                className="checkout-submit-btn"
                 disabled={isSubmitting || cartItems.length === 0}
               >
                 {isSubmitting ? (
                   <span className="spinner"></span>
                 ) : (
-                  <>Siparişi Onayla</>
+                  <>
+                    Ödeme Adımına Geç
+                    <ArrowRight size={20} />
+                  </>
                 )}
               </button>
             </div>
