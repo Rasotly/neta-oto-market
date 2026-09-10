@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight } from 'lucide-react';
 import AddProductModal from '../components/AddProductModal';
 import EditProductModal from '../components/EditProductModal';
 import { formatPrice } from '../utils/formatters';
@@ -18,6 +18,7 @@ const AdminDashboard = () => {
   
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [isControlPanelOpen, setIsControlPanelOpen] = useState(true);
 
   useEffect(() => {
     if (isAdmin) {
@@ -80,28 +81,39 @@ const AdminDashboard = () => {
           <p className="admin-menu-title">MENU</p>
           <ul className="admin-nav-list">
             <li>
-              <button className="admin-nav-item">
-                <LayoutDashboard size={18} />
-                Kontrol Paneli
+              <button 
+                className="admin-nav-item justify-between" 
+                onClick={() => setIsControlPanelOpen(!isControlPanelOpen)}
+              >
+                <div className="admin-nav-item-content">
+                  <LayoutDashboard size={18} />
+                  <span>Kontrol Paneli</span>
+                </div>
+                {isControlPanelOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
               </button>
-            </li>
-            <li>
-              <button className="admin-nav-item active">
-                <Package size={18} />
-                Ürünler
-              </button>
-            </li>
-            <li>
-              <button className="admin-nav-item">
-                <ShoppingCart size={18} />
-                Siparişler
-              </button>
-            </li>
-            <li>
-              <button className="admin-nav-item">
-                <Users size={18} />
-                Müşteriler
-              </button>
+              
+              {isControlPanelOpen && (
+                <ul className="admin-subnav-list">
+                  <li>
+                    <button className="admin-nav-item active">
+                      <Package size={18} />
+                      Ürünler
+                    </button>
+                  </li>
+                  <li>
+                    <button className="admin-nav-item">
+                      <ShoppingCart size={18} />
+                      Siparişler
+                    </button>
+                  </li>
+                  <li>
+                    <button className="admin-nav-item">
+                      <Users size={18} />
+                      Müşteriler
+                    </button>
+                  </li>
+                </ul>
+              )}
             </li>
           </ul>
         </div>
