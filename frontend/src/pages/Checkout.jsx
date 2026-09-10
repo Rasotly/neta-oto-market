@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatters';
 import { CheckCircle, ShieldCheck, CreditCard, ChevronLeft } from 'lucide-react';
@@ -12,15 +12,24 @@ const Checkout = () => {
   const clearCart = contextData.clearCart || (() => {});
   const navigate = useNavigate();
 
+  const [searchParams] = useSearchParams();
+  const stepParam = searchParams.get('step');
+  
+  const step = stepParam === 'success' ? 3 : stepParam === 'payment' ? 2 : 1;
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    if (!stepParam) {
+      navigate('/checkout?step=address', { replace: true });
+    }
+  }, [stepParam, navigate]);
 
-  const [step, setStep] = useState(1); // 1: Teslimat, 2: Ödeme, 3: Başarı
   const [formData, setFormData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     phone: '',
-    cityDistrict: '',
+    city: '',
+    district: '',
     address: '',
     cardName: '',
     cardNumber: '',
@@ -34,18 +43,28 @@ const Checkout = () => {
   const grandTotal = cartTotal;
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let { name, value } = e.target;
+    if (name === 'phone') {
+      let numbers = value.replace(/\D/g, '').substring(0, 10);
+      let formatted = '';
+      if (numbers.length > 0) formatted += numbers.substring(0, 3);
+      if (numbers.length > 3) formatted += ' ' + numbers.substring(3, 6);
+      if (numbers.length > 6) formatted += ' ' + numbers.substring(6, 8);
+      if (numbers.length > 8) formatted += ' ' + numbers.substring(8, 10);
+      value = formatted;
+    }
+    setFormData({ ...formData, [name]: value });
     if (errors) setErrors(false);
   };
 
   const handleNextStep = (e) => {
     e.preventDefault();
-    if (!formData.fullName.trim() || !formData.phone.trim() || !formData.cityDistrict.trim() || !formData.address.trim()) {
+    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.phone.trim() || !formData.city.trim() || !formData.district.trim() || !formData.address.trim()) {
       setErrors(true);
       return;
     }
     setErrors(false);
-    setStep(2);
+    navigate('/checkout?step=payment');
   };
 
   const handlePaymentSubmit = (e) => {
@@ -59,7 +78,7 @@ const Checkout = () => {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      setStep(3);
+      navigate('/checkout?step=success');
       clearCart();
     }, 1500);
   };
@@ -87,63 +106,90 @@ const Checkout = () => {
           </Link>
           
           <div className="checkout-breadcrumb">
-            <span className={step >= 1 ? 'active' : ''}>Sepet</span>
-            <span className="separator">&gt;</span>
-            <span className={step >= 1 ? 'active' : ''}>Bilgi</span>
-            <span className="separator">&gt;</span>
-            <span className={step >= 1 ? 'active' : ''}>Kargo</span>
-            <span className="separator">&gt;</span>
-            <span className={step === 2 ? 'active' : ''}>Ödeme</span>
+            <span className={step >= 1 ? 'active font-bold text-black' : 'text-gray-400'}>Sepet</span>
+            <span className="separator text-gray-400">&gt;</span>
+            <span className={step >= 1 ? 'active font-bold text-black' : 'text-gray-400'}>İletişim & Adres</span>
+            <span className="separator text-gray-400">&gt;</span>
+            <span className={step >= 2 ? 'active font-bold text-black' : 'text-gray-400'}>Ödeme</span>
           </div>
 
           {step === 1 && (
             <form id="checkout-form" onSubmit={handleNextStep} className="checkout-page-form">
               <div className="form-section">
-                <h2 className="section-title">İletişim</h2>
+                <h2 className="section-title">İletişim & Adres</h2>
+                
                 <div className="input-group">
+                  <label className="input-label">Cep Telefonu Numarası</label>
                   <input 
                     type="tel" 
                     name="phone" 
                     value={formData.phone}
                     onChange={handleChange}
                     className={`page-input ${errors && !formData.phone.trim() ? 'input-error' : ''}`} 
-                    placeholder="Cep telefonu numarası" 
+                    placeholder="5XX XXX XX XX" 
+                    maxLength="13"
                   />
                 </div>
-              </div>
 
-              <div className="form-section">
-                <h2 className="section-title">Teslimat Adresi</h2>
-                <div className="input-group">
-                  <input 
-                    type="text" 
-                    name="cityDistrict" 
-                    value={formData.cityDistrict}
-                    onChange={handleChange}
-                    className={`page-input ${errors && !formData.cityDistrict.trim() ? 'input-error' : ''}`} 
-                    placeholder="İl / İlçe" 
-                  />
+                <div className="checkout-grid-2">
+                  <div className="input-group">
+                    <label className="input-label">Ad</label>
+                    <input 
+                      type="text" 
+                      name="firstName" 
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      className={`page-input ${errors && !formData.firstName.trim() ? 'input-error' : ''}`} 
+                      placeholder="Adınız" 
+                    />
+                  </div>
+                  <div className="input-group">
+                    <label className="input-label">Soyad</label>
+                    <input 
+                      type="text" 
+                      name="lastName" 
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      className={`page-input ${errors && !formData.lastName.trim() ? 'input-error' : ''}`} 
+                      placeholder="Soyadınız" 
+                    />
+                  </div>
+                </div>
+
+                <div className="checkout-grid-2">
+                  <div className="input-group">
+                    <label className="input-label">İl</label>
+                    <input 
+                      type="text" 
+                      name="city" 
+                      value={formData.city}
+                      onChange={handleChange}
+                      className={`page-input ${errors && !formData.city.trim() ? 'input-error' : ''}`} 
+                      placeholder="Örn: İstanbul" 
+                    />
+                  </div>
+                  <div className="input-group">
+                    <label className="input-label">İlçe</label>
+                    <input 
+                      type="text" 
+                      name="district" 
+                      value={formData.district}
+                      onChange={handleChange}
+                      className={`page-input ${errors && !formData.district.trim() ? 'input-error' : ''}`} 
+                      placeholder="Örn: Kadıköy" 
+                    />
+                  </div>
                 </div>
                 
                 <div className="input-group">
-                  <input 
-                    type="text" 
-                    name="fullName" 
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    className={`page-input ${errors && !formData.fullName.trim() ? 'input-error' : ''}`} 
-                    placeholder="Ad ve Soyad" 
-                  />
-                </div>
-                
-                <div className="input-group">
+                  <label className="input-label">Açık Adres</label>
                   <textarea 
                     name="address" 
                     rows="3" 
                     value={formData.address}
                     onChange={handleChange}
                     className={`page-textarea ${errors && !formData.address.trim() ? 'input-error' : ''}`} 
-                    placeholder="Açık adres (Mahalle, sokak, no, daire vb.)"
+                    placeholder="Mahalle, sokak, no, daire vb."
                   />
                 </div>
               </div>
@@ -176,50 +222,54 @@ const Checkout = () => {
                 </div>
 
                 <div className="input-group">
+                  <label className="input-label">Kart Üzerindeki İsim</label>
                   <input 
                     type="text" 
                     name="cardName" 
                     value={formData.cardName}
                     onChange={handleChange}
                     className={`page-input ${errors && !formData.cardName.trim() ? 'input-error' : ''}`} 
-                    placeholder="Kart Üzerindeki İsim" 
+                    placeholder="Örn: Ad Soyad" 
                   />
                 </div>
                 
                 <div className="input-group relative-input">
+                  <label className="input-label">Kart Numarası</label>
                   <input 
                     type="text" 
                     name="cardNumber" 
                     value={formData.cardNumber}
                     onChange={handleChange}
                     className={`page-input card-input ${errors && !formData.cardNumber.trim() ? 'input-error' : ''}`} 
-                    placeholder="Kart Numarası" 
+                    placeholder="XXXX XXXX XXXX XXXX" 
                     maxLength="19"
                   />
-                  <CreditCard className="input-icon" size={20} />
+                  <CreditCard className="input-icon" size={20} style={{ top: '65%' }} />
                 </div>
 
-                <div className="input-row">
+                <div className="checkout-grid-2">
                   <div className="input-group">
+                    <label className="input-label">Son Kullanma</label>
                     <input 
                       type="text" 
                       name="cardExpiry" 
                       value={formData.cardExpiry}
                       onChange={handleChange}
                       className={`page-input ${errors && !formData.cardExpiry.trim() ? 'input-error' : ''}`} 
-                      placeholder="Son Kullanma (AA/YY)" 
+                      placeholder="AA/YY" 
                       maxLength="5"
                     />
                   </div>
                   
                   <div className="input-group">
+                    <label className="input-label">CVV</label>
                     <input 
                       type="text" 
                       name="cardCvv" 
                       value={formData.cardCvv}
                       onChange={handleChange}
                       className={`page-input ${errors && !formData.cardCvv.trim() ? 'input-error' : ''}`} 
-                      placeholder="CVV" 
+                      placeholder="123" 
                       maxLength="3"
                     />
                   </div>
@@ -230,11 +280,11 @@ const Checkout = () => {
                 <button 
                   type="button" 
                   className="checkout-back-link borderless" 
-                  onClick={() => setStep(1)}
+                  onClick={() => navigate('/checkout?step=address')}
                   disabled={isSubmitting}
                 >
                   <ChevronLeft size={18} />
-                  Bilgilere dön
+                  Adres bilgilerine dön
                 </button>
                 <button 
                   type="submit" 

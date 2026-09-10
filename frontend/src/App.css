@@ -1153,6 +1153,7 @@
 
 .page-input, .page-textarea {
   width: 100%;
+  box-sizing: border-box;
   padding: 0.875rem 1rem;
   background-color: #ffffff;
   border: 1px solid #d1d5db;
@@ -2492,3 +2493,41 @@
 .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
 .ml-2 { margin-left: 0.5rem; }
 .text-danger { color: #dc2626; }
+
+/* Checkout UI Refactor */
+.checkout-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.checkout-grid-2 .input-group {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .checkout-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.input-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151; /* text-gray-700 */
+  margin-bottom: 0.375rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-black {
+  color: #000000;
+}
+
+.text-gray-400 {
+  color: #9ca3af;
+}
