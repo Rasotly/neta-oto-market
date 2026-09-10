@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { useProducts } from '../context/ProductContext';
-import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight, Tags, Star, PieChart, Settings } from 'lucide-react';
+import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight, Tags, Star, PieChart, Settings, AlertTriangle } from 'lucide-react';
 import AddProductModal from '../components/AddProductModal';
 import DashboardHome from '../components/admin/DashboardHome';
 import { formatPrice } from '../utils/formatters';
@@ -274,30 +274,41 @@ const AdminDashboard = () => {
       {/* Delete Confirmation Modal */}
       {deletingProduct && (
         <div className="modal-overlay" onClick={() => setDeletingProduct(null)}>
-          <div className="modal-content" style={{ maxWidth: '400px' }} onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Ürünü Sil</h2>
-              <button className="icon-btn modal-close-btn" onClick={() => setDeletingProduct(null)}>
-                <Trash2 size={20} />
-              </button>
+          <div className="modal-content" style={{ maxWidth: '400px', padding: '2.5rem 2rem', textAlign: 'center', borderRadius: '16px' }} onClick={(e) => e.stopPropagation()}>
+            
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+              <div style={{ backgroundColor: '#fee2e2', color: '#ef4444', width: '72px', height: '72px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(239, 68, 68, 0.2)' }}>
+                <AlertTriangle size={36} />
+              </div>
             </div>
-            <div className="modal-form">
-              <p style={{ margin: '1rem 0', color: '#4b5563' }}>
-                Bu ürünü silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
-              </p>
-            </div>
-            <div className="modal-footer" style={{ borderTop: 'none', paddingTop: '0' }}>
-              <button className="btn btn-secondary" onClick={() => setDeletingProduct(null)}>
+            
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#111827', marginBottom: '0.75rem', fontFamily: 'var(--heading)' }}>
+              Ürünü Sil
+            </h2>
+            
+            <p style={{ color: '#4b5563', marginBottom: '2rem', lineHeight: '1.6', fontSize: '1rem' }}>
+              <strong style={{ color: '#111827' }}>{deletingProduct.name}</strong> isimli ürünü silmek istediğinize emin misiniz?<br/>Bu işlem geri alınamaz.
+            </p>
+            
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button 
+                className="btn btn-secondary" 
+                style={{ flex: 1, padding: '0.875rem', fontWeight: '600', fontSize: '1rem', borderRadius: '8px' }}
+                onClick={() => setDeletingProduct(null)}
+              >
                 İptal
               </button>
               <button 
-                className="btn text-white bg-red-500 hover:bg-red-600 border border-transparent" 
-                style={{ backgroundColor: '#ef4444', color: 'white' }} 
+                className="btn" 
+                style={{ flex: 1, backgroundColor: '#ef4444', color: 'white', border: 'none', padding: '0.875rem', fontWeight: '600', fontSize: '1rem', borderRadius: '8px', boxShadow: '0 4px 6px rgba(239, 68, 68, 0.25)', transition: 'all 0.2s' }} 
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#ef4444'}
                 onClick={confirmDelete}
               >
-                Sil
+                Evet, Sil
               </button>
             </div>
+
           </div>
         </div>
       )}
