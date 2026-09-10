@@ -6,6 +6,7 @@ import { ProductProvider } from './context/ProductContext';
 import { Toaster } from 'react-hot-toast';
 import Home from './pages/Home';
 import AdminDashboard from './pages/AdminDashboard';
+import Checkout from './pages/Checkout';
 import './App.css';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/checkout" element={<Checkout />} />
           </Routes>
           
           </CartProvider>

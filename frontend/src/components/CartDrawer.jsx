@@ -1,9 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatters';
-const CartDrawer = ({ isOpen, onClose, onCheckout }) => {
+
+const CartDrawer = ({ isOpen, onClose }) => {
   const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    onClose();
+    navigate('/checkout');
+  };
 
   return (
     <>
@@ -76,7 +84,7 @@ const CartDrawer = ({ isOpen, onClose, onCheckout }) => {
             </div>
             <button 
               className="btn btn-primary cart-checkout-btn" 
-              onClick={onCheckout}
+              onClick={handleCheckout}
             >
               Siparişi Tamamla
             </button>

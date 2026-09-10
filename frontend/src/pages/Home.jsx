@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ProductCard from '../components/ProductCard';
 import CartDrawer from '../components/CartDrawer';
 import ProductDetailModal from '../components/ProductDetailModal';
 import FilterBar from '../components/FilterBar';
-import CheckoutModal from '../components/CheckoutModal';
 import LoginModal from '../components/LoginModal';
 import Footer from '../components/Footer';
 import WhatsAppButton from '../components/WhatsAppButton';
@@ -18,10 +18,9 @@ import '../App.css';
 
 function Home() {
   const { products, loading, error } = useProducts();
-  
+  const navigate = useNavigate();
   
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
-  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   
@@ -34,7 +33,6 @@ function Home() {
     brand: '',
     model: ''
   });
-
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -87,15 +85,6 @@ function Home() {
       <CartDrawer 
         isOpen={isCartDrawerOpen} 
         onClose={() => setIsCartDrawerOpen(false)} 
-        onCheckout={() => {
-          setIsCartDrawerOpen(false);
-          setIsCheckoutModalOpen(true);
-        }}
-      />
-
-      <CheckoutModal
-        isOpen={isCheckoutModalOpen}
-        onClose={() => setIsCheckoutModalOpen(false)}
       />
 
       <LoginModal
