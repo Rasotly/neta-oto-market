@@ -11,6 +11,7 @@ import CheckoutModal from './components/CheckoutModal';
 import LoginModal from './components/LoginModal';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
+import HeroSlider from './components/HeroSlider';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { FavoritesProvider, useFavorites } from './context/FavoritesContext';
@@ -120,6 +121,8 @@ function AppContent() {
         showOnlyFavorites={showOnlyFavorites}
         onToggleFavorites={() => setShowOnlyFavorites(!showOnlyFavorites)}
       />
+      
+      {!showOnlyFavorites && <HeroSlider />}
     
       <FilterBar 
         categories={uniqueCategories}
