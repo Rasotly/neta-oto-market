@@ -1077,7 +1077,7 @@
 
 @media (min-width: 1024px) {
   .checkout-left-col {
-    padding: 4rem 10%;
+    padding: 4rem 4%;
     display: flex;
     justify-content: flex-end;
   }
@@ -1097,7 +1097,7 @@
 
 @media (min-width: 1024px) {
   .checkout-right-col {
-    padding: 4rem 10%;
+    padding: 4rem 4%;
     border-bottom: none;
     border-left: 1px solid #e5e7eb;
   }
@@ -2493,6 +2493,9 @@
 .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
 .ml-2 { margin-left: 0.5rem; }
 .text-danger { color: #dc2626; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.text-left { text-align: left; }
 
 /* Checkout UI Refactor */
 .checkout-grid-2 {

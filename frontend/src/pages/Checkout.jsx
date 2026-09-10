@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatters';
 import { CheckCircle, ShieldCheck, CreditCard, ChevronLeft } from 'lucide-react';
+import toast from 'react-hot-toast';
 import '../App.css';
 
 const Checkout = () => {
@@ -10,6 +11,7 @@ const Checkout = () => {
   const cartItems = contextData.cartItems || [];
   const cartTotal = contextData.cartTotal || 0;
   const clearCart = contextData.clearCart || (() => {});
+  const discountCodes = contextData.discountCodes || [];
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
@@ -39,8 +41,40 @@ const Checkout = () => {
 
   const [errors, setErrors] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [discountInput, setDiscountInput] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState(null);
 
-  const grandTotal = cartTotal;
+  const discountAmount = useMemo(() => {
+    if (!appliedDiscount) return 0;
+    if (appliedDiscount.discountType === 'percentage') {
+      return cartTotal * (appliedDiscount.discountValue / 100);
+    } else {
+      return appliedDiscount.discountValue;
+    }
+  }, [appliedDiscount, cartTotal]);
+
+  const grandTotal = Math.max(0, cartTotal - discountAmount);
+
+  const handleApplyDiscount = () => {
+    if (!discountInput.trim()) return;
+    
+    const code = discountCodes.find(c => c.code.toUpperCase() === discountInput.trim().toUpperCase());
+    
+    if (!code || !code.isActive) {
+      toast.error('Geçersiz veya süresi dolmuş kod');
+      return;
+    }
+    
+    setAppliedDiscount(code);
+    toast.success('İndirim uygulandı!');
+  };
+
+  const handleRemoveDiscount = () => {
+    setAppliedDiscount(null);
+    setDiscountInput('');
+    toast.success('İndirim kaldırıldı');
+  };
 
   const handleChange = (e) => {
     let { name, value } = e.target;
@@ -319,11 +353,54 @@ const Checkout = () => {
             ))}
           </div>
 
-          <div className="summary-totals">
+          <div className="discount-section" style={{ borderTop: '1px solid #e5e7eb', borderBottom: '1px solid #e5e7eb', padding: '1.25rem 0', margin: '1.5rem 0 1.5rem 0' }}>
+            <div className="discount-input-wrapper" style={{ display: 'flex', gap: '0.5rem' }}>
+              <input 
+                type="text" 
+                placeholder="İndirim kodu veya hediye kartı" 
+                className="page-input"
+                style={{ flex: 1, height: '3rem', margin: 0, backgroundColor: '#ffffff' }}
+                value={discountInput}
+                onChange={(e) => setDiscountInput(e.target.value)}
+                disabled={appliedDiscount !== null}
+              />
+              {!appliedDiscount ? (
+                <button 
+                  type="button" 
+                  style={{ height: '3rem', padding: '0 1.5rem', backgroundColor: '#f9fafb', color: '#4b5563', border: '1px solid #d1d5db', borderRadius: '0.375rem', fontWeight: 500, cursor: 'pointer', transition: 'background-color 0.2s' }}
+                  onClick={handleApplyDiscount}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#f3f4f6'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#f9fafb'}
+                >
+                  Uygula
+                </button>
+              ) : (
+                <button 
+                  type="button" 
+                  style={{ height: '3rem', padding: '0 1.5rem', backgroundColor: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5', borderRadius: '0.375rem', fontWeight: 500, cursor: 'pointer', transition: 'background-color 0.2s' }}
+                  onClick={handleRemoveDiscount}
+                  onMouseOver={(e) => e.target.style.backgroundColor = '#fecaca'}
+                  onMouseOut={(e) => e.target.style.backgroundColor = '#fee2e2'}
+                >
+                  İptal Et
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="summary-totals" style={{ borderTop: 'none', paddingTop: 0 }}>
             <div className="summary-row">
               <span>Ara Toplam</span>
               <span>{formatPrice(cartTotal)}</span>
             </div>
+            
+            {appliedDiscount && (
+              <div className="summary-row" style={{ color: '#10b981', fontWeight: 500 }}>
+                <span>İndirim ({appliedDiscount.code})</span>
+                <span>-{formatPrice(discountAmount)}</span>
+              </div>
+            )}
+            
             <div className="summary-row">
               <span>Kargo</span>
               <span>Ücretsiz</span>

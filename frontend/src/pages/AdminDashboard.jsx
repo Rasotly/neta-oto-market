@@ -7,6 +7,7 @@ import { useProducts } from '../context/ProductContext';
 import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight, Tags, Star, PieChart, Settings, AlertTriangle } from 'lucide-react';
 import AddProductModal from '../components/AddProductModal';
 import DashboardHome from '../components/admin/DashboardHome';
+import DiscountCodes from '../components/admin/DiscountCodes';
 import { formatPrice } from '../utils/formatters';
 import '../App.css';
 
@@ -185,6 +186,7 @@ const AdminDashboard = () => {
         {/* Content Area */}
         <main className="admin-content-area">
           {activeTab === 'Kontrol Paneli' && <DashboardHome />}
+          {activeTab === 'Kampanyalar' && <DiscountCodes />}
           
           {activeTab === 'Ürünler' && (
             <>

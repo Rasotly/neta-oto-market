@@ -20,9 +20,28 @@ export const CartProvider = ({ children }) => {
     return [];
   });
 
+  const [discountCodes, setDiscountCodes] = useState(() => {
+    const savedCodes = localStorage.getItem('neta_discounts');
+    if (savedCodes) {
+      try {
+        return JSON.parse(savedCodes);
+      } catch (e) {
+        console.error("Discounts loading error", e);
+      }
+    }
+    return [
+      { id: '1', code: 'NETA10', discountType: 'percentage', discountValue: 10, isActive: true },
+      { id: '2', code: 'YAZ500', discountType: 'fixed', discountValue: 500, isActive: true }
+    ];
+  });
+
   useEffect(() => {
     localStorage.setItem('neta_cart', JSON.stringify(cartItems));
   }, [cartItems]);
+
+  useEffect(() => {
+    localStorage.setItem('neta_discounts', JSON.stringify(discountCodes));
+  }, [discountCodes]);
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
@@ -58,6 +77,27 @@ export const CartProvider = ({ children }) => {
     setCartItems([]);
   };
 
+  // Discount Codes Functions
+  const addDiscountCode = (codeObj) => {
+    setDiscountCodes(prev => [...prev, { ...codeObj, id: Date.now().toString() }]);
+  };
+
+  const removeDiscountCode = (id) => {
+    setDiscountCodes(prev => prev.filter(code => code.id !== id));
+  };
+
+  const updateDiscountCode = (id, updatedObj) => {
+    setDiscountCodes(prev => prev.map(code => 
+      code.id === id ? { ...code, ...updatedObj } : code
+    ));
+  };
+
+  const toggleDiscountCodeStatus = (id) => {
+    setDiscountCodes(prev => prev.map(code => 
+      code.id === id ? { ...code, isActive: !code.isActive } : code
+    ));
+  };
+
   const cartTotal = useMemo(() => {
     return cartItems.reduce((total, item) => total + (item.price || 0) * item.quantity, 0);
   }, [cartItems]);
@@ -76,6 +116,11 @@ export const CartProvider = ({ children }) => {
         clearCart,
         cartTotal,
         cartItemCount,
+        discountCodes,
+        addDiscountCode,
+        updateDiscountCode,
+        removeDiscountCode,
+        toggleDiscountCodeStatus,
       }}
     >
       {children}
