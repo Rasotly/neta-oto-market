@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
   const [formData, setFormData] = useState({
     name: '',
     category: '',
     price: '',
+    stockCount: '',
     description: '',
     imageUrl: '',
     brand: '',
@@ -14,20 +16,18 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
     inStock: true
   });
   
-  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Ürün adı zorunludur.';
-    if (!formData.category) newErrors.category = 'Kategori seçmelisiniz.';
-    if (!formData.price || isNaN(formData.price) || Number(formData.price) <= 0) {
-      newErrors.price = 'Geçerli bir fiyat giriniz (0\'dan büyük).';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const isFormValid = () => {
+    return formData.name.trim() !== '' && 
+           formData.category !== '' && 
+           formData.brand !== '' &&
+           formData.model !== '' &&
+           formData.price !== '' && 
+           !isNaN(formData.price) && 
+           Number(formData.price) > 0;
   };
 
   const handleChange = (e) => {
@@ -40,22 +40,24 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!isFormValid()) return;
     
     setIsSubmitting(true);
     try {
       const payload = {
         ...formData,
-        price: Number(formData.price)
+        price: Number(formData.price),
+        stockCount: formData.stockCount ? Number(formData.stockCount) : 0
       };
       
       const response = await axios.post('https://localhost:7141/api/products', payload);
       
-      // Formu temizle
+      // Temizle
       setFormData({
         name: '',
         category: '',
         price: '',
+        stockCount: '',
         description: '',
         imageUrl: '',
         brand: '',
@@ -63,138 +65,206 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
         inStock: true
       });
       setIsSubmitting(false);
-      onProductAdded(response.data); // Üst bileşene yeni ürünü ilet
+      onProductAdded(response.data);
+      
+      // Bildirim göster ve çekmeceyi kapat
+      toast.success('Ürün başarıyla eklendi', {
+        duration: 3000,
+        position: 'top-right',
+      });
+      onClose();
     } catch (error) {
       console.error('Ekleme hatası:', error);
-      setErrors({ submit: 'Ürün eklenirken bir hata oluştu. Lütfen tekrar deneyin.' });
+      toast.error('Ürün eklenirken bir hata oluştu.', {
+        position: 'top-right',
+      });
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h2>Yeni Ürün Ekle</h2>
-          <button className="icon-btn modal-close-btn" onClick={onClose} type="button">
+    <div className="drawer-overlay" onClick={onClose}>
+      <div className="drawer-content" onClick={(e) => e.stopPropagation()}>
+        
+        <div className="drawer-header">
+          <div>
+            <h2>Yeni Ürün Ekle</h2>
+            <p className="drawer-subtitle">Mağazanıza yeni bir ürün tanımlayın.</p>
+          </div>
+          <button className="drawer-close-btn" onClick={onClose} type="button">
             <X size={24} />
           </button>
         </div>
         
-        <form onSubmit={handleSubmit} className="modal-form">
-          {errors.submit && <div className="form-error global-error">{errors.submit}</div>}
-          
-          <div className="form-group">
-            <label>Ürün Adı *</label>
-            <input 
-              type="text" 
-              name="name" 
-              value={formData.name} 
-              onChange={handleChange}
-              className={errors.name ? 'input-error' : ''}
-              placeholder="Örn: Motor Yağı 5W-30"
-            />
-            {errors.name && <span className="form-error">{errors.name}</span>}
-          </div>
+        <form onSubmit={handleSubmit} className="drawer-form">
+          <div className="drawer-body">
+            
+            {/* Temel Bilgiler Section */}
+            <div className="form-section">
+              <h3 className="section-title">Temel Bilgiler</h3>
+              
+              <div className="form-group">
+                <label>Ürün Adı <span className="text-danger">*</span></label>
+                <input 
+                  type="text" 
+                  name="name" 
+                  value={formData.name} 
+                  onChange={handleChange}
+                  className="modern-input"
+                  placeholder="Örn: Motor Yağı 5W-30"
+                />
+              </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Kategori *</label>
-              <select 
-                name="category" 
-                value={formData.category} 
-                onChange={handleChange}
-                className={errors.category ? 'input-error' : ''}
-              >
-                <option value="">Seçiniz</option>
-                <option value="Motor">Motor</option>
-                <option value="Filtre">Filtre</option>
-                <option value="Yağ & Sıvı">Yağ & Sıvı</option>
-                <option value="Fren Sistemi">Fren Sistemi</option>
-                <option value="Elektrik">Elektrik</option>
-                <option value="Aksesuar">Aksesuar</option>
-                <option value="Diğer">Diğer</option>
-              </select>
-              {errors.category && <span className="form-error">{errors.category}</span>}
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Fiyat (₺) <span className="text-danger">*</span></label>
+                  <input 
+                    type="number" 
+                    name="price" 
+                    value={formData.price} 
+                    onChange={handleChange}
+                    className="modern-input"
+                    placeholder="0.00"
+                    step="0.01"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Stok Adedi</label>
+                  <input 
+                    type="number" 
+                    name="stockCount" 
+                    value={formData.stockCount} 
+                    onChange={handleChange}
+                    className="modern-input"
+                    placeholder="Örn: 50"
+                    min="0"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group toggle-group">
+                <div className="toggle-label-area">
+                  <label>Stok Durumu</label>
+                  <span className="toggle-desc">Ürün şu anda satışa uygun mu?</span>
+                </div>
+                <label className="toggle-switch">
+                  <input 
+                    type="checkbox" 
+                    name="inStock"
+                    checked={formData.inStock}
+                    onChange={handleChange}
+                  />
+                  <span className="slider round"></span>
+                </label>
+              </div>
             </div>
 
-            <div className="form-group">
-              <label>Fiyat (₺) *</label>
-              <input 
-                type="number" 
-                name="price" 
-                value={formData.price} 
-                onChange={handleChange}
-                className={errors.price ? 'input-error' : ''}
-                placeholder="0.00"
-                step="0.01"
-              />
-              {errors.price && <span className="form-error">{errors.price}</span>}
+            <hr className="drawer-divider" />
+
+            {/* Uyumluluk Section */}
+            <div className="form-section">
+              <h3 className="section-title">Uyumluluk (Çok Önemli)</h3>
+              
+              <div className="form-group">
+                <label>Kategori <span className="text-danger">*</span></label>
+                <select 
+                  name="category" 
+                  value={formData.category} 
+                  onChange={handleChange}
+                  className="modern-select"
+                >
+                  <option value="">Seçiniz</option>
+                  <option value="Aydınlatma">Aydınlatma</option>
+                  <option value="Body Kit">Body Kit</option>
+                  <option value="Motor">Motor</option>
+                  <option value="Filtre">Filtre</option>
+                  <option value="Yağ & Sıvı">Yağ & Sıvı</option>
+                  <option value="Fren Sistemi">Fren Sistemi</option>
+                  <option value="İç Trim">İç Trim</option>
+                  <option value="Universal">Universal Aksesuar</option>
+                </select>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Uyumlu Marka <span className="text-danger">*</span></label>
+                  <select 
+                    name="brand" 
+                    value={formData.brand} 
+                    onChange={handleChange}
+                    className="modern-select"
+                  >
+                    <option value="">Seçiniz</option>
+                    <option value="Honda">Honda</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Audi">Audi</option>
+                    <option value="Volkswagen">Volkswagen</option>
+                    <option value="Mercedes">Mercedes-Benz</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Universal">Universal (Tüm Araçlar)</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Uyumlu Model <span className="text-danger">*</span></label>
+                  <select 
+                    name="model" 
+                    value={formData.model} 
+                    onChange={handleChange}
+                    className="modern-select"
+                  >
+                    <option value="">Seçiniz</option>
+                    <option value="Civic">Civic</option>
+                    <option value="F30">F30</option>
+                    <option value="Golf 7">Golf 7</option>
+                    <option value="A3">A3</option>
+                    <option value="Corolla">Corolla</option>
+                    <option value="Tüm Modeller">Tüm Modeller</option>
+                  </select>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Marka</label>
-              <input 
-                type="text" 
-                name="brand" 
-                value={formData.brand} 
-                onChange={handleChange}
-                placeholder="Örn: Bosch, Sony"
-              />
+            <hr className="drawer-divider" />
+
+            {/* Medya & Detay Section */}
+            <div className="form-section">
+              <h3 className="section-title">Medya & Detay</h3>
+              
+              <div className="form-group">
+                <label>Görsel URL</label>
+                <input 
+                  type="text" 
+                  name="imageUrl" 
+                  value={formData.imageUrl} 
+                  onChange={handleChange}
+                  className="modern-input"
+                  placeholder="https://..."
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Açıklama</label>
+                <textarea 
+                  name="description" 
+                  value={formData.description} 
+                  onChange={handleChange}
+                  rows="4"
+                  className="modern-textarea"
+                  placeholder="Ürün özellikleri, malzeme bilgisi vs..."
+                ></textarea>
+              </div>
             </div>
-            <div className="form-group">
-              <label>Model / Uyumlu Araç</label>
-              <input 
-                type="text" 
-                name="model" 
-                value={formData.model} 
-                onChange={handleChange}
-                placeholder="Örn: Golf 7, Universal"
-              />
-            </div>
+
           </div>
 
-          <div className="form-group">
-            <label>Görsel URL</label>
-            <input 
-              type="text" 
-              name="imageUrl" 
-              value={formData.imageUrl} 
-              onChange={handleChange}
-              placeholder="https://..."
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Açıklama</label>
-            <textarea 
-              name="description" 
-              value={formData.description} 
-              onChange={handleChange}
-              rows="3"
-              placeholder="Ürün özellikleri..."
-            ></textarea>
-          </div>
-
-          <div className="form-group checkbox-group">
-            <label className="checkbox-label">
-              <input 
-                type="checkbox" 
-                name="inStock" 
-                checked={formData.inStock} 
-                onChange={handleChange}
-              />
-              <span className="checkmark"></span>
-              Stokta Var
-            </label>
-          </div>
-
-          <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={onClose}>İptal</button>
-            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-              {isSubmitting ? 'Kaydediliyor...' : 'Kaydet'}
+          <div className="drawer-footer">
+            <button type="button" className="btn btn-secondary drawer-btn-cancel" onClick={onClose}>İptal</button>
+            <button 
+              type="submit" 
+              className="btn btn-primary drawer-btn-save" 
+              disabled={isSubmitting || !isFormValid()}
+            >
+              {isSubmitting ? 'Kaydediliyor...' : 'Ürünü Kaydet'}
             </button>
           </div>
         </form>

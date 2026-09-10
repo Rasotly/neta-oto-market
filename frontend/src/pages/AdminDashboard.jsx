@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight, Tags, Star, PieChart, Settings } from 'lucide-react';
 import AddProductModal from '../components/AddProductModal';
 import EditProductModal from '../components/EditProductModal';
+import DashboardHome from '../components/admin/DashboardHome';
 import { formatPrice } from '../utils/formatters';
 import '../App.css';
 
@@ -83,8 +84,11 @@ const AdminDashboard = () => {
           <ul className="admin-nav-list">
             <li>
               <button 
-                className="admin-nav-item justify-between" 
-                onClick={() => setIsControlPanelOpen(!isControlPanelOpen)}
+                className={`admin-nav-item justify-between ${activeTab === 'Kontrol Paneli' ? 'active' : ''}`}
+                onClick={() => {
+                  setIsControlPanelOpen(!isControlPanelOpen);
+                  setActiveTab('Kontrol Paneli');
+                }}
               >
                 <div className="admin-nav-item-content">
                   <LayoutDashboard size={18} />
@@ -198,68 +202,81 @@ const AdminDashboard = () => {
 
         {/* Content Area */}
         <main className="admin-content-area">
-          <div className="admin-toolbar">
-            <h2 className="admin-page-title">Ürün Listesi</h2>
-            <button className="btn btn-primary" onClick={() => setIsAddModalOpen(true)}>
-              <Plus size={18} />
-              Yeni Ürün Ekle
-            </button>
-          </div>
+          {activeTab === 'Kontrol Paneli' && <DashboardHome />}
+          
+          {activeTab === 'Ürünler' && (
+            <>
+              <div className="admin-toolbar">
+                <h2 className="admin-page-title">Ürün Listesi</h2>
+                <button className="btn btn-primary" onClick={() => setIsAddModalOpen(true)}>
+                  <Plus size={18} />
+                  Yeni Ürün Ekle
+                </button>
+              </div>
 
-          {loading && <p className="text-gray-500">Yükleniyor...</p>}
-          {error && <p className="text-error">{error}</p>}
+              {loading && <p className="text-gray-500">Yükleniyor...</p>}
+              {error && <p className="text-error">{error}</p>}
 
-          {!loading && !error && (
-            <div className="admin-table-container">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Görsel</th>
-                    <th>Ürün Adı</th>
-                    <th>Kategori</th>
-                    <th>Stok Durumu</th>
-                    <th>Fiyat</th>
-                    <th className="text-right">İşlemler</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.length === 0 ? (
-                    <tr>
-                      <td colSpan="6" className="text-center py-8 text-gray-500">Hiç ürün bulunamadı.</td>
-                    </tr>
-                  ) : (
-                    products.map((product) => (
-                      <tr key={product.id}>
-                        <td className="w-20">
-                          {product.imageUrl ? (
-                            <img src={product.imageUrl} alt={product.name} className="admin-table-img" />
-                          ) : (
-                            <div className="admin-table-img-placeholder">Yok</div>
-                          )}
-                        </td>
-                        <td className="font-medium text-gray-900">{product.name}</td>
-                        <td className="text-gray-500">{product.category || '-'}</td>
-                        <td>
-                          <span className={`status-badge ${product.inStock ? 'status-in-stock' : 'status-out-stock'}`}>
-                            {product.inStock ? 'Stokta Var' : 'Tükendi'}
-                          </span>
-                        </td>
-                        <td className="font-medium text-gray-700">{product.price ? formatPrice(product.price) : '-'}</td>
-                        <td className="text-right">
-                          <div className="admin-table-actions">
-                            <button className="admin-action-btn edit-btn" onClick={() => setEditingProduct(product)} title="Düzenle">
-                              <Edit2 size={16} />
-                            </button>
-                            <button className="admin-action-btn delete-btn" onClick={() => handleDeleteProduct(product)} title="Sil">
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        </td>
+              {!loading && !error && (
+                <div className="admin-table-container">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Görsel</th>
+                        <th>Ürün Adı</th>
+                        <th>Kategori</th>
+                        <th>Stok Durumu</th>
+                        <th>Fiyat</th>
+                        <th className="text-right">İşlemler</th>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody>
+                      {products.length === 0 ? (
+                        <tr>
+                          <td colSpan="6" className="text-center py-8 text-gray-500">Hiç ürün bulunamadı.</td>
+                        </tr>
+                      ) : (
+                        products.map((product) => (
+                          <tr key={product.id}>
+                            <td className="w-20">
+                              {product.imageUrl ? (
+                                <img src={product.imageUrl} alt={product.name} className="admin-table-img" />
+                              ) : (
+                                <div className="admin-table-img-placeholder">Yok</div>
+                              )}
+                            </td>
+                            <td className="font-medium text-gray-900">{product.name}</td>
+                            <td className="text-gray-500">{product.category || '-'}</td>
+                            <td>
+                              <span className={`status-badge ${product.inStock ? 'status-in-stock' : 'status-out-stock'}`}>
+                                {product.inStock ? 'Stokta Var' : 'Tükendi'}
+                              </span>
+                            </td>
+                            <td className="font-medium text-gray-700">{product.price ? formatPrice(product.price) : '-'}</td>
+                            <td className="text-right">
+                              <div className="admin-table-actions">
+                                <button className="admin-action-btn edit-btn" onClick={() => setEditingProduct(product)} title="Düzenle">
+                                  <Edit2 size={16} />
+                                </button>
+                                <button className="admin-action-btn delete-btn" onClick={() => handleDeleteProduct(product)} title="Sil">
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
+          )}
+          
+          {activeTab !== 'Kontrol Paneli' && activeTab !== 'Ürünler' && (
+            <div className="admin-empty-state">
+              <h3>{activeTab} Modülü</h3>
+              <p className="text-gray-500">Bu modül yapım aşamasındadır.</p>
             </div>
           )}
         </main>
