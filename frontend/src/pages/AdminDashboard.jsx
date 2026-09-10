@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { useProducts } from '../context/ProductContext';
 import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight, Tags, Star, PieChart, Settings } from 'lucide-react';
 import AddProductModal from '../components/AddProductModal';
-import EditProductModal from '../components/EditProductModal';
 import DashboardHome from '../components/admin/DashboardHome';
 import { formatPrice } from '../utils/formatters';
 import '../App.css';
@@ -13,56 +14,37 @@ const AdminDashboard = () => {
   const { isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { products, loading, error, removeProductFromState } = useProducts();
   
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [deletingProduct, setDeletingProduct] = useState(null);
+  
   const [isControlPanelOpen, setIsControlPanelOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('Ürünler');
 
-  useEffect(() => {
-    if (isAdmin) {
-      fetchProducts();
-    }
-  }, [isAdmin]);
-
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get('https://localhost:7141/api/products');
-      setProducts(res.data);
-      setLoading(false);
-    } catch (err) {
-      console.error('Hata:', err);
-      setError('Ürünler yüklenemedi.');
-      setLoading(false);
-    }
-  };
-
-  const handleProductAdded = (newProduct) => {
-    setProducts((prev) => [newProduct, ...prev]);
-    setIsAddModalOpen(false);
-  };
-
-  const handleProductUpdated = (updatedProduct) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
-    );
-    setEditingProduct(null);
-  };
-
-  const handleDeleteProduct = async (productToDelete) => {
-    const confirmed = window.confirm("Bu ürünü silmek istediğinize emin misiniz?");
-    if (!confirmed) return;
+  const confirmDelete = async () => {
+    if (!deletingProduct) return;
 
     try {
-      await axios.delete(`https://localhost:7141/api/products/${productToDelete.id}`);
-      setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
+      await axios.delete(`https://localhost:7141/api/products/${deletingProduct.id}`);
+      removeProductFromState(deletingProduct.id);
+      setDeletingProduct(null);
+      toast.success('Ürün başarıyla silindi', { position: 'top-right' });
     } catch (err) {
       console.error('Silme işlemi başarısız:', err);
-      alert('Ürün silinirken bir hata oluştu.');
+      toast.error('Ürün silinirken bir hata oluştu.', { position: 'top-right' });
     }
+  };
+
+  const handleEditClick = (product) => {
+    setEditingProduct(product);
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddClick = () => {
+    setEditingProduct(null);
+    setIsAddModalOpen(true);
   };
 
   // Redirect non-admins to home
@@ -208,7 +190,7 @@ const AdminDashboard = () => {
             <>
               <div className="admin-toolbar">
                 <h2 className="admin-page-title">Ürün Listesi</h2>
-                <button className="btn btn-primary" onClick={() => setIsAddModalOpen(true)}>
+                <button className="btn btn-primary" onClick={handleAddClick}>
                   <Plus size={18} />
                   Yeni Ürün Ekle
                 </button>
@@ -255,10 +237,10 @@ const AdminDashboard = () => {
                             <td className="font-medium text-gray-700">{product.price ? formatPrice(product.price) : '-'}</td>
                             <td className="text-right">
                               <div className="admin-table-actions">
-                                <button className="admin-action-btn edit-btn" onClick={() => setEditingProduct(product)} title="Düzenle">
+                                <button className="admin-action-btn edit-btn" onClick={() => handleEditClick(product)} title="Düzenle">
                                   <Edit2 size={16} />
                                 </button>
-                                <button className="admin-action-btn delete-btn" onClick={() => handleDeleteProduct(product)} title="Sil">
+                                <button className="admin-action-btn delete-btn" onClick={() => setDeletingProduct(product)} title="Sil">
                                   <Trash2 size={16} />
                                 </button>
                               </div>
@@ -286,15 +268,39 @@ const AdminDashboard = () => {
       <AddProductModal 
         isOpen={isAddModalOpen} 
         onClose={() => setIsAddModalOpen(false)} 
-        onProductAdded={handleProductAdded} 
+        editProduct={editingProduct}
       />
 
-      <EditProductModal 
-        isOpen={!!editingProduct}
-        product={editingProduct}
-        onClose={() => setEditingProduct(null)}
-        onProductUpdated={handleProductUpdated}
-      />
+      {/* Delete Confirmation Modal */}
+      {deletingProduct && (
+        <div className="modal-overlay" onClick={() => setDeletingProduct(null)}>
+          <div className="modal-content" style={{ maxWidth: '400px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Ürünü Sil</h2>
+              <button className="icon-btn modal-close-btn" onClick={() => setDeletingProduct(null)}>
+                <Trash2 size={20} />
+              </button>
+            </div>
+            <div className="modal-form">
+              <p style={{ margin: '1rem 0', color: '#4b5563' }}>
+                Bu ürünü silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+              </p>
+            </div>
+            <div className="modal-footer" style={{ borderTop: 'none', paddingTop: '0' }}>
+              <button className="btn btn-secondary" onClick={() => setDeletingProduct(null)}>
+                İptal
+              </button>
+              <button 
+                className="btn text-white bg-red-500 hover:bg-red-600 border border-transparent" 
+                style={{ backgroundColor: '#ef4444', color: 'white' }} 
+                onClick={confirmDelete}
+              >
+                Sil
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

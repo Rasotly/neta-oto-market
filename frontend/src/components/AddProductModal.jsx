@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useProducts } from '../context/ProductContext';
 
-const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
+const AddProductModal = ({ isOpen, onClose, editProduct }) => {
+  const { addProductToState, updateProductInState } = useProducts();
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -17,6 +19,34 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (editProduct) {
+      setFormData({
+        name: editProduct.name || '',
+        category: editProduct.category || '',
+        price: editProduct.price || '',
+        stockCount: editProduct.stockCount || '',
+        description: editProduct.description || '',
+        imageUrl: editProduct.imageUrl || '',
+        brand: editProduct.brand || '',
+        model: editProduct.model || '',
+        inStock: editProduct.inStock ?? true
+      });
+    } else {
+      setFormData({
+        name: '',
+        category: '',
+        price: '',
+        stockCount: '',
+        description: '',
+        imageUrl: '',
+        brand: '',
+        model: '',
+        inStock: true
+      });
+    }
+  }, [editProduct, isOpen]);
 
   if (!isOpen) return null;
 
@@ -50,32 +80,22 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
         stockCount: formData.stockCount ? Number(formData.stockCount) : 0
       };
       
-      const response = await axios.post('https://localhost:7141/api/products', payload);
+      if (editProduct) {
+        payload.id = editProduct.id;
+        const response = await axios.put(`https://localhost:7141/api/products/${editProduct.id}`, payload);
+        updateProductInState(response.data || payload);
+        toast.success('Ürün başarıyla güncellendi', { duration: 3000, position: 'top-right' });
+      } else {
+        const response = await axios.post('https://localhost:7141/api/products', payload);
+        addProductToState(response.data);
+        toast.success('Ürün başarıyla eklendi', { duration: 3000, position: 'top-right' });
+      }
       
-      // Temizle
-      setFormData({
-        name: '',
-        category: '',
-        price: '',
-        stockCount: '',
-        description: '',
-        imageUrl: '',
-        brand: '',
-        model: '',
-        inStock: true
-      });
       setIsSubmitting(false);
-      onProductAdded(response.data);
-      
-      // Bildirim göster ve çekmeceyi kapat
-      toast.success('Ürün başarıyla eklendi', {
-        duration: 3000,
-        position: 'top-right',
-      });
       onClose();
     } catch (error) {
-      console.error('Ekleme hatası:', error);
-      toast.error('Ürün eklenirken bir hata oluştu.', {
+      console.error('İşlem hatası:', error);
+      toast.error(editProduct ? 'Ürün güncellenirken bir hata oluştu.' : 'Ürün eklenirken bir hata oluştu.', {
         position: 'top-right',
       });
       setIsSubmitting(false);
@@ -83,21 +103,23 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
   };
 
   return (
-    <div className="drawer-overlay" onClick={onClose}>
-      <div className="drawer-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         
-        <div className="drawer-header">
+        <div className="modal-header">
           <div>
-            <h2>Yeni Ürün Ekle</h2>
-            <p className="drawer-subtitle">Mağazanıza yeni bir ürün tanımlayın.</p>
+            <h2>{editProduct ? 'Ürünü Düzenle' : 'Yeni Ürün Ekle'}</h2>
+            <p className="text-gray-500 text-sm mt-1">
+              {editProduct ? 'Ürün bilgilerini güncelleyin.' : 'Mağazanıza yeni bir ürün tanımlayın.'}
+            </p>
           </div>
-          <button className="drawer-close-btn" onClick={onClose} type="button">
+          <button className="icon-btn modal-close-btn" onClick={onClose} type="button">
             <X size={24} />
           </button>
         </div>
         
-        <form onSubmit={handleSubmit} className="drawer-form">
-          <div className="drawer-body">
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="modal-body">
             
             {/* Temel Bilgiler Section */}
             <div className="form-section">
@@ -159,7 +181,7 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
               </div>
             </div>
 
-            <hr className="drawer-divider" />
+            <hr className="my-4 border-t border-gray-200" />
 
             {/* Uyumluluk Section */}
             <div className="form-section">
@@ -224,7 +246,7 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
               </div>
             </div>
 
-            <hr className="drawer-divider" />
+            <hr className="my-4 border-t border-gray-200" />
 
             {/* Medya & Detay Section */}
             <div className="form-section">
@@ -257,14 +279,14 @@ const AddProductModal = ({ isOpen, onClose, onProductAdded }) => {
 
           </div>
 
-          <div className="drawer-footer">
-            <button type="button" className="btn btn-secondary drawer-btn-cancel" onClick={onClose}>İptal</button>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={onClose}>İptal</button>
             <button 
               type="submit" 
-              className="btn btn-primary drawer-btn-save" 
+              className="btn btn-primary" 
               disabled={isSubmitting || !isFormValid()}
             >
-              {isSubmitting ? 'Kaydediliyor...' : 'Ürünü Kaydet'}
+              {isSubmitting ? 'Kaydediliyor...' : (editProduct ? 'Değişiklikleri Kaydet' : 'Ürünü Kaydet')}
             </button>
           </div>
         </form>

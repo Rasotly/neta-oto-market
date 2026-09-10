@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { FavoritesProvider } from './context/FavoritesContext';
+import { ProductProvider } from './context/ProductContext';
 import { Toaster } from 'react-hot-toast';
 import Home from './pages/Home';
 import AdminDashboard from './pages/AdminDashboard';
@@ -11,7 +12,8 @@ function App() {
   return (
     <AuthProvider>
       <FavoritesProvider>
-        <CartProvider>
+        <ProductProvider>
+          <CartProvider>
           <Toaster 
             position="bottom-right" 
             toastOptions={{
@@ -36,7 +38,8 @@ function App() {
             <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
           
-        </CartProvider>
+          </CartProvider>
+        </ProductProvider>
       </FavoritesProvider>
     </AuthProvider>
   );

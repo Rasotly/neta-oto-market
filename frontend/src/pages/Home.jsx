@@ -1,5 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
-import axios from 'axios';
+import { useState, useMemo } from 'react';
 import Navbar from '../components/Navbar';
 import ProductCard from '../components/ProductCard';
 import CartDrawer from '../components/CartDrawer';
@@ -13,13 +12,13 @@ import HeroSlider from '../components/HeroSlider';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
+import { useProducts } from '../context/ProductContext';
 import { PackageOpen } from 'lucide-react';
 import '../App.css';
 
 function Home() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { products, loading, error } = useProducts();
+  
   
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
@@ -35,19 +34,6 @@ function Home() {
     brand: '',
     model: ''
   });
-
-  useEffect(() => {
-    axios.get('https://localhost:7141/api/products')
-      .then((res) => {
-        setProducts(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Hata:', err);
-        setError('Ürünler yüklenemedi.');
-        setLoading(false);
-      });
-  }, []);
 
 
   const handleFilterChange = (e) => {
