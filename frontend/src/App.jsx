@@ -9,6 +9,8 @@ import ProductDetailModal from './components/ProductDetailModal';
 import FilterBar from './components/FilterBar';
 import CheckoutModal from './components/CheckoutModal';
 import LoginModal from './components/LoginModal';
+import Footer from './components/Footer';
+import WhatsAppButton from './components/WhatsAppButton';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { FavoritesProvider, useFavorites } from './context/FavoritesContext';
@@ -200,6 +202,9 @@ function AppContent() {
           </>
         )}
       </main>
+      
+      <Footer />
+      <WhatsAppButton />
     </div>
   );
 }
