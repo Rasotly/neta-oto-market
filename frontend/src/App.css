@@ -1222,7 +1222,7 @@
 .hero-slider {
   position: relative;
   width: 100%;
-  height: 450px;
+  height: 380px;
   overflow: hidden;
   background-color: var(--bg-card);
 }
@@ -1271,6 +1271,7 @@
   font-size: 3rem;
   margin: 0 0 1rem 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  color: var(--accent);
 }
 
 .slide-content p {

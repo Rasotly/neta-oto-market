@@ -6,21 +6,21 @@ const slides = [
     id: 1,
     title: "2026 Model Civic Body Kitleri Geldi!",
     description: "Aracınıza yepyeni bir görünüm kazandıracak orijinal ve yan sanayi gövde kitleri stoklarımızda.",
-    image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1600",
+    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=1600",
     cta: "Hemen İncele"
   },
   {
     id: 2,
     title: "Yeni Nesil Multimedya Sistemleri",
     description: "Android Auto ve Apple CarPlay destekli, yüksek çözünürlüklü dokunmatik ekranlar ile yolculuklarınız daha keyifli.",
-    image: "https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&q=80&w=1600",
+    image: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&q=80&w=1600",
     cta: "Ürünleri Gör"
   },
   {
     id: 3,
     title: "Kaliteli Led Far Dönüşümleri",
     description: "Gece görüşünüzü mükemmelleştiren, yüksek aydınlatma gücüne sahip özel far ampulleri ve setleri.",
-    image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1600",
+    image: "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&q=80&w=1600",
     cta: "Aydınlatmaları Keşfet"
   }
 ];
