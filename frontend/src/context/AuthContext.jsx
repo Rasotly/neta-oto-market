@@ -78,7 +78,8 @@ export const AuthProvider = ({ children }) => {
       name: `${userData.firstName} ${userData.lastName}`,
       email: userData.email,
       phone: userData.phone,
-      password: userData.password // In real app, don't store plain text
+      password: userData.password, // In real app, don't store plain text
+      createdAt: new Date().toISOString()
     };
 
     const updatedUsers = [...registeredUsers, newUser];
