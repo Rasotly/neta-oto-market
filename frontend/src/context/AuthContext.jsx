@@ -16,6 +16,11 @@ export const AuthProvider = ({ children }) => {
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
+  const [registeredUsers, setRegisteredUsers] = useState(() => {
+    const saved = localStorage.getItem('registeredUsers');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const login = (username, password) => {
     if (username === 'admin' || username === 'admin@admin.com') {
       setIsAdmin(true);
@@ -30,36 +35,59 @@ export const AuthProvider = ({ children }) => {
       return login(email, password);
     }
     
-    // Mock customer login
-    if (email && password) {
-      const mockUser = {
-        id: Date.now().toString(),
-        name: email.split('@')[0],
-        email: email,
-        phone: '5551234567'
-      };
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      return { success: true, user: mockUser };
+    // Validate required fields
+    if (!email || !password) {
+      return { success: false, message: 'Lütfen e-posta ve şifrenizi girin.' };
     }
-    
-    return { success: false, message: 'Lütfen e-posta ve şifrenizi girin.' };
+
+    // Check if user is registered
+    const existingUser = registeredUsers.find(u => u.email === email);
+    if (!existingUser) {
+      return { success: false, message: 'Bu e-posta adresine ait bir hesap bulunamadı.' };
+    }
+
+    // Check password
+    if (existingUser.password !== password) {
+      return { success: false, message: 'Hatalı şifre girdiniz.' };
+    }
+
+    // Login successful
+    setUser(existingUser);
+    localStorage.setItem('user', JSON.stringify(existingUser));
+    return { success: true, user: existingUser };
   };
 
   const customerRegister = (userData) => {
-    // Mock customer registration
-    if (userData.email && userData.password && userData.firstName) {
-      const newUser = {
-        id: Date.now().toString(),
-        name: `${userData.firstName} ${userData.lastName}`,
-        email: userData.email,
-        phone: userData.phone
-      };
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
-      return { success: true, user: newUser };
+    // Basic validation
+    if (!userData.email || !userData.password || !userData.firstName) {
+      return { success: false, message: 'Lütfen tüm zorunlu alanları doldurun.' };
     }
-    return { success: false, message: 'Lütfen tüm zorunlu alanları doldurun.' };
+
+    // Check if email already registered
+    if (registeredUsers.some(u => u.email === userData.email)) {
+      return { success: false, message: 'Bu e-posta adresi zaten kullanılıyor.' };
+    }
+
+    // Return success to proceed to OTP
+    return { success: true };
+  };
+
+  const finalizeRegistration = (userData) => {
+    const newUser = {
+      id: Date.now().toString(),
+      name: `${userData.firstName} ${userData.lastName}`,
+      email: userData.email,
+      phone: userData.phone,
+      password: userData.password // In real app, don't store plain text
+    };
+
+    const updatedUsers = [...registeredUsers, newUser];
+    setRegisteredUsers(updatedUsers);
+    localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
+
+    setUser(newUser);
+    localStorage.setItem('user', JSON.stringify(newUser));
+    return { success: true, user: newUser };
   };
 
   const logout = () => {
@@ -70,7 +98,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAdmin, user, login, customerLogin, customerRegister, logout }}>
+    <AuthContext.Provider value={{ 
+      isAdmin, 
+      user, 
+      login, 
+      customerLogin, 
+      customerRegister, 
+      finalizeRegistration,
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );

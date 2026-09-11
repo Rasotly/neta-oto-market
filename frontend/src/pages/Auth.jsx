@@ -8,7 +8,12 @@ const Auth = () => {
   const [activeTab, setActiveTab] = useState('login'); // 'login' or 'register'
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { customerLogin, customerRegister } = useAuth();
+  const { customerLogin, customerRegister, finalizeRegistration } = useAuth();
+  
+  // OTP State
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
+  const [tempUserData, setTempUserData] = useState(null);
 
   // Login Form State
   const [loginEmail, setLoginEmail] = useState('');
@@ -22,13 +27,21 @@ const Auth = () => {
   const [regPassword, setRegPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleLoginSubmit = (e) => {
     e.preventDefault();
+    
+    // Exception for admin email logic
+    if (loginEmail !== 'admin' && !emailRegex.test(loginEmail)) {
+      toast.error('Lütfen geçerli bir e-posta adresi giriniz');
+      return;
+    }
+
     const result = customerLogin(loginEmail, loginPassword);
     
     if (result.success) {
       toast.success('Giriş başarılı! Yönlendiriliyorsunuz...');
-      // Admin might go to /admin, customer to /
       if (loginEmail === 'admin' || loginEmail === 'admin@admin.com') {
         navigate('/admin');
       } else {
@@ -41,24 +54,70 @@ const Auth = () => {
 
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
+    
+    if (!emailRegex.test(regEmail)) {
+      toast.error('Lütfen geçerli bir e-posta adresi giriniz');
+      return;
+    }
+
     if (!termsAccepted) {
       toast.error('Lütfen üyelik sözleşmesini kabul ediniz.');
       return;
     }
 
-    const result = customerRegister({
+    const userData = {
       firstName: regFirstName,
       lastName: regLastName,
       email: regEmail,
       phone: regPhone,
       password: regPassword
-    });
+    };
+
+    const result = customerRegister(userData);
 
     if (result.success) {
-      toast.success('Hesabınız başarıyla oluşturuldu!');
-      navigate('/');
+      // Don't register yet, show OTP modal
+      setTempUserData(userData);
+      setShowOtpModal(true);
     } else {
       toast.error(result.message);
+    }
+  };
+
+  const handleOtpChange = (index, value) => {
+    if (!/^\d*$/.test(value)) return;
+    
+    const newOtp = [...otpValues];
+    newOtp[index] = value.substring(value.length - 1); // Keep only last char if multiple pasted
+    setOtpValues(newOtp);
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`otp-${index + 1}`);
+      if (nextInput) nextInput.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !otpValues[index] && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`);
+      if (prevInput) prevInput.focus();
+    }
+  };
+
+  const handleOtpSubmit = () => {
+    const code = otpValues.join('');
+    if (code === '123456') {
+      const result = finalizeRegistration(tempUserData);
+      if (result.success) {
+        toast.success('Hesabınız başarıyla oluşturuldu!');
+        setShowOtpModal(false);
+        navigate('/');
+      } else {
+        toast.error(result.message);
+      }
+    } else {
+      toast.error('Girdiğiniz kod hatalı, lütfen tekrar deneyin.');
     }
   };
 
@@ -93,7 +152,7 @@ const Auth = () => {
           <form onSubmit={handleLoginSubmit} className="auth-form">
             <div className="auth-input-group">
               <input 
-                type="text" 
+                type="email" 
                 className="auth-input" 
                 placeholder="E-posta Adresi" 
                 value={loginEmail}
@@ -215,6 +274,45 @@ const Auth = () => {
           </form>
         )}
       </div>
+
+      {/* OTP Modal */}
+      {showOtpModal && (
+        <div className="modal-overlay" style={{ zIndex: 60 }}>
+          <div className="modal-content auth-card" style={{ maxWidth: '400px', textAlign: 'center' }}>
+            <h3 style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: '700' }}>E-posta Doğrulama</h3>
+            <p style={{ marginBottom: '1.5rem', color: '#4b5563', fontSize: '0.95rem' }}>
+              Girdiğiniz e-posta adresine 6 haneli bir kod gönderdik.
+            </p>
+            
+            <div className="otp-inputs-container">
+              {otpValues.map((digit, index) => (
+                <input
+                  key={index}
+                  id={`otp-${index}`}
+                  type="text"
+                  maxLength="1"
+                  value={digit}
+                  onChange={(e) => handleOtpChange(index, e.target.value)}
+                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                  className="auth-input otp-box"
+                />
+              ))}
+            </div>
+
+            <button type="button" className="auth-submit-btn register-btn" onClick={handleOtpSubmit}>
+              Doğrula ve Hesabı Aç
+            </button>
+            <button 
+              type="button" 
+              className="text-btn" 
+              style={{ marginTop: '1rem', display: 'block', width: '100%' }}
+              onClick={() => setShowOtpModal(false)}
+            >
+              İptal Et
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

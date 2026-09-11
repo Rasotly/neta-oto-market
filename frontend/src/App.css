@@ -2689,12 +2689,12 @@
   margin-top: 0.5rem;
 }
 
-.login-btn {
+.auth-submit-btn.login-btn {
   background-color: #000000; /* bg-black */
   color: #ffffff; /* text-white */
 }
 
-.login-btn:hover {
+.auth-submit-btn.login-btn:hover {
   background-color: #111827; /* hover:bg-gray-900 */
 }
 
@@ -2729,6 +2729,15 @@
 /* Navbar Profile Dropdown */
 .profile-dropdown-container {
   position: relative;
+}
+
+.profile-dropdown-container .icon-text {
+  max-width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  text-align: center;
 }
 
 .profile-dropdown {
@@ -3066,4 +3075,21 @@
   border-color: #f97316;
   color: #f97316;
   background-color: #fff7ed;
+}
+
+/* OTP Modal Styles */
+.otp-inputs-container {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.otp-box {
+  width: 3rem !important;
+  height: 3.5rem;
+  text-align: center;
+  font-size: 1.25rem;
+  padding: 0 !important;
+  font-weight: 700;
 }
