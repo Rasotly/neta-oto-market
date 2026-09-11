@@ -3,8 +3,16 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Pencil, LogOut } from 'lucide-react';
+import { Pencil, LogOut, X } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+const CITIES = ["İstanbul", "Ankara", "İzmir", "Bursa"];
+const DISTRICTS = {
+  "İstanbul": ["Kadıköy", "Beşiktaş", "Şişli", "Üsküdar"],
+  "Ankara": ["Çankaya", "Keçiören", "Yenimahalle"],
+  "İzmir": ["Bornova", "Karşıyaka", "Konak"],
+  "Bursa": ["Nilüfer", "Osmangazi", "Yıldırım"]
+};
 
 const ProfileDashboard = () => {
   const { user, isAdmin, logout, updateUser } = useAuth();
@@ -28,6 +36,75 @@ const ProfileDashboard = () => {
   });
 
   const [hasChanges, setHasChanges] = useState(false);
+
+  // Address State
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState(null);
+  const [addressFormData, setAddressFormData] = useState({
+    title: '',
+    fullName: '',
+    phone: '',
+    city: 'İstanbul',
+    district: 'Kadıköy',
+    fullAddress: ''
+  });
+
+  const addresses = currentUser.addresses || [];
+
+  const handleAddNewAddress = () => {
+    setAddressFormData({ title: '', fullName: '', phone: '', city: 'İstanbul', district: 'Kadıköy', fullAddress: '' });
+    setEditingAddressId(null);
+    setIsAddressModalOpen(true);
+  };
+
+  const handleEditAddress = (address) => {
+    setAddressFormData({
+      title: address.title,
+      fullName: address.fullName,
+      phone: address.phone,
+      city: address.city,
+      district: address.district,
+      fullAddress: address.fullAddress
+    });
+    setEditingAddressId(address.id);
+    setIsAddressModalOpen(true);
+  };
+
+  const handleDeleteAddress = (id) => {
+    if (window.confirm('Bu adresi silmek istediğinize emin misiniz?')) {
+      const updatedAddresses = addresses.filter(addr => addr.id !== id);
+      updateUser({ addresses: updatedAddresses });
+      toast.success('Adres başarıyla silindi.');
+    }
+  };
+
+  const handleSaveAddress = () => {
+    if (!addressFormData.title || !addressFormData.fullName || !addressFormData.phone || !addressFormData.fullAddress) {
+      toast.error('Lütfen tüm zorunlu alanları doldurun.');
+      return;
+    }
+
+    let updatedAddresses;
+    if (editingAddressId) {
+      updatedAddresses = addresses.map(addr => 
+        addr.id === editingAddressId ? { ...addr, ...addressFormData } : addr
+      );
+    } else {
+      const newAddress = {
+        id: Date.now().toString(),
+        ...addressFormData
+      };
+      updatedAddresses = [...addresses, newAddress];
+    }
+
+    const result = updateUser({ addresses: updatedAddresses });
+    if (result.success) {
+      toast.success(editingAddressId ? 'Adres güncellendi.' : 'Yeni adres eklendi.');
+      setIsAddressModalOpen(false);
+    } else {
+      toast.error('Adres kaydedilirken bir hata oluştu.');
+    }
+  };
 
   // Check for changes
   useEffect(() => {
@@ -189,21 +266,32 @@ const ProfileDashboard = () => {
           <div className="profile-section">
             <h3 className="profile-section-title">Adreslerim</h3>
             <div className="addresses-list">
-              <div className="address-card">
-                <div className="address-header">
-                  <strong>Ev Adresi</strong>
-                </div>
-                <p>Atatürk Mah. Cumhuriyet Cad. No:12 D:4</p>
-                <p>Kadıköy / İstanbul</p>
-                <div className="address-actions">
-                  <button className="text-btn">Düzenle</button>
-                  <button className="text-btn text-danger">Sil</button>
-                </div>
-              </div>
-              <button className="add-address-btn">
+              <button className="add-address-btn" onClick={handleAddNewAddress} style={{ minHeight: '150px' }}>
                 + Yeni Adres Ekle
               </button>
+              
+              {addresses.map(address => (
+                <div className="address-card" key={address.id}>
+                  <div className="address-header">
+                    <strong>{address.title}</strong>
+                  </div>
+                  <p>{address.fullName}</p>
+                  <p>{address.fullAddress}</p>
+                  <p>{address.district} / {address.city}</p>
+                  <p>{address.phone}</p>
+                  <div className="address-actions">
+                    <button className="text-btn" onClick={() => handleEditAddress(address)}>Düzenle</button>
+                    <button className="text-btn text-danger" onClick={() => handleDeleteAddress(address.id)}>Sil</button>
+                  </div>
+                </div>
+              ))}
             </div>
+
+            {addresses.length === 0 && (
+              <p style={{ marginTop: '1rem', color: '#9ca3af', fontSize: '0.875rem' }}>
+                Henüz kayıtlı bir adresiniz bulunmuyor.
+              </p>
+            )}
           </div>
         );
       default:
@@ -304,6 +392,104 @@ const ProfileDashboard = () => {
       </main>
 
       <Footer />
+      {/* Address Modal */}
+      {isAddressModalOpen && (
+        <div className="modal-overlay" style={{ zIndex: 1000 }}>
+          <div className="auth-card" style={{ width: '90%', maxWidth: '500px', margin: '2rem auto', maxHeight: '90vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{editingAddressId ? 'Adresi Düzenle' : 'Yeni Adres Ekle'}</h2>
+              <button onClick={() => setIsAddressModalOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}>
+                <X size={24} />
+              </button>
+            </div>
+            
+            <form onSubmit={(e) => { e.preventDefault(); handleSaveAddress(); }}>
+              <div className="auth-input-group">
+                <label className="profile-label">Adres Başlığı (Örn: Ev, İş)</label>
+                <input 
+                  type="text" 
+                  className="auth-input" 
+                  value={addressFormData.title}
+                  onChange={(e) => setAddressFormData({...addressFormData, title: e.target.value})}
+                  required
+                />
+              </div>
+
+              <div className="auth-row">
+                <div className="auth-input-group" style={{ flex: 1 }}>
+                  <label className="profile-label">Ad Soyad</label>
+                  <input 
+                    type="text" 
+                    className="auth-input" 
+                    value={addressFormData.fullName}
+                    onChange={(e) => setAddressFormData({...addressFormData, fullName: e.target.value})}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="auth-input-group">
+                <label className="profile-label">Cep Telefonu</label>
+                <input 
+                  type="tel" 
+                  className="auth-input" 
+                  value={addressFormData.phone}
+                  onChange={(e) => setAddressFormData({...addressFormData, phone: e.target.value})}
+                  required
+                />
+              </div>
+
+              <div className="auth-row" style={{ display: 'flex', gap: '1rem' }}>
+                <div className="auth-input-group" style={{ flex: 1 }}>
+                  <label className="profile-label">İl</label>
+                  <select 
+                    className="auth-input" 
+                    value={addressFormData.city}
+                    onChange={(e) => setAddressFormData({...addressFormData, city: e.target.value, district: DISTRICTS[e.target.value]?.[0] || ''})}
+                  >
+                    {CITIES.map(city => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="auth-input-group" style={{ flex: 1 }}>
+                  <label className="profile-label">İlçe</label>
+                  <select 
+                    className="auth-input" 
+                    value={addressFormData.district}
+                    onChange={(e) => setAddressFormData({...addressFormData, district: e.target.value})}
+                  >
+                    {(DISTRICTS[addressFormData.city] || []).map(dist => (
+                      <option key={dist} value={dist}>{dist}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="auth-input-group">
+                <label className="profile-label">Açık Adres</label>
+                <textarea 
+                  className="auth-input" 
+                  rows="3" 
+                  value={addressFormData.fullAddress}
+                  onChange={(e) => setAddressFormData({...addressFormData, fullAddress: e.target.value})}
+                  required
+                  style={{ resize: 'vertical' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+                <button type="submit" className="auth-submit-btn profile-save-btn" style={{ flex: 1 }}>
+                  Kaydet
+                </button>
+                <button type="button" className="auth-submit-btn profile-cancel-btn" onClick={() => setIsAddressModalOpen(false)} style={{ flex: 1 }}>
+                  İptal
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
