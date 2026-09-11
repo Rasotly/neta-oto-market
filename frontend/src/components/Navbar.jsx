@@ -35,7 +35,7 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites }) => {
     <nav className="navbar">
       <div className="navbar-container">
         {/* Logo Area */}
-        <div className="navbar-logo">
+        <div className="navbar-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
           <h2>Neta Oto Market</h2>
         </div>
 
