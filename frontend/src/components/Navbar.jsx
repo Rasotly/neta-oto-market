@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useNavigate } from 'react-router-dom';
+import CategoryNav from './CategoryNav';
 
 const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -204,6 +205,9 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
           </div>
         </div>
       )}
+
+      {/* Sub-menu (Category Navigation) */}
+      <CategoryNav />
     </nav>
   );
 };

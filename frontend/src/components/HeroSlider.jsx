@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 const slides = [
   {
     id: 1,
-    title: "2026 Model Civic Body Kitleri Geldi!",
+    title: "Yepyeni Body Kitler Geldi!",
     description: "Aracınıza yepyeni bir görünüm kazandıracak orijinal ve yan sanayi gövde kitleri stoklarımızda.",
     image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=1600",
     cta: "Hemen İncele"
@@ -50,22 +50,23 @@ const HeroSlider = () => {
   return (
     <div className="hero-slider">
       {slides.map((slide, index) => (
-        <div 
-          key={slide.id} 
+        <div
+          key={slide.id}
           className={`slide ${index === currentSlide ? 'active' : ''}`}
           style={{ backgroundImage: `url(${slide.image})` }}
         >
           <div className="slide-overlay"></div>
           <div className="slide-content-container">
             <div className="slide-content">
+              <span className="slide-badge">ÖNE ÇIKANLAR</span>
               <h2>{slide.title}</h2>
               <p>{slide.description}</p>
-              <button className="btn btn-primary cta-btn">{slide.cta}</button>
+              <button className="btn-hero-minimal">{slide.cta}</button>
             </div>
           </div>
         </div>
       ))}
-      
+
       <button className="slider-btn prev-btn" onClick={prevSlide}>
         <ChevronLeft size={32} />
       </button>
@@ -75,8 +76,8 @@ const HeroSlider = () => {
 
       <div className="slider-dots">
         {slides.map((_, index) => (
-          <button 
-            key={index} 
+          <button
+            key={index}
             className={`dot ${index === currentSlide ? 'active' : ''}`}
             onClick={() => goToSlide(index)}
           />
