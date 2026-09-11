@@ -2053,6 +2053,9 @@
   height: 100vh;
   overflow: hidden;
   background-color: #f8fafc;
+  background-image: 
+    radial-gradient(circle at right center, rgba(251, 146, 60, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at bottom left, rgba(148, 163, 184, 0.15) 0%, transparent 50%);
 }
 
 /* Sidebar */
