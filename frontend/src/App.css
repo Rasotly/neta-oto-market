@@ -3314,3 +3314,58 @@
   font-size: 0.9375rem;
   color: #111827;
 }
+
+/* --- Checkout Success Page --- */
+.checkout-page-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 2rem;
+  text-align: center;
+  background-color: #f9fafb;
+}
+
+.checkout-success-icon {
+  color: #10b981; /* Tailwind emerald-500 */
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 4px 6px rgba(16, 185, 129, 0.2));
+}
+
+.checkout-success-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.checkout-success-desc {
+  font-size: 1.125rem;
+  color: #4b5563;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.checkout-success-btn {
+  background-color: #f97316;
+  color: #ffffff;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.125rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkout-success-btn:hover {
+  background-color: #ea580c;
+  transform: translateY(-2px);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.3);
+}
