@@ -35,8 +35,8 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
     <nav className="navbar">
       <div className="navbar-container">
         {/* Logo Area */}
-        <div className="navbar-logo" onClick={onLogoClick || (() => navigate('/'))} style={{ cursor: 'pointer' }}>
-          <h2>Neta Oto Market</h2>
+        <div className="navbar-logo" onClick={onLogoClick || (() => navigate('/'))} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+          <img src="/logo.png" alt="Neta Oto Market" style={{ height: '80px', objectFit: 'contain' }} />
         </div>
 
         {/* Search Bar - Desktop */}

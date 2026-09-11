@@ -8,12 +8,22 @@ import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, Shopp
 import AddProductModal from '../components/AddProductModal';
 import DashboardHome from '../components/admin/DashboardHome';
 import DiscountCodes from '../components/admin/DiscountCodes';
+import AdminOrders from '../components/admin/AdminOrders';
 import { formatPrice } from '../utils/formatters';
 import '../App.css';
 
 const AdminDashboard = () => {
-  const { isAdmin, logout } = useAuth();
+  const { isAdmin, logout, registeredUsers } = useAuth();
   const navigate = useNavigate();
+  
+  // Calculate pending orders count
+  const pendingOrdersCount = (registeredUsers || []).reduce((total, user) => {
+    if (user.orders && Array.isArray(user.orders)) {
+      const pending = user.orders.filter(o => o.status === 'Onay Bekliyor' || o.status === 'Hazırlanıyor').length;
+      return total + pending;
+    }
+    return total;
+  }, 0);
   
   const { products, loading, error, removeProductFromState } = useProducts();
   
@@ -111,9 +121,19 @@ const AdminDashboard = () => {
                     <button 
                       className={`admin-nav-item ${activeTab === 'Siparişler' ? 'active' : ''}`}
                       onClick={() => setActiveTab('Siparişler')}
+                      style={{ paddingRight: '1rem' }}
                     >
-                      <ShoppingCart size={18} />
-                      Siparişler
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <ShoppingCart size={18} />
+                          Siparişler
+                        </div>
+                        {pendingOrdersCount > 0 && (
+                          <span style={{ backgroundColor: '#ef4444', color: 'white', borderRadius: '999px', padding: '0.1rem 0.5rem', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                            {pendingOrdersCount}
+                          </span>
+                        )}
+                      </div>
                     </button>
                   </li>
                   <li>
@@ -194,6 +214,7 @@ const AdminDashboard = () => {
         <main className="admin-content-area">
           {activeTab === 'Kontrol Paneli' && <DashboardHome />}
           {activeTab === 'Kampanyalar' && <DiscountCodes />}
+          {activeTab === 'Siparişler' && <AdminOrders />}
           
           {activeTab === 'Ürünler' && (
             <>

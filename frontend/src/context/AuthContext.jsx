@@ -111,6 +111,22 @@ export const AuthProvider = ({ children }) => {
     return { success: true, user: updatedUser };
   };
 
+  const updateAnyUser = (userId, newData) => {
+    const updatedUsersList = registeredUsers.map(u => 
+      String(u.id) === String(userId) ? { ...u, ...newData } : u
+    );
+    setRegisteredUsers(updatedUsersList);
+    localStorage.setItem('registeredUsers', JSON.stringify(updatedUsersList));
+    
+    // If the updated user is currently logged in, update their local state too
+    if (user && String(user.id) === String(userId)) {
+       setUser({ ...user, ...newData });
+       localStorage.setItem('user', JSON.stringify({ ...user, ...newData }));
+    }
+    
+    return { success: true };
+  };
+
   const logout = () => {
     setIsAdmin(false);
     setUser(null);
@@ -127,6 +143,8 @@ export const AuthProvider = ({ children }) => {
       customerRegister, 
       finalizeRegistration,
       updateUser,
+      updateAnyUser,
+      registeredUsers,
       logout 
     }}>
       {children}
