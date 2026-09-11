@@ -28,7 +28,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
             <ShoppingBag size={24} style={{ color: '#374151' }} />
             <h2 style={{ fontSize: '1.25rem', fontWeight: '500', color: '#0f172a', margin: 0 }}>Alışveriş Sepetim</h2>
           </div>
-          <button onClick={onClose} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '0.4rem', color: '#64748b', padding: '0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}>
+          <button className="cart-close-btn" onClick={onClose} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '0.4rem', padding: '0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}>
             <X size={18} />
             <span style={{ fontSize: '1rem', fontWeight: '400' }}>Kapat</span>
           </button>
