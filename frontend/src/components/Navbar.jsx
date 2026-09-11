@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useNavigate } from 'react-router-dom';
 
-const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites }) => {
+const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cartItemCount } = useCart();
   const { isAdmin, user, logout } = useAuth();
@@ -35,7 +35,7 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites }) => {
     <nav className="navbar">
       <div className="navbar-container">
         {/* Logo Area */}
-        <div className="navbar-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+        <div className="navbar-logo" onClick={onLogoClick || (() => navigate('/'))} style={{ cursor: 'pointer' }}>
           <h2>Neta Oto Market</h2>
         </div>
 

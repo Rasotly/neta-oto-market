@@ -82,6 +82,11 @@ function Home() {
         onCartClick={() => setIsCartDrawerOpen(true)}
         showOnlyFavorites={showOnlyFavorites}
         onToggleFavorites={() => setShowOnlyFavorites(!showOnlyFavorites)}
+        onLogoClick={() => {
+          setShowOnlyFavorites(false);
+          setFilters({ category: '', brand: '', model: '' });
+          navigate('/');
+        }}
       />
       
       {!showOnlyFavorites && <HeroSlider />}
