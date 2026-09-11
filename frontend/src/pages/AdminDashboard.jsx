@@ -270,7 +270,7 @@ const AdminDashboard = () => {
                         <th>Kategori</th>
                         <th>Stok Durumu</th>
                         <th>Fiyat</th>
-                        <th className="text-right">İşlemler</th>
+                        <th>İşlemler</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -296,7 +296,7 @@ const AdminDashboard = () => {
                               </span>
                             </td>
                             <td className="font-medium text-gray-700">{product.price ? formatPrice(product.price) : '-'}</td>
-                            <td className="text-right">
+                            <td>
                               <div className="admin-table-actions">
                                 <button className="admin-action-btn edit-btn" onClick={() => handleEditClick(product)} title="Düzenle">
                                   <Edit2 size={16} />
@@ -316,7 +316,7 @@ const AdminDashboard = () => {
             </>
           )}
           
-          {activeTab !== 'Kontrol Paneli' && activeTab !== 'Ürünler' && (
+          {activeTab !== 'Kontrol Paneli' && activeTab !== 'Ürünler' && activeTab !== 'Siparişler' && activeTab !== 'Kampanyalar' && (
             <div className="admin-empty-state">
               <h3>{activeTab} Modülü</h3>
               <p className="text-gray-500">Bu modül yapım aşamasındadır.</p>

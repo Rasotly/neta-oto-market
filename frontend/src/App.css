@@ -2253,8 +2253,11 @@
 
 .admin-page-title {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 800;
   color: #111827;
+  text-transform: capitalize;
+  font-family: 'Poppins', 'Nunito', 'Montserrat', var(--sans);
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
@@ -2325,7 +2328,7 @@
 .admin-table-actions {
   display: flex;
   gap: 0.5rem;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .admin-action-btn {
@@ -3634,15 +3637,31 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.admin-table-wrapper {
+.admin-table-wrapper,
+.admin-table-container {
   overflow-x: auto;
   margin-top: 1rem;
+  background-color: #ffffff;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 0 0 1px #e5e7eb, 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.admin-table-wrapper::before,
+.admin-table-container::before {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(to right, #111827 0%, #111827 80%, var(--accent) 80%, var(--accent) 100%);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .admin-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  table-layout: fixed;
 }
 
 .admin-table th, .admin-table td {
@@ -3651,12 +3670,13 @@
 }
 
 .admin-table th {
-  background-color: #f9fafb;
-  font-weight: 600;
-  color: #374151;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  background-color: #f1f5f9;
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 0.9375rem;
+  text-transform: capitalize;
+  font-family: 'Poppins', 'Nunito', 'Montserrat', var(--sans);
+  letter-spacing: normal;
 }
 
 .admin-table td {
