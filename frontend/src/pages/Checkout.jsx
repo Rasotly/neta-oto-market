@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatters';
 import { CheckCircle, ShieldCheck, CreditCard, ChevronLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 import '../App.css';
 
 const Checkout = () => {
@@ -13,6 +14,51 @@ const Checkout = () => {
   const clearCart = contextData.clearCart || (() => {});
   const discountCodes = contextData.discountCodes || [];
   const navigate = useNavigate();
+  const { user } = useAuth();
+  
+  const savedAddresses = user?.addresses || [];
+  const [selectedAddressId, setSelectedAddressId] = useState('');
+
+  const handleAddressSelect = (e) => {
+    const id = e.target.value;
+    setSelectedAddressId(id);
+    
+    if (id === '') {
+      setFormData(prev => ({
+        ...prev,
+        firstName: '',
+        lastName: '',
+        phone: '',
+        city: '',
+        district: '',
+        address: ''
+      }));
+      return;
+    }
+    
+    const addr = savedAddresses.find(a => a.id === id);
+    if (addr) {
+      const nameParts = addr.fullName ? addr.fullName.trim().split(' ') : [];
+      let fName = '';
+      let lName = '';
+      if (nameParts.length > 1) {
+        lName = nameParts.pop();
+        fName = nameParts.join(' ');
+      } else {
+        fName = nameParts[0] || '';
+      }
+      
+      setFormData(prev => ({
+        ...prev,
+        firstName: fName,
+        lastName: lName,
+        phone: addr.phone || '',
+        city: addr.city || '',
+        district: addr.district || '',
+        address: addr.fullAddress || ''
+      }));
+    }
+  };
 
   const [searchParams] = useSearchParams();
   const stepParam = searchParams.get('step');
@@ -152,19 +198,6 @@ const Checkout = () => {
               <div className="form-section">
                 <h2 className="section-title">İletişim & Adres</h2>
                 
-                <div className="input-group">
-                  <label className="input-label">Cep Telefonu Numarası</label>
-                  <input 
-                    type="tel" 
-                    name="phone" 
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className={`page-input ${errors && !formData.phone.trim() ? 'input-error' : ''}`} 
-                    placeholder="5XX XXX XX XX" 
-                    maxLength="13"
-                  />
-                </div>
-
                 <div className="checkout-grid-2">
                   <div className="input-group">
                     <label className="input-label">Ad</label>
@@ -189,6 +222,38 @@ const Checkout = () => {
                     />
                   </div>
                 </div>
+
+                <div className="input-group">
+                  <label className="input-label">Cep Telefonu Numarası</label>
+                  <input 
+                    type="tel" 
+                    name="phone" 
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className={`page-input ${errors && !formData.phone.trim() ? 'input-error' : ''}`} 
+                    placeholder="5XX XXX XX XX" 
+                    maxLength="13"
+                  />
+                </div>
+
+                {savedAddresses.length > 0 && (
+                  <div className="input-group" style={{ marginBottom: '1.5rem' }}>
+                    <label className="input-label">Kayıtlı Adresleriniz</label>
+                    <select 
+                      className="page-input"
+                      value={selectedAddressId}
+                      onChange={handleAddressSelect}
+                      style={{ cursor: 'pointer', backgroundColor: '#f9fafb' }}
+                    >
+                      <option value="">Kayıtlı adreslerimden seçin veya yeni adres girin...</option>
+                      {savedAddresses.map(addr => (
+                        <option key={addr.id} value={addr.id}>
+                          {addr.title} - {addr.district} / {addr.city}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 <div className="checkout-grid-2">
                   <div className="input-group">

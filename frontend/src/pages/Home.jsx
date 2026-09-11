@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ProductCard from '../components/ProductCard';
 import CartDrawer from '../components/CartDrawer';
@@ -21,6 +21,21 @@ function Home() {
   
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  useEffect(() => {
+    if (searchParams.get('cart') === 'open') {
+      setIsCartDrawerOpen(true);
+      searchParams.delete('cart');
+      setSearchParams(searchParams, { replace: true });
+    }
+    if (searchParams.get('favorites') === 'true') {
+      setShowOnlyFavorites(true);
+      searchParams.delete('favorites');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
   
   const [selectedProduct, setSelectedProduct] = useState(null);
   
