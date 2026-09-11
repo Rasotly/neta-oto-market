@@ -73,9 +73,23 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites }) => {
                 className="icon-btn login-btn" 
                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
               >
-                <div className="nav-person-wrapper">
-                  <IoPersonOutline className="person-outline" size={26} />
-                  <IoPersonSharp className="person-solid" size={26} />
+                <div className="nav-person-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {user?.avatar ? (
+                    <img 
+                      src={user.avatar} 
+                      alt="Profile" 
+                      style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover' }} 
+                    />
+                  ) : (user?.name ? (
+                    <div style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#f97316', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 'bold' }}>
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  ) : (
+                    <>
+                      <IoPersonOutline className="person-outline" size={26} />
+                      <IoPersonSharp className="person-solid" size={26} />
+                    </>
+                  ))}
                 </div>
                 <span className="icon-text">{isAdmin ? "Yönetici" : (user.name || "Hesabım")}</span>
               </button>
@@ -138,9 +152,23 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites }) => {
             {(isAdmin || user) ? (
               <div className="mobile-profile-section">
                 <button className="icon-btn login-btn" onClick={() => { setIsMenuOpen(false); navigate('/profile'); }}>
-                  <div className="nav-person-wrapper">
-                    <IoPersonOutline className="person-outline" size={28} />
-                    <IoPersonSharp className="person-solid" size={28} />
+                  <div className="nav-person-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {user?.avatar ? (
+                      <img 
+                        src={user.avatar} 
+                        alt="Profile" 
+                        style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} 
+                      />
+                    ) : (user?.name ? (
+                      <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#f97316', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 'bold' }}>
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                    ) : (
+                      <>
+                        <IoPersonOutline className="person-outline" size={28} />
+                        <IoPersonSharp className="person-solid" size={28} />
+                      </>
+                    ))}
                   </div>
                   <span>Profilim</span>
                 </button>
