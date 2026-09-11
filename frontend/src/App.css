@@ -1633,9 +1633,35 @@
   border-top: 1px solid #1f2937; /* border-gray-800 */
   padding-top: 1.5rem; /* pt-6 */
   margin-top: 2rem;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   color: #9ca3af; /* text-gray-400 */
   font-size: 0.875rem; /* text-sm */
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-payment-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.footer-payment-icons img {
+  height: 24px;
+  object-fit: contain;
+  background-color: white;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+@media (max-width: 768px) {
+  .footer-hr-bottom {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
 }
 
 

@@ -51,7 +51,13 @@ const Footer = () => {
         </div>
 
         <div className="footer-hr-bottom">
-          <p>© 2026 Neta Oto Market. Tüm Hakları Saklıdır.</p>
+          <p className="footer-copyright">© 2026 Neta Oto Market. Tüm Hakları Saklıdır.</p>
+          <div className="footer-payment-icons">
+            <img src="/payments/troy.png" alt="Troy" />
+            <img src="/payments/visa.png" alt="Visa" />
+            <img src="/payments/maestro.png" alt="Maestro" />
+            <img src="/payments/mastercard.png" alt="MasterCard" />
+          </div>
         </div>
       </div>
     </footer>
