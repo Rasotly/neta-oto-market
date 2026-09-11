@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ProductCard from '../components/ProductCard';
 import CartDrawer from '../components/CartDrawer';
-import ProductDetailModal from '../components/ProductDetailModal';
 import FilterBar from '../components/FilterBar';
 import Footer from '../components/Footer';
 import WhatsAppButton from '../components/WhatsAppButton';
@@ -99,12 +98,6 @@ function Home() {
         onClose={() => setIsCartDrawerOpen(false)} 
       />
 
-      <ProductDetailModal 
-        product={selectedProduct} 
-        isOpen={!!selectedProduct} 
-        onClose={() => setSelectedProduct(null)} 
-      />
-
       <main className="main-container">
         <h1 className="page-title">
           {showOnlyFavorites ? 'Favorilerim' : 'Ürün Kataloğu'}
@@ -129,7 +122,7 @@ function Home() {
                   <ProductCard 
                     key={item.id} 
                     product={item} 
-                    onClick={(prod) => setSelectedProduct(prod)}
+                    onClick={(prod) => navigate('/product/' + prod.id)}
                   />
                 ))}
               </div>

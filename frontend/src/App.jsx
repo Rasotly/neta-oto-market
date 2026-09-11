@@ -9,6 +9,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import Checkout from './pages/Checkout';
 import Auth from './pages/Auth';
 import ProfileDashboard from './pages/ProfileDashboard';
+import ProductDetail from './pages/ProductDetail';
 import './App.css';
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
             <Route path="/login" element={<Auth />} />
             <Route path="/register" element={<Auth />} />
             <Route path="/profile" element={<ProfileDashboard />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
           </Routes>
           
           </CartProvider>
