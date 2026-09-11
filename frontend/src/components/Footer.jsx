@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapPin, Phone, Mail, Map, Store } from 'lucide-react';
-import { FaInstagram } from 'react-icons/fa';
+import { FaInstagram, FaFacebook } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -43,6 +43,10 @@ const Footer = () => {
           <a href="https://www.instagram.com/netaotomarket/" target="_blank" rel="noopener noreferrer" className="footer-hr-btn footer-hr-btn-ig">
             <FaInstagram size={18} />
             Instagram
+          </a>
+          <a href="https://www.facebook.com/people/NETA-Multimedya/61589910777884/?ref=PROFILE_EDIT_xav_ig_profile_page_web#" target="_blank" rel="noopener noreferrer" className="footer-hr-btn footer-hr-btn-fb">
+            <FaFacebook size={18} />
+            Facebook
           </a>
         </div>
 
