@@ -13,14 +13,14 @@ const slides = [
     id: 2,
     title: "Yeni Nesil Multimedya Sistemleri",
     description: "Android Auto ve Apple CarPlay destekli, yüksek çözünürlüklü dokunmatik ekranlar ile yolculuklarınız daha keyifli.",
-    image: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&q=80&w=1600",
+    image: "/slider/multimedya-wide-2.png",
     cta: "Ürünleri Gör"
   },
   {
     id: 3,
     title: "Kaliteli Led Far Dönüşümleri",
     description: "Gece görüşünüzü mükemmelleştiren, yüksek aydınlatma gücüne sahip özel far ampulleri ve setleri.",
-    image: "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&q=80&w=1600",
+    image: "/slider/led-far.png",
     cta: "Aydınlatmaları Keşfet"
   }
 ];
@@ -53,7 +53,12 @@ const HeroSlider = () => {
         <div
           key={slide.id}
           className={`slide ${index === currentSlide ? 'active' : ''}`}
-          style={{ backgroundImage: `url(${slide.image})` }}
+          style={{ 
+            backgroundImage: `url(${slide.image})`,
+            backgroundSize: slide.fit || 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
         >
           <div className="slide-overlay"></div>
           <div className="slide-content-container">

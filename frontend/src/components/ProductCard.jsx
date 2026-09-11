@@ -33,7 +33,7 @@ const ProductCard = ({ product, onClick }) => {
   };
 
   return (
-    <div className="product-card" onClick={() => onClick(product)} style={{ cursor: 'pointer', position: 'relative' }}>
+    <div className="product-card" onClick={() => onClick(product)} style={{ cursor: 'pointer' }}>
       {/* Favorite Button */}
       <button 
         className={`card-favorite-btn ${isFav ? 'active' : ''}`}
@@ -53,24 +53,33 @@ const ProductCard = ({ product, onClick }) => {
             <span className="product-image-placeholder">Görsel Yok</span>
           </div>
         )}
-        <h3 className="product-title">{product.name}</h3>
-        <p className="product-desc">{product.description || 'Açıklama girilmemiş.'}</p>
+
+        <div className="product-category-badge">{product.category}</div>
         
-        <p className="product-price">
-          {product.price ? formatPrice(product.price) : 'Fiyat Belirtilmemiş'}
-        </p>
-        <p className="product-meta"><strong>Kategori:</strong> {product.category}</p>
-        <div className="product-meta">
-          <strong>Durum:</strong>{' '}
-          <span className={`status-badge ${product.inStock ? 'status-in-stock' : 'status-out-stock'}`}>
-            {product.inStock ? 'Stokta Var' : 'Tükendi'}
-          </span>
+        <h3 className="product-title">{product.name}</h3>
+        {product.description && (
+          <p className="product-desc">{product.description}</p>
+        )}
+        
+        <div className="price-stock-row">
+          {product.price ? (
+            <p className="product-price">
+              {formatPrice(product.price).replace(' ₺', '')} <span className="price-currency">₺</span>
+            </p>
+          ) : (
+            <p className="product-price" style={{ fontSize: '1rem', color: '#6b7280' }}>Fiyat Yok</p>
+          )}
+
+          <div className={`product-stock-indicator ${product.inStock ? 'in-stock' : 'out-of-stock'}`}>
+            <span className="stock-dot"></span>
+            {product.inStock ? 'Stokta' : 'Tükendi'}
+          </div>
         </div>
       </div>
       
       {/* Add to Cart Button */}
       <button 
-        className="btn btn-add-cart w-full mt-auto" 
+        className="btn-add-cart" 
         disabled={!product.inStock}
         onClick={handleAddToCart}
       >
