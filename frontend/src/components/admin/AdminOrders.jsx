@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { PackageOpen, X } from 'lucide-react';
+import { PackageOpen, X, ChevronDown, Check, Clock, Truck, XCircle, Search } from 'lucide-react';
 import { formatPrice } from '../../utils/formatters';
 
 const AdminOrders = () => {
@@ -79,11 +79,22 @@ const AdminOrders = () => {
   };
 
   const [filterStatus, setFilterStatus] = useState('Tümü');
+  const [orderSearchTerm, setOrderSearchTerm] = useState('');
 
   const filteredOrders = useMemo(() => {
-    if (filterStatus === 'Tümü') return allOrders;
-    return allOrders.filter(o => o.status === filterStatus);
-  }, [allOrders, filterStatus]);
+    return allOrders.filter(o => {
+      let matchesStatus = filterStatus === 'Tümü' || o.status === filterStatus;
+      
+      let matchesSearch = true;
+      if (orderSearchTerm) {
+        const lowerTerm = orderSearchTerm.toLowerCase();
+        matchesSearch = (o.id && o.id.toLowerCase().includes(lowerTerm)) || 
+                        (o.userName && o.userName.toLowerCase().includes(lowerTerm));
+      }
+      
+      return matchesStatus && matchesSearch;
+    });
+  }, [allOrders, filterStatus, orderSearchTerm]);
 
   if (allOrders.length === 0) {
     return (
@@ -96,29 +107,51 @@ const AdminOrders = () => {
 
   return (
     <div className="admin-orders-container">
-      <div className="admin-toolbar" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
         <h2 className="admin-page-title" style={{ margin: 0, fontSize: '1.25rem' }}>Sipariş Listesi</h2>
-        <select 
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          style={{ 
-            padding: '0.4rem 2rem 0.4rem 0.8rem', 
-            border: '1px solid #d1d5db',
-            borderRadius: '0.375rem',
-            backgroundColor: '#fff',
-            color: '#374151',
-            outline: 'none',
-            fontSize: '0.875rem',
-            cursor: 'pointer'
-          }}
-        >
-          <option value="Tümü">Tüm Durumlar</option>
-          <option value="Onay Bekliyor">Onay Bekliyor</option>
-          <option value="Hazırlanıyor">Hazırlanıyor</option>
-          <option value="Kargoya Verildi">Kargoya Verildi</option>
-          <option value="Tamamlandı">Tamamlandı</option>
-          <option value="İptal Edildi">İptal Edildi</option>
-        </select>
+        
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div style={{ position: 'relative', width: '300px' }}>
+            <Search size={18} color="#9ca3af" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+            <input 
+              type="text" 
+              placeholder="Sipariş Numarası veya İsim ara..." 
+              value={orderSearchTerm}
+              onChange={(e) => setOrderSearchTerm(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.6rem 1rem 0.6rem 2.5rem',
+                borderRadius: '8px',
+                border: '1px solid #d1d5db',
+                outline: 'none',
+                fontSize: '0.875rem',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
+          
+          <select 
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            style={{ 
+              padding: '0.6rem 2rem 0.6rem 0.8rem', 
+              border: '1px solid #d1d5db',
+              borderRadius: '0.375rem',
+              backgroundColor: '#fff',
+              color: '#374151',
+              outline: 'none',
+              fontSize: '0.875rem',
+              cursor: 'pointer'
+            }}
+          >
+            <option value="Tümü">Tüm Durumlar</option>
+            <option value="Onay Bekliyor">Onay Bekliyor</option>
+            <option value="Hazırlanıyor">Hazırlanıyor</option>
+            <option value="Kargoya Verildi">Kargoya Verildi</option>
+            <option value="Tamamlandı">Tamamlandı</option>
+            <option value="İptal Edildi">İptal Edildi</option>
+          </select>
+        </div>
       </div>
 
       <div className="admin-table-wrapper">
