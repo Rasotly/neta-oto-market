@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Car, CarFront, Calendar } from 'lucide-react';
+import { List, Car, CarFront, Calendar, Eraser, Search } from 'lucide-react';
 import { getSortedBrands, getModelsForBrand } from '../utils/carData';
 
 const FilterBar = ({ categories, filters, onFilterChange, onClearFilters }) => {
@@ -9,9 +9,8 @@ const FilterBar = ({ categories, filters, onFilterChange, onClearFilters }) => {
 
   return (
     <div className="filter-bar-container">
-      <div className="filter-bar-card">
-        <div className="filter-form-strip">
-          {/* Kategori */}
+      <div className="filter-form-strip">
+        {/* Kategori */}
           <div className="filter-field">
             <List className="filter-icon" size={20} />
             <select 
@@ -97,16 +96,17 @@ const FilterBar = ({ categories, filters, onFilterChange, onClearFilters }) => {
 
           {/* CTA Button */}
           <button className="filter-submit-btn">
-            Parçaları Bul
+            <Search size={18} />
+            <span>Bul</span>
           </button>
         </div>
-        
-        {/* Clear Filters Below */}
-        <div className="filter-actions-bottom">
-          <button className="clear-filters-link" onClick={onClearFilters}>
-            Filtreleri Temizle
-          </button>
-        </div>
+      
+      {/* Floating Clear Filters */}
+      <div className="filter-floating-actions">
+        <button className="filter-clear-floating" onClick={onClearFilters}>
+          <Eraser size={14} />
+          <span>Filtreleri Temizle</span>
+        </button>
       </div>
     </div>
   );
