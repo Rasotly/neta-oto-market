@@ -43,7 +43,8 @@ function Home() {
   const [filters, setFilters] = useState({
     category: '',
     brand: '',
-    model: ''
+    model: '',
+    year: ''
   });
 
   const handleFilterChange = (e) => {
@@ -52,13 +53,17 @@ function Home() {
       const updated = { ...prev, [name]: value };
       if (name === 'brand') {
         updated.model = ''; // Reset model when brand changes
+        updated.year = '';
+      }
+      if (name === 'model') {
+        updated.year = '';
       }
       return updated;
     });
   };
 
   const handleClearFilters = () => {
-    setFilters({ category: '', brand: '', model: '' });
+    setFilters({ category: '', brand: '', model: '', year: '' });
     setShowOnlyFavorites(false);
   };
 
@@ -71,8 +76,9 @@ function Home() {
       const matchCategory = !filters.category || p.category === filters.category;
       const matchBrand = !filters.brand || p.brand === filters.brand;
       const matchModel = !filters.model || p.model === filters.model;
+      const matchYear = !filters.year || filters.year === 'Tüm Yıllar' || p.year === filters.year;
       const matchFavorites = !showOnlyFavorites || favoriteIds.includes(p.id);
-      return matchCategory && matchBrand && matchModel && matchFavorites;
+      return matchCategory && matchBrand && matchModel && matchYear && matchFavorites;
     });
   }, [products, filters, showOnlyFavorites, favoriteIds]);
 
@@ -84,7 +90,7 @@ function Home() {
         onToggleFavorites={() => setShowOnlyFavorites(!showOnlyFavorites)}
         onLogoClick={() => {
           setShowOnlyFavorites(false);
-          setFilters({ category: '', brand: '', model: '' });
+          setFilters({ category: '', brand: '', model: '', year: '' });
           navigate('/');
         }}
       />

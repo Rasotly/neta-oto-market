@@ -960,73 +960,141 @@
   font-size: 1.1rem;
 }
 
-/* Filter Bar */
+/* Filter Bar Premium (Overlapping Card) */
 .filter-bar-container {
-  background-color: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  padding: 1rem 0;
-  position: sticky;
-  top: 73px; /* Adjust according to Navbar height */
-  z-index: 90;
-}
-
-.filter-bar-content {
+  position: relative;
+  z-index: 40;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 2rem auto; /* Align with end of Hero Slider */
   padding: 0 2rem;
+}
+
+.filter-bar-card {
+  background-color: white;
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-2xl */
+  padding: 1rem;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+}
+
+.filter-form-strip {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: white;
+}
+
+.filter-field {
+  display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex: 1;
+  padding: 0 1rem;
+  min-width: 0; /* allows shrinking */
 }
 
-.filter-group-left {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+.filter-icon {
+  color: #9ca3af;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
 }
 
-.filter-dropdown {
-  background-color: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text-h);
-  padding: 0.6rem 2.5rem 0.6rem 1.25rem;
-  border-radius: 24px;
+.filter-select {
+  border: none;
+  background: transparent;
+  width: 100%;
+  padding: 1rem 0;
   font-size: 0.95rem;
+  color: #374151;
+  font-weight: 500;
   outline: none;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ccc%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.7rem top 50%;
-  background-size: 0.65rem auto;
-  transition: all 0.2s ease;
 }
 
-.filter-dropdown:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(245, 166, 35, 0.2);
+.filter-select:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
 }
 
-.clear-filters-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-h);
-  padding: 0.6rem 1.25rem;
-  border-radius: 24px;
+.filter-divider {
+  width: 1px;
+  background-color: #e5e7eb;
+}
+
+.filter-submit-btn {
+  background-color: var(--accent);
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  padding: 0 2rem;
+  align-self: stretch;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.95rem;
+  transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
-.clear-filters-btn:hover {
-  background-color: rgba(244, 67, 54, 0.1);
-  color: #f44336;
-  border-color: #f44336;
+.filter-submit-btn:hover {
+  background-color: #ea580c;
+}
+
+.filter-actions-bottom {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.clear-filters-link {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.clear-filters-link:hover {
+  color: #ef4444;
+}
+
+/* Responsive Form Strip */
+@media (max-width: 768px) {
+  .filter-bar-container {
+    margin-top: -2rem;
+    padding: 0 1rem;
+  }
+  
+  .filter-form-strip {
+    flex-direction: column;
+    border: none;
+  }
+  
+  .filter-field {
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 1rem;
+  }
+  
+  .filter-divider {
+    display: none;
+  }
+  
+  .filter-submit-btn {
+    width: 100%;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 0.5rem;
+  }
 }
 
 /* Empty State */
