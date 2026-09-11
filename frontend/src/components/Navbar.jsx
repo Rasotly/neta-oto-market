@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Menu, X } from 'lucide-react';
+import { Search, Menu, X, LogOut } from 'lucide-react';
 import { RiShoppingCart2Line } from "react-icons/ri";
 import { IoPersonSharp, IoPersonOutline } from "react-icons/io5";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
@@ -102,7 +102,10 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
                     <button className="dropdown-item" onClick={() => { setIsProfileDropdownOpen(false); navigate('/admin'); }}>Admin Paneli</button>
                   )}
                   <div className="dropdown-divider"></div>
-                  <button className="dropdown-item logout-text" onClick={() => { setIsProfileDropdownOpen(false); logout(); }}>Çıkış Yap</button>
+                  <button className="dropdown-item logout-text" onClick={() => { setIsProfileDropdownOpen(false); logout(); }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <LogOut size={16} />
+                    Çıkış Yap
+                  </button>
                 </div>
               )}
             </div>
