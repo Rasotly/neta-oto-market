@@ -78,6 +78,13 @@ const AdminOrders = () => {
     }
   };
 
+  const [filterStatus, setFilterStatus] = useState('Tümü');
+
+  const filteredOrders = useMemo(() => {
+    if (filterStatus === 'Tümü') return allOrders;
+    return allOrders.filter(o => o.status === filterStatus);
+  }, [allOrders, filterStatus]);
+
   if (allOrders.length === 0) {
     return (
       <div className="admin-orders-empty" style={{ textAlign: 'center', padding: '5rem 0', color: '#6b7280' }}>
@@ -89,6 +96,31 @@ const AdminOrders = () => {
 
   return (
     <div className="admin-orders-container">
+      <div className="admin-toolbar" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
+        <h2 className="admin-page-title" style={{ margin: 0, fontSize: '1.25rem' }}>Sipariş Listesi</h2>
+        <select 
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          style={{ 
+            padding: '0.4rem 2rem 0.4rem 0.8rem', 
+            border: '1px solid #d1d5db',
+            borderRadius: '0.375rem',
+            backgroundColor: '#fff',
+            color: '#374151',
+            outline: 'none',
+            fontSize: '0.875rem',
+            cursor: 'pointer'
+          }}
+        >
+          <option value="Tümü">Tüm Durumlar</option>
+          <option value="Onay Bekliyor">Onay Bekliyor</option>
+          <option value="Hazırlanıyor">Hazırlanıyor</option>
+          <option value="Kargoya Verildi">Kargoya Verildi</option>
+          <option value="Tamamlandı">Tamamlandı</option>
+          <option value="İptal Edildi">İptal Edildi</option>
+        </select>
+      </div>
+
       <div className="admin-table-wrapper">
         <table className="admin-table">
           <thead>
@@ -102,32 +134,38 @@ const AdminOrders = () => {
             </tr>
           </thead>
           <tbody>
-            {allOrders.map(order => (
-              <tr key={order.id}>
-                <td><strong>{order.id}</strong></td>
-                <td>{order.userName}</td>
-                <td>{new Date(order.date).toLocaleDateString('tr-TR')}</td>
-                <td>{formatPrice(order.totalAmount)}</td>
-                <td>
-                  <select 
-                    className={`status-select ${getStatusBadgeClass(order.status)}`}
-                    value={order.status}
-                    onChange={(e) => handleStatusChange(order, e.target.value)}
-                  >
-                    <option value="Onay Bekliyor">Onay Bekliyor</option>
-                    <option value="Hazırlanıyor">Hazırlanıyor</option>
-                    <option value="Kargoya Verildi">Kargoya Verildi</option>
-                    <option value="Tamamlandı">Tamamlandı</option>
-                    <option value="İptal Edildi">İptal Edildi</option>
-                  </select>
-                </td>
-                <td>
-                  <button className="btn-order-detail-admin" onClick={() => openDetails(order)}>
-                    Detay
-                  </button>
-                </td>
+            {filteredOrders.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="text-center py-8 text-gray-500">Bu duruma ait sipariş bulunmuyor.</td>
               </tr>
-            ))}
+            ) : (
+              filteredOrders.map(order => (
+                <tr key={order.id}>
+                  <td><strong>{order.id}</strong></td>
+                  <td>{order.userName}</td>
+                  <td>{new Date(order.date).toLocaleDateString('tr-TR')}</td>
+                  <td>{formatPrice(order.totalAmount)}</td>
+                  <td>
+                    <select 
+                      className={`status-select ${getStatusBadgeClass(order.status)}`}
+                      value={order.status}
+                      onChange={(e) => handleStatusChange(order, e.target.value)}
+                    >
+                      <option className="status-option" value="Onay Bekliyor">Onay Bekliyor</option>
+                      <option className="status-option" value="Hazırlanıyor">Hazırlanıyor</option>
+                      <option className="status-option" value="Kargoya Verildi">Kargoya Verildi</option>
+                      <option className="status-option" value="Tamamlandı">Tamamlandı</option>
+                      <option className="status-option" value="İptal Edildi">İptal Edildi</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button className="btn-order-detail-admin" onClick={() => openDetails(order)}>
+                      Detay
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

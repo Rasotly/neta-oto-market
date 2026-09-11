@@ -3684,6 +3684,12 @@
   padding-right: 2rem;
 }
 
+.status-option {
+  background-color: #ffffff;
+  color: #111827;
+  font-weight: 500;
+}
+
 .status-pending { background-color: #fef3c7; color: #d97706; border-color: #fde68a; }
 .status-preparing { background-color: #ffedd5; color: #ea580c; border-color: #fed7aa; }
 .status-shipped { background-color: #dbeafe; color: #2563eb; border-color: #bfdbfe; }
