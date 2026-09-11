@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { useProducts } from '../context/ProductContext';
-import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight, Tags, Star, PieChart, Settings, AlertTriangle } from 'lucide-react';
+import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight, Tags, Star, PieChart, Settings, AlertTriangle, Search } from 'lucide-react';
 import AddProductModal from '../components/AddProductModal';
 import DashboardHome from '../components/admin/DashboardHome';
 import DiscountCodes from '../components/admin/DiscountCodes';
@@ -35,11 +35,21 @@ const AdminDashboard = () => {
   const [isControlPanelOpen, setIsControlPanelOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('Ürünler');
   const [productFilterStatus, setProductFilterStatus] = useState('all');
+  const [productSearchTerm, setProductSearchTerm] = useState('');
 
   const filteredProducts = products.filter(p => {
-    if (productFilterStatus === 'in-stock') return p.inStock;
-    if (productFilterStatus === 'out-of-stock') return !p.inStock;
-    return true;
+    let matchesStatus = true;
+    if (productFilterStatus === 'in-stock') matchesStatus = p.inStock;
+    if (productFilterStatus === 'out-of-stock') matchesStatus = !p.inStock;
+    
+    let matchesSearch = true;
+    if (productSearchTerm) {
+      const lowerTerm = productSearchTerm.toLowerCase();
+      matchesSearch = (p.name && p.name.toLowerCase().includes(lowerTerm)) || 
+                      (p.category && p.category.toLowerCase().includes(lowerTerm));
+    }
+    
+    return matchesStatus && matchesSearch;
   });
 
   const confirmDelete = async () => {
@@ -220,37 +230,63 @@ const AdminDashboard = () => {
           
           {activeTab === 'Ürünler' && (
             <>
-              <div className="admin-toolbar">
-                <h2 className="admin-page-title">Ürün Listesi</h2>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <select 
-                    value={productFilterStatus}
-                    onChange={(e) => setProductFilterStatus(e.target.value)}
-                    style={{ 
-                      padding: '0.4rem 2rem 0.4rem 0.8rem', 
-                      height: 'auto', 
-                      width: 'auto',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.375rem',
-                      fontSize: '0.875rem',
-                      backgroundColor: '#fff',
-                      color: '#374151',
-                      cursor: 'pointer',
-                      outline: 'none'
-                    }}
-                  >
-                    <option value="all">Tümü</option>
-                    <option value="in-stock">Stokta Var</option>
-                    <option value="out-of-stock">Stokta Yok</option>
-                  </select>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                <h2 className="admin-page-title" style={{ margin: 0 }}>Ürün Listesi</h2>
+                
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div style={{ position: 'relative', width: '300px' }}>
+                      <Search size={18} color="#9ca3af" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+                      <input 
+                        type="text" 
+                        placeholder="Ürün veya kategori ara..." 
+                        value={productSearchTerm}
+                        onChange={(e) => setProductSearchTerm(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '0.6rem 1rem 0.6rem 2.5rem',
+                          borderRadius: '8px',
+                          border: '1px solid #d1d5db',
+                          outline: 'none',
+                          fontSize: '0.875rem',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    </div>
+                    
+                    <select 
+                      value={productFilterStatus}
+                      onChange={(e) => setProductFilterStatus(e.target.value)}
+                      style={{ 
+                        padding: '0.6rem 2rem 0.6rem 0.8rem', 
+                        height: 'auto', 
+                        width: 'auto',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.875rem',
+                        backgroundColor: '#fff',
+                        color: '#374151',
+                        cursor: 'pointer',
+                        outline: 'none'
+                      }}
+                    >
+                      <option value="all">Tüm Durumlar</option>
+                      <option value="in-stock">Stokta Var</option>
+                      <option value="out-of-stock">Stokta Yok</option>
+                    </select>
+                  </div>
+                  
                   <button 
                     className="btn btn-primary" 
                     onClick={handleAddClick} 
                     style={{ 
                       whiteSpace: 'nowrap',
                       fontSize: '0.875rem', 
-                      padding: '0.4rem 1rem', 
-                      height: 'auto' 
+                      padding: '0.6rem 1rem', 
+                      height: 'auto',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
                     }}
                   >
                     <Plus size={16} />

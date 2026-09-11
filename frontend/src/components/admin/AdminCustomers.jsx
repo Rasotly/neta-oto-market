@@ -43,25 +43,28 @@ const AdminCustomers = () => {
 
   return (
     <div className="admin-customers-container">
-      <div className="admin-toolbar" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
         <h2 className="admin-page-title" style={{ margin: 0 }}>Müşteri Listesi</h2>
         
-        <div style={{ position: 'relative', width: '300px' }}>
-          <Search size={18} color="#9ca3af" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
-          <input 
-            type="text" 
-            placeholder="İsim veya E-posta ara..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '0.6rem 1rem 0.6rem 2.5rem',
-              borderRadius: '8px',
-              border: '1px solid #d1d5db',
-              outline: 'none',
-              fontSize: '0.875rem'
-            }}
-          />
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div style={{ position: 'relative', width: '300px' }}>
+            <Search size={18} color="#9ca3af" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+            <input 
+              type="text" 
+              placeholder="İsim veya E-posta ara..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.6rem 1rem 0.6rem 2.5rem',
+                borderRadius: '8px',
+                border: '1px solid #d1d5db',
+                outline: 'none',
+                fontSize: '0.875rem',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
         </div>
       </div>
 
