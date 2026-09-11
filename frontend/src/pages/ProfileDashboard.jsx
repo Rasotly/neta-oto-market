@@ -6,13 +6,7 @@ import Footer from '../components/Footer';
 import { Pencil, LogOut, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const CITIES = ["İstanbul", "Ankara", "İzmir", "Bursa"];
-const DISTRICTS = {
-  "İstanbul": ["Kadıköy", "Beşiktaş", "Şişli", "Üsküdar"],
-  "Ankara": ["Çankaya", "Keçiören", "Yenimahalle"],
-  "İzmir": ["Bornova", "Karşıyaka", "Konak"],
-  "Bursa": ["Nilüfer", "Osmangazi", "Yıldırım"]
-};
+import { CITIES, DISTRICTS } from '../utils/turkeyLocations';
 
 const ProfileDashboard = () => {
   const { user, isAdmin, logout, updateUser } = useAuth();
@@ -44,15 +38,15 @@ const ProfileDashboard = () => {
     title: '',
     fullName: '',
     phone: '',
-    city: 'İstanbul',
-    district: 'Kadıköy',
+    city: CITIES[0],
+    district: DISTRICTS[CITIES[0]][0],
     fullAddress: ''
   });
 
   const addresses = currentUser.addresses || [];
 
   const handleAddNewAddress = () => {
-    setAddressFormData({ title: '', fullName: '', phone: '', city: 'İstanbul', district: 'Kadıköy', fullAddress: '' });
+    setAddressFormData({ title: '', fullName: '', phone: '', city: CITIES[0], district: DISTRICTS[CITIES[0]][0], fullAddress: '' });
     setEditingAddressId(null);
     setIsAddressModalOpen(true);
   };
