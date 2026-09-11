@@ -7,6 +7,8 @@ import { Toaster } from 'react-hot-toast';
 import Home from './pages/Home';
 import AdminDashboard from './pages/AdminDashboard';
 import Checkout from './pages/Checkout';
+import Auth from './pages/Auth';
+import ProfileDashboard from './pages/ProfileDashboard';
 import './App.css';
 
 function App() {
@@ -38,6 +40,10 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/login" element={<Auth />} />
+            <Route path="/register" element={<Auth />} />
+            <Route path="/profile" element={<ProfileDashboard />} />
           </Routes>
           
           </CartProvider>

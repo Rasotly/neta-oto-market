@@ -5,7 +5,6 @@ import ProductCard from '../components/ProductCard';
 import CartDrawer from '../components/CartDrawer';
 import ProductDetailModal from '../components/ProductDetailModal';
 import FilterBar from '../components/FilterBar';
-import LoginModal from '../components/LoginModal';
 import Footer from '../components/Footer';
 import WhatsAppButton from '../components/WhatsAppButton';
 import HeroSlider from '../components/HeroSlider';
@@ -21,7 +20,6 @@ function Home() {
   const navigate = useNavigate();
   
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -68,7 +66,6 @@ function Home() {
     <div className="app-wrapper">
       <Navbar 
         onCartClick={() => setIsCartDrawerOpen(true)}
-        onLoginClick={() => setIsLoginModalOpen(true)}
         showOnlyFavorites={showOnlyFavorites}
         onToggleFavorites={() => setShowOnlyFavorites(!showOnlyFavorites)}
       />
@@ -85,11 +82,6 @@ function Home() {
       <CartDrawer 
         isOpen={isCartDrawerOpen} 
         onClose={() => setIsCartDrawerOpen(false)} 
-      />
-
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
       />
 
       <ProductDetailModal 

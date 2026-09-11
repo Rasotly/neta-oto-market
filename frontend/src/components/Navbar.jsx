@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, Menu, X } from 'lucide-react';
 import { RiShoppingCart2Line } from "react-icons/ri";
 import { IoPersonSharp, IoPersonOutline } from "react-icons/io5";
@@ -6,12 +6,30 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
+import { useNavigate } from 'react-router-dom';
 
-const Navbar = ({ onCartClick, onLoginClick, showOnlyFavorites, onToggleFavorites }) => {
+const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cartItemCount } = useCart();
-  const { isAdmin, logout } = useAuth();
+  const { isAdmin, user, logout } = useAuth();
   const { favoritesCount } = useFavorites();
+  const navigate = useNavigate();
+
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const profileDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+        setIsProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <nav className="navbar">
@@ -49,21 +67,38 @@ const Navbar = ({ onCartClick, onLoginClick, showOnlyFavorites, onToggleFavorite
             <span className="icon-text">Sepet</span>
           </button>
           
-          {isAdmin ? (
-            <button className="icon-btn login-btn" onClick={logout}>
-              <div className="nav-person-wrapper">
-                <IoPersonOutline className="person-outline" size={26} />
-                <IoPersonSharp className="person-solid" size={26} />
-              </div>
-              <span className="icon-text">Çıkış Yap</span>
-            </button>
+          {(isAdmin || user) ? (
+            <div className="profile-dropdown-container" ref={profileDropdownRef}>
+              <button 
+                className="icon-btn login-btn" 
+                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              >
+                <div className="nav-person-wrapper">
+                  <IoPersonOutline className="person-outline" size={26} />
+                  <IoPersonSharp className="person-solid" size={26} />
+                </div>
+                <span className="icon-text">{isAdmin ? "Yönetici" : (user.name || "Hesabım")}</span>
+              </button>
+
+              {isProfileDropdownOpen && (
+                <div className="profile-dropdown">
+                  <button className="dropdown-item" onClick={() => { setIsProfileDropdownOpen(false); navigate('/profile'); }}>Profilim</button>
+                  <button className="dropdown-item" onClick={() => { setIsProfileDropdownOpen(false); navigate('/profile?tab=orders'); }}>Siparişlerim</button>
+                  {isAdmin && (
+                    <button className="dropdown-item" onClick={() => { setIsProfileDropdownOpen(false); navigate('/admin'); }}>Admin Paneli</button>
+                  )}
+                  <div className="dropdown-divider"></div>
+                  <button className="dropdown-item logout-text" onClick={() => { setIsProfileDropdownOpen(false); logout(); }}>Çıkış Yap</button>
+                </div>
+              )}
+            </div>
           ) : (
-            <button className="icon-btn login-btn" onClick={onLoginClick}>
+            <button className="icon-btn login-btn" onClick={() => navigate('/auth')}>
               <div className="nav-person-wrapper">
                 <IoPersonOutline className="person-outline" size={26} />
                 <IoPersonSharp className="person-solid" size={26} />
               </div>
-              <span className="icon-text">Giriş</span>
+              <span className="icon-text">Giriş Yap</span>
             </button>
           )}
         </div>
@@ -100,16 +135,34 @@ const Navbar = ({ onCartClick, onLoginClick, showOnlyFavorites, onToggleFavorite
           </div>
           <div className="mobile-actions">
 
-            {isAdmin ? (
-              <button className="icon-btn login-btn" onClick={() => { logout(); setIsMenuOpen(false); }}>
-                <div className="nav-person-wrapper">
-                  <IoPersonOutline className="person-outline" size={28} />
-                  <IoPersonSharp className="person-solid" size={28} />
-                </div>
-                <span>Çıkış Yap</span>
-              </button>
+            {(isAdmin || user) ? (
+              <div className="mobile-profile-section">
+                <button className="icon-btn login-btn" onClick={() => { setIsMenuOpen(false); navigate('/profile'); }}>
+                  <div className="nav-person-wrapper">
+                    <IoPersonOutline className="person-outline" size={28} />
+                    <IoPersonSharp className="person-solid" size={28} />
+                  </div>
+                  <span>Profilim</span>
+                </button>
+                {isAdmin && (
+                  <button className="icon-btn login-btn" onClick={() => { setIsMenuOpen(false); navigate('/admin'); }}>
+                    <div className="nav-person-wrapper">
+                      <IoPersonOutline className="person-outline" size={28} />
+                      <IoPersonSharp className="person-solid" size={28} />
+                    </div>
+                    <span>Admin Paneli</span>
+                  </button>
+                )}
+                <button className="icon-btn login-btn" onClick={() => { setIsMenuOpen(false); logout(); }} style={{ color: '#ef4444' }}>
+                  <div className="nav-person-wrapper">
+                    <IoPersonOutline className="person-outline" size={28} style={{ color: '#ef4444' }} />
+                    <IoPersonSharp className="person-solid" size={28} style={{ color: '#ef4444' }} />
+                  </div>
+                  <span>Çıkış Yap</span>
+                </button>
+              </div>
             ) : (
-              <button className="icon-btn login-btn" onClick={() => { onLoginClick(); setIsMenuOpen(false); }}>
+              <button className="icon-btn login-btn" onClick={() => { navigate('/auth'); setIsMenuOpen(false); }}>
                 <div className="nav-person-wrapper">
                   <IoPersonOutline className="person-outline" size={28} />
                   <IoPersonSharp className="person-solid" size={28} />
