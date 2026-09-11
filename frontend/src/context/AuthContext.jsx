@@ -90,6 +90,27 @@ export const AuthProvider = ({ children }) => {
     return { success: true, user: newUser };
   };
 
+  const updateUser = (newData) => {
+    if (!user) return { success: false, message: 'Kullanıcı bulunamadı.' };
+
+    const updatedUser = { ...user, ...newData };
+
+    // Update active user state and localStorage
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+
+    // Update in registeredUsers array if exists
+    const userIndex = registeredUsers.findIndex(u => u.id === user.id);
+    if (userIndex !== -1) {
+      const updatedUsersList = [...registeredUsers];
+      updatedUsersList[userIndex] = updatedUser;
+      setRegisteredUsers(updatedUsersList);
+      localStorage.setItem('registeredUsers', JSON.stringify(updatedUsersList));
+    }
+
+    return { success: true, user: updatedUser };
+  };
+
   const logout = () => {
     setIsAdmin(false);
     setUser(null);
@@ -105,6 +126,7 @@ export const AuthProvider = ({ children }) => {
       customerLogin, 
       customerRegister, 
       finalizeRegistration,
+      updateUser,
       logout 
     }}>
       {children}
