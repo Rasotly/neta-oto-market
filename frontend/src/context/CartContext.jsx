@@ -65,11 +65,10 @@ export const CartProvider = ({ children }) => {
     setCartItems((prevItems) => {
       return prevItems.map((item) => {
         if (item.id === productId) {
-          const newQuantity = item.quantity + amount;
-          return { ...item, quantity: newQuantity > 0 ? newQuantity : 1 };
+          return { ...item, quantity: item.quantity + amount };
         }
         return item;
-      });
+      }).filter((item) => item.quantity > 0);
     });
   };
 
