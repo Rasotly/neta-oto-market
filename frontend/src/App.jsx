@@ -10,6 +10,7 @@ import Checkout from './pages/Checkout';
 import Auth from './pages/Auth';
 import ProfileDashboard from './pages/ProfileDashboard';
 import ProductDetail from './pages/ProductDetail';
+import WhatsAppButton from './components/WhatsAppButton';
 import './App.css';
 
 function App() {
@@ -48,6 +49,8 @@ function App() {
             <Route path="/product/:id" element={<ProductDetail />} />
           </Routes>
           
+          <WhatsAppButton />
+
           </CartProvider>
         </ProductProvider>
       </FavoritesProvider>

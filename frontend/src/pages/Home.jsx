@@ -5,7 +5,6 @@ import ProductCard from '../components/ProductCard';
 import CartDrawer from '../components/CartDrawer';
 import FilterBar from '../components/FilterBar';
 import Footer from '../components/Footer';
-import WhatsAppButton from '../components/WhatsAppButton';
 import HeroSlider from '../components/HeroSlider';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -216,7 +215,6 @@ function Home() {
       </main>
       
       <Footer />
-      <WhatsAppButton />
     </div>
   );
 }
