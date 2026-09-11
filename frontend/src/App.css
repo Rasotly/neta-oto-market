@@ -3631,10 +3631,7 @@
 
 /* --- Admin Orders Panel --- */
 .admin-orders-container {
-  padding: 1.5rem;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  /* Removed to match other tabs layout */
 }
 
 .admin-table-wrapper,
