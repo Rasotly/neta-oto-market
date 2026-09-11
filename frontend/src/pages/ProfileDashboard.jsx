@@ -3,8 +3,9 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Pencil, LogOut, X } from 'lucide-react';
+import { Pencil, LogOut, X, PackageOpen } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../utils/formatters';
 
 import { CITIES, DISTRICTS } from '../utils/turkeyLocations';
 
@@ -64,6 +65,7 @@ const ProfileDashboard = () => {
   });
 
   const addresses = currentUser.addresses || [];
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const handleAddNewAddress = () => {
     setAddressFormData({ title: '', fullName: '', phone: '', city: CITIES[0], district: DISTRICTS[CITIES[0]][0], fullAddress: '' });
@@ -249,31 +251,69 @@ const ProfileDashboard = () => {
           </div>
         );
       case 'orders':
+        const userOrders = user.orders || [];
         return (
           <div className="profile-section">
             <h3 className="profile-section-title">Siparişlerim</h3>
-            <div className="orders-list">
-              <div className="order-card">
-                <div className="order-header">
-                  <span className="order-number">Sipariş No: #NTA-10293</span>
-                  <span className="order-date">12 Ekim 2026</span>
-                </div>
-                <div className="order-body">
-                  <div className="order-status preparing">Hazırlanıyor</div>
-                  <div className="order-total">1.250,00 ₺</div>
-                </div>
+            
+            {userOrders.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '4rem 1rem', color: '#6b7280' }}>
+                <PackageOpen size={64} style={{ margin: '0 auto 1rem auto', opacity: 0.5 }} />
+                <h4 style={{ fontSize: '1.25rem', color: '#374151', marginBottom: '0.5rem' }}>Henüz bir siparişiniz bulunmuyor</h4>
+                <p>Oto aksesuar kataloğumuzu inceleyerek hemen alışverişe başlayabilirsiniz.</p>
               </div>
-              <div className="order-card">
-                <div className="order-header">
-                  <span className="order-number">Sipariş No: #NTA-09844</span>
-                  <span className="order-date">05 Eylül 2026</span>
-                </div>
-                <div className="order-body">
-                  <div className="order-status delivered">Teslim Edildi</div>
-                  <div className="order-total">850,00 ₺</div>
-                </div>
+            ) : (
+              <div className="order-list-container">
+                {userOrders.map((order) => (
+                  <div key={order.id} className="order-card">
+                    <div className="order-card-header">
+                      <div className="order-info-group">
+                        <span className="order-info-label">Sipariş No</span>
+                        <span className="order-info-value">{order.id}</span>
+                      </div>
+                      <div className="order-info-group">
+                        <span className="order-info-label">Tarih</span>
+                        <span className="order-info-value">{new Date(order.date).toLocaleDateString('tr-TR')}</span>
+                      </div>
+                      <div className="order-info-group">
+                        <span className="order-info-label">Tutar</span>
+                        <span className="order-info-value">{formatPrice(order.totalAmount)}</span>
+                      </div>
+                      <div className="order-info-group" style={{ alignItems: 'flex-end' }}>
+                        <span className={`order-badge ${order.status === 'Hazırlanıyor' ? 'order-badge-preparing' : 'order-badge-shipped'}`}>
+                          {order.status}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="order-items">
+                      {order.items.map((item, idx) => (
+                        <div key={idx} className="order-item">
+                          {item.imageUrl ? (
+                            <img src={item.imageUrl} alt={item.name} className="order-item-img" />
+                          ) : (
+                            <div className="order-item-placeholder">Görsel Yok</div>
+                          )}
+                          <div className="order-item-details">
+                            <h4 className="order-item-name">{item.name}</h4>
+                            <div className="order-item-meta">{item.quantity} Adet • {formatPrice(item.price)}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="order-card-footer">
+                      <button 
+                        className="btn-order-detail"
+                        onClick={() => setSelectedOrder(order)}
+                      >
+                        Sipariş Detayı
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </div>
         );
       case 'addresses':
@@ -410,6 +450,39 @@ const ProfileDashboard = () => {
       </main>
 
       <Footer />
+
+      {/* Order Detail Modal */}
+      {selectedOrder && (
+        <div className="order-modal-overlay" onClick={() => setSelectedOrder(null)}>
+          <div className="order-modal-content" onClick={e => e.stopPropagation()}>
+            <div className="order-modal-header">
+              <h3>Sipariş Detayı</h3>
+              <button className="order-modal-close" onClick={() => setSelectedOrder(null)}>
+                <X size={24} />
+              </button>
+            </div>
+            <div className="order-modal-body">
+              <div className="order-detail-row">
+                <span>Kargo Takip No</span>
+                <span>{selectedOrder.trackingNumber || 'Atanmadı'}</span>
+              </div>
+              <div className="order-detail-row">
+                <span>Teslimat Adresi</span>
+                <span>
+                  {selectedOrder.shippingAddress?.firstName} {selectedOrder.shippingAddress?.lastName} <br/>
+                  {selectedOrder.shippingAddress?.address} <br/>
+                  {selectedOrder.shippingAddress?.district} / {selectedOrder.shippingAddress?.city}
+                </span>
+              </div>
+              <div className="order-detail-row">
+                <span>Ödeme Yöntemi</span>
+                <span>{selectedOrder.paymentMethod || 'Kredi Kartı'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Address Modal */}
       {isAddressModalOpen && (
         <div className="modal-overlay" style={{ zIndex: 1000 }}>

@@ -14,7 +14,7 @@ const Checkout = () => {
   const clearCart = contextData.clearCart || (() => {});
   const discountCodes = contextData.discountCodes || [];
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   
   const savedAddresses = user?.addresses || [];
   const [selectedAddressId, setSelectedAddressId] = useState('');
@@ -157,6 +157,35 @@ const Checkout = () => {
 
     setIsSubmitting(true);
     setTimeout(() => {
+      if (user && cartItems.length > 0) {
+        const orderId = '#NETA-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+        const newOrder = {
+          id: orderId,
+          date: new Date().toISOString(),
+          totalAmount: cartTotal - discountAmount,
+          status: 'Hazırlanıyor',
+          items: cartItems.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            imageUrl: item.imageUrl
+          })),
+          shippingAddress: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phone: formData.phone,
+            city: formData.city,
+            district: formData.district,
+            address: formData.address
+          },
+          paymentMethod: 'Kredi Kartı',
+          trackingNumber: 'TR' + Math.floor(100000000 + Math.random() * 900000000)
+        };
+        
+        updateUser({ orders: [newOrder, ...(user.orders || [])] });
+      }
+
       setIsSubmitting(false);
       navigate('/checkout?step=success');
       clearCart();
