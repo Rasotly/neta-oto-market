@@ -62,9 +62,17 @@ const CategoriesAndBrands = () => {
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
   const [newBrandName, setNewBrandName] = useState('');
 
+  // --- Edit Brand State ---
+  const [isEditBrandModalOpen, setIsEditBrandModalOpen] = useState(false);
+  const [editingBrand, setEditingBrand] = useState(null);
+
   const [isModelModalOpen, setIsModelModalOpen] = useState(false);
   const [selectedBrandForModel, setSelectedBrandForModel] = useState(null);
   const [newModelName, setNewModelName] = useState('');
+
+  // --- Edit Model State ---
+  const [isEditModelModalOpen, setIsEditModelModalOpen] = useState(false);
+  const [editingModel, setEditingModel] = useState(null);
 
   // --- Confirm Dialog State ---
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, item: null, type: '', message: '' });
@@ -123,6 +131,13 @@ const CategoriesAndBrands = () => {
     setNewBrandName('');
   };
 
+  const handleSaveEditBrand = () => {
+    if (!editingBrand || !editingBrand.brand.trim()) return;
+    setBrands(brands.map(b => b.id === editingBrand.id ? editingBrand : b));
+    setIsEditBrandModalOpen(false);
+    setEditingBrand(null);
+  };
+
   const handleAddModel = () => {
     if (!newModelName.trim() || !selectedBrandForModel) return;
     setBrands(brands.map(b => {
@@ -137,6 +152,21 @@ const CategoriesAndBrands = () => {
     if (!expandedBrands.includes(selectedBrandForModel.id)) {
       setExpandedBrands([...expandedBrands, selectedBrandForModel.id]);
     }
+  };
+
+  const handleSaveEditModel = () => {
+    if (!editingModel || !editingModel.name.trim()) return;
+    setBrands(brands.map(b => {
+      if (b.id === editingModel.brandId) {
+        return {
+          ...b,
+          models: b.models.map(m => m.id === editingModel.modelId ? { ...m, name: editingModel.name } : m)
+        };
+      }
+      return b;
+    }));
+    setIsEditModelModalOpen(false);
+    setEditingModel(null);
   };
 
   const handleDeleteBrand = (id) => {
@@ -265,7 +295,9 @@ const CategoriesAndBrands = () => {
                   <Plus size={14} /> Model Ekle
                 </button>
                 <div style={{ width: '1px', height: '20px', backgroundColor: '#e5e7eb', margin: '0 0.5rem' }}></div>
-                <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.25rem', color: '#9ca3af' }} onMouseOver={e => e.currentTarget.style.color = '#f97316'} onMouseOut={e => e.currentTarget.style.color = '#9ca3af'}>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setEditingBrand(brand); setIsEditBrandModalOpen(true); }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.25rem', color: '#9ca3af' }} onMouseOver={e => e.currentTarget.style.color = '#f97316'} onMouseOut={e => e.currentTarget.style.color = '#9ca3af'}>
                   <Edit2 size={16} />
                 </button>
                 <button 
@@ -291,7 +323,9 @@ const CategoriesAndBrands = () => {
                     <div key={model.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem 0.75rem 3rem', borderBottom: '1px solid #f3f4f6', ':last-child': { borderBottom: 'none' } }}>
                       <span style={{ color: '#4b5563', fontSize: '0.95rem' }}>{model.name}</span>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.2rem', color: '#9ca3af' }} onMouseOver={e => e.currentTarget.style.color = '#f97316'} onMouseOut={e => e.currentTarget.style.color = '#9ca3af'}>
+                        <button 
+                          onClick={() => { setEditingModel({ brandId: brand.id, modelId: model.id, name: model.name }); setIsEditModelModalOpen(true); }}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.2rem', color: '#9ca3af' }} onMouseOver={e => e.currentTarget.style.color = '#f97316'} onMouseOut={e => e.currentTarget.style.color = '#9ca3af'}>
                           <Edit2 size={14} />
                         </button>
                         <button 
@@ -502,6 +536,62 @@ const CategoriesAndBrands = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
               <button onClick={() => setIsModelModalOpen(false)} style={{ padding: '0.625rem 1rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151', fontWeight: '500', cursor: 'pointer' }}>İptal</button>
               <button onClick={handleAddModel} className="btn btn-primary" style={{ padding: '0.625rem 1rem', borderRadius: '6px', fontWeight: '500', cursor: 'pointer', border: 'none' }}>Ekle</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Brand Modal */}
+      {isEditBrandModalOpen && editingBrand && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ backgroundColor: '#fff', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '400px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#111827' }}>Markayı Düzenle</h3>
+              <button onClick={() => { setIsEditBrandModalOpen(false); setEditingBrand(null); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Marka Adı</label>
+              <input 
+                type="text" 
+                value={editingBrand.brand} 
+                onChange={e => setEditingBrand({ ...editingBrand, brand: e.target.value })}
+                style={{ width: '100%', padding: '0.625rem', borderRadius: '6px', border: '1px solid #d1d5db', outline: 'none', boxSizing: 'border-box' }}
+                placeholder="Örn: Honda"
+              />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+              <button onClick={() => { setIsEditBrandModalOpen(false); setEditingBrand(null); }} style={{ padding: '0.625rem 1rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151', fontWeight: '500', cursor: 'pointer' }}>Vazgeç</button>
+              <button onClick={handleSaveEditBrand} className="btn btn-primary" style={{ padding: '0.625rem 1rem', borderRadius: '6px', fontWeight: '500', cursor: 'pointer', border: 'none' }}>Değişiklikleri Kaydet</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Model Modal */}
+      {isEditModelModalOpen && editingModel && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ backgroundColor: '#fff', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '400px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#111827' }}>Modeli Düzenle</h3>
+              <button onClick={() => { setIsEditModelModalOpen(false); setEditingModel(null); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Model Adı</label>
+              <input 
+                type="text" 
+                value={editingModel.name} 
+                onChange={e => setEditingModel({ ...editingModel, name: e.target.value })}
+                style={{ width: '100%', padding: '0.625rem', borderRadius: '6px', border: '1px solid #d1d5db', outline: 'none', boxSizing: 'border-box' }}
+                placeholder="Örn: Civic 2022+"
+              />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+              <button onClick={() => { setIsEditModelModalOpen(false); setEditingModel(null); }} style={{ padding: '0.625rem 1rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151', fontWeight: '500', cursor: 'pointer' }}>Vazgeç</button>
+              <button onClick={handleSaveEditModel} className="btn btn-primary" style={{ padding: '0.625rem 1rem', borderRadius: '6px', fontWeight: '500', cursor: 'pointer', border: 'none' }}>Değişiklikleri Kaydet</button>
             </div>
           </div>
         </div>
