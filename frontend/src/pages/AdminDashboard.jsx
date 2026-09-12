@@ -12,6 +12,7 @@ import AdminOrders from '../components/admin/AdminOrders';
 import AdminCustomers from '../components/admin/AdminCustomers';
 import CategoriesAndBrands from '../components/admin/CategoriesAndBrands';
 import AdminAnalytics from '../components/admin/AdminAnalytics';
+import AdminSettings from '../components/admin/AdminSettings';
 import { formatPrice } from '../utils/formatters';
 import '../App.css';
 
@@ -231,6 +232,7 @@ const AdminDashboard = () => {
           {activeTab === 'Siparişler' && <AdminOrders />}
           {activeTab === 'Müşteriler' && <AdminCustomers />}
           {activeTab === 'Kategoriler & Markalar' && <CategoriesAndBrands />}
+          {activeTab === 'Site Ayarları' && <AdminSettings />}
           
           {activeTab === 'Ürünler' && (
             <>
@@ -358,7 +360,7 @@ const AdminDashboard = () => {
             </>
           )}
           
-          {activeTab !== 'Kontrol Paneli' && activeTab !== 'Ürünler' && activeTab !== 'Siparişler' && activeTab !== 'Kampanyalar' && activeTab !== 'Müşteriler' && activeTab !== 'Kategoriler & Markalar' && activeTab !== 'Raporlar' && (
+          {activeTab !== 'Kontrol Paneli' && activeTab !== 'Ürünler' && activeTab !== 'Siparişler' && activeTab !== 'Kampanyalar' && activeTab !== 'Müşteriler' && activeTab !== 'Kategoriler & Markalar' && activeTab !== 'Raporlar' && activeTab !== 'Site Ayarları' && (
             <div className="admin-empty-state">
               <h3>{activeTab} Modülü</h3>
               <p className="text-gray-500">Bu modül yapım aşamasındadır.</p>
