@@ -35,6 +35,10 @@ const CategoriesAndBrands = () => {
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategorySlug, setNewCategorySlug] = useState('');
 
+  // --- Edit Category State ---
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
+
   // --- Brands & Models State ---
   const [brands, setBrands] = useState([
     { 
@@ -72,6 +76,15 @@ const CategoriesAndBrands = () => {
     setNewCategorySlug(createSlug(val));
   };
 
+  const handleEditCategoryNameChange = (e) => {
+    const val = e.target.value;
+    setEditingCategory(prev => ({
+      ...prev,
+      name: val,
+      slug: createSlug(val)
+    }));
+  };
+
   const handleAddCategory = () => {
     if (!newCategoryName.trim()) return;
     const newCat = {
@@ -84,6 +97,13 @@ const CategoriesAndBrands = () => {
     setIsCategoryModalOpen(false);
     setNewCategoryName('');
     setNewCategorySlug('');
+  };
+
+  const handleSaveEditCategory = () => {
+    if (!editingCategory || !editingCategory.name.trim()) return;
+    setCategories(categories.map(c => c.id === editingCategory.id ? editingCategory : c));
+    setIsEditModalOpen(false);
+    setEditingCategory(null);
   };
 
   const handleDeleteCategory = (id) => {
@@ -181,7 +201,13 @@ const CategoriesAndBrands = () => {
                 </td>
                 <td style={{ textAlign: 'right' }}>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                    <button className="admin-action-btn edit-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.25rem', color: '#9ca3af' }} onMouseOver={e => e.currentTarget.style.color = '#f97316'} onMouseOut={e => e.currentTarget.style.color = '#9ca3af'}>
+                    <button 
+                      className="admin-action-btn edit-btn" 
+                      onClick={() => { setEditingCategory(cat); setIsEditModalOpen(true); }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.25rem', color: '#9ca3af' }} 
+                      onMouseOver={e => e.currentTarget.style.color = '#f97316'} 
+                      onMouseOut={e => e.currentTarget.style.color = '#9ca3af'}
+                    >
                       <Edit2 size={16} />
                     </button>
                     <button 
@@ -377,6 +403,46 @@ const CategoriesAndBrands = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
               <button onClick={() => setIsCategoryModalOpen(false)} style={{ padding: '0.625rem 1rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151', fontWeight: '500', cursor: 'pointer' }}>İptal</button>
               <button onClick={handleAddCategory} className="btn btn-primary" style={{ padding: '0.625rem 1rem', borderRadius: '6px', fontWeight: '500', cursor: 'pointer', border: 'none' }}>Kaydet</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Category Modal */}
+      {isEditModalOpen && editingCategory && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ backgroundColor: '#fff', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '400px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#111827' }}>Kategoriyi Düzenle</h3>
+              <button onClick={() => { setIsEditModalOpen(false); setEditingCategory(null); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>Kategori Adı</label>
+                <input 
+                  type="text" 
+                  value={editingCategory.name} 
+                  onChange={handleEditCategoryNameChange}
+                  style={{ width: '100%', padding: '0.625rem', borderRadius: '6px', border: '1px solid #d1d5db', outline: 'none', boxSizing: 'border-box' }}
+                  placeholder="Örn: Dış Görünüm"
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>URL (Slug) - <span style={{color:'#9ca3af', fontWeight:'400'}}>Otomatik</span></label>
+                <input 
+                  type="text" 
+                  value={editingCategory.slug} 
+                  onChange={(e) => setEditingCategory({ ...editingCategory, slug: e.target.value })}
+                  style={{ width: '100%', padding: '0.625rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: '#f9fafb', outline: 'none', boxSizing: 'border-box', color: '#6b7280' }}
+                  placeholder="dis-gorunum"
+                />
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+              <button onClick={() => { setIsEditModalOpen(false); setEditingCategory(null); }} style={{ padding: '0.625rem 1rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: '#fff', color: '#374151', fontWeight: '500', cursor: 'pointer' }}>Vazgeç</button>
+              <button onClick={handleSaveEditCategory} className="btn btn-primary" style={{ padding: '0.625rem 1rem', borderRadius: '6px', fontWeight: '500', cursor: 'pointer', border: 'none' }}>Değişiklikleri Kaydet</button>
             </div>
           </div>
         </div>
