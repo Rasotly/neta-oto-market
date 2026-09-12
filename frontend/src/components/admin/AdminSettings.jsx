@@ -39,11 +39,9 @@ const AdminSettings = () => {
         position: 'sticky', 
         top: 0, 
         zIndex: 50, 
-        backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-        backdropFilter: 'blur(8px)',
+        backgroundColor: 'transparent',
         padding: '1rem 0',
-        marginBottom: '1.5rem',
-        borderBottom: '1px solid #e5e7eb',
+        marginBottom: '1rem',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center'
@@ -87,19 +85,19 @@ const AdminSettings = () => {
         {/* TAB 1: GENEL AYARLAR */}
         {activeTab === 'Genel' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>Site Adı</label>
                 <input 
                   type="text" 
                   value={generalSettings.siteName}
                   onChange={(e) => setGeneralSettings({...generalSettings, siteName: e.target.value})}
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none' }}
+                  style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', boxSizing: 'border-box' }}
                 />
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>Site Logosu (Header)</label>
                 <div style={{ 
@@ -171,7 +169,7 @@ const AdminSettings = () => {
         {activeTab === 'İletişim & Sosyal Medya' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>Şirket Adresi</label>
                 <div style={{ position: 'relative' }}>
@@ -180,7 +178,7 @@ const AdminSettings = () => {
                     type="text" 
                     value={contactSettings.address}
                     onChange={(e) => setContactSettings({...contactSettings, address: e.target.value})}
-                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none' }}
+                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
@@ -193,7 +191,7 @@ const AdminSettings = () => {
                     type="email" 
                     value={contactSettings.email}
                     onChange={(e) => setContactSettings({...contactSettings, email: e.target.value})}
-                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none' }}
+                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
@@ -206,7 +204,7 @@ const AdminSettings = () => {
                     type="tel" 
                     value={contactSettings.phone}
                     onChange={(e) => setContactSettings({...contactSettings, phone: e.target.value})}
-                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none' }}
+                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
@@ -220,7 +218,7 @@ const AdminSettings = () => {
                     type="tel" 
                     value={contactSettings.whatsapp}
                     onChange={(e) => setContactSettings({...contactSettings, whatsapp: e.target.value})}
-                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #22c55e', outline: 'none', backgroundColor: '#f0fdf4' }}
+                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #22c55e', outline: 'none', backgroundColor: '#f0fdf4', boxSizing: 'border-box' }}
                   />
                 </div>
                 <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#6b7280' }}>* Bu numara müşterilerin katalog ve sipariş soruları için kullanılır.</p>
@@ -231,7 +229,7 @@ const AdminSettings = () => {
 
             {/* Social Media */}
             <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: '600', color: '#374151' }}>Sosyal Medya Hesapları</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>Instagram</label>
                 <div style={{ position: 'relative' }}>
@@ -240,7 +238,7 @@ const AdminSettings = () => {
                     type="url" 
                     value={contactSettings.instagram}
                     onChange={(e) => setContactSettings({...contactSettings, instagram: e.target.value})}
-                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none' }}
+                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
@@ -253,7 +251,7 @@ const AdminSettings = () => {
                     type="url" 
                     value={contactSettings.facebook}
                     onChange={(e) => setContactSettings({...contactSettings, facebook: e.target.value})}
-                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none' }}
+                    style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
@@ -279,7 +277,7 @@ const AdminSettings = () => {
                 type="text" 
                 value={seoSettings.metaTitle}
                 onChange={(e) => setSeoSettings({...seoSettings, metaTitle: e.target.value})}
-                style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none' }}
+                style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', boxSizing: 'border-box' }}
               />
               <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#6b7280' }}>Önerilen uzunluk: 50-60 karakter. (Şu an: {seoSettings.metaTitle.length})</p>
             </div>
@@ -290,7 +288,7 @@ const AdminSettings = () => {
                 rows={4}
                 value={seoSettings.metaDescription}
                 onChange={(e) => setSeoSettings({...seoSettings, metaDescription: e.target.value})}
-                style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', resize: 'vertical' }}
+                style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
               />
               <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#6b7280' }}>Önerilen uzunluk: 150-160 karakter. (Şu an: {seoSettings.metaDescription.length})</p>
             </div>
