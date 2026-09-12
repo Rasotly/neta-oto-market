@@ -100,7 +100,8 @@ const AdminSettings = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>Site Logosu (Header)</label>
-                <div style={{ 
+                <label style={{ 
+                  display: 'block',
                   border: '2px dashed #d1d5db', 
                   borderRadius: '12px', 
                   padding: '2rem', 
@@ -108,15 +109,17 @@ const AdminSettings = () => {
                   backgroundColor: '#f9fafb',
                   cursor: 'pointer'
                 }}>
+                  <input type="file" accept="image/png, image/jpeg, image/svg+xml" style={{ display: 'none' }} />
                   <UploadCloud size={32} color="#9ca3af" style={{ margin: '0 auto 0.5rem' }} />
                   <div style={{ fontSize: '0.875rem', color: '#4b5563', fontWeight: '500' }}>Tıklayın veya resmi buraya sürükleyin</div>
                   <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>PNG, JPG veya SVG (Önerilen: 200x50px)</div>
-                </div>
+                </label>
               </div>
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>Favicon (Tarayıcı İkonu)</label>
-                <div style={{ 
+                <label style={{ 
+                  display: 'block',
                   border: '2px dashed #d1d5db', 
                   borderRadius: '12px', 
                   padding: '2rem', 
@@ -124,10 +127,11 @@ const AdminSettings = () => {
                   backgroundColor: '#f9fafb',
                   cursor: 'pointer'
                 }}>
+                  <input type="file" accept="image/x-icon, image/png" style={{ display: 'none' }} />
                   <UploadCloud size={32} color="#9ca3af" style={{ margin: '0 auto 0.5rem' }} />
                   <div style={{ fontSize: '0.875rem', color: '#4b5563', fontWeight: '500' }}>Tıklayın veya resmi buraya sürükleyin</div>
                   <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>ICO veya PNG (Önerilen: 32x32px)</div>
-                </div>
+                </label>
               </div>
             </div>
 
