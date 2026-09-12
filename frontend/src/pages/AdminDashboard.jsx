@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { useProducts } from '../context/ProductContext';
-import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight, Tags, Star, PieChart, Settings, AlertTriangle, Search } from 'lucide-react';
+import { Plus, Edit2, Trash2, ArrowLeft, LogOut, LayoutDashboard, Package, ShoppingCart, Users, Menu as MenuIcon, ChevronDown, ChevronRight, Tags, Star, PieChart, Settings, AlertTriangle, Search, Shield } from 'lucide-react';
 import AddProductModal from '../components/AddProductModal';
 import DashboardHome from '../components/admin/DashboardHome';
 import DiscountCodes from '../components/admin/DiscountCodes';
@@ -13,6 +13,7 @@ import AdminCustomers from '../components/admin/AdminCustomers';
 import CategoriesAndBrands from '../components/admin/CategoriesAndBrands';
 import AdminAnalytics from '../components/admin/AdminAnalytics';
 import AdminSettings from '../components/admin/AdminSettings';
+import AdminUsers from '../components/admin/AdminUsers';
 import { formatPrice } from '../utils/formatters';
 import '../App.css';
 
@@ -20,6 +21,10 @@ const AdminDashboard = () => {
   const { isAdmin, logout, registeredUsers } = useAuth();
   const navigate = useNavigate();
   
+  // Mock Current User for RBAC (Role-Based Access Control) Simulation
+  // Değiştirerek test edebilirsiniz: 'Süper Admin' | 'İçerik Editörü' | 'Operasyon Sorumlusu'
+  const currentUser = { id: 1, role: 'Süper Admin' };
+
   // Calculate pending orders count
   const pendingOrdersCount = (registeredUsers || []).reduce((total, user) => {
     if (user.orders && Array.isArray(user.orders)) {
@@ -182,19 +187,32 @@ const AdminDashboard = () => {
             </li>
           </ul>
 
-          <div className="admin-sidebar-divider"></div>
-          
-          <ul className="admin-nav-list">
-            <li>
-              <button 
-                className={`admin-nav-item ${activeTab === 'Site Ayarları' ? 'active' : ''}`}
-                onClick={() => setActiveTab('Site Ayarları')}
-              >
-                <Settings size={18} />
-                Site Ayarları
-              </button>
-            </li>
-          </ul>
+          {currentUser.role === 'Süper Admin' && (
+            <>
+              <div className="admin-sidebar-divider"></div>
+              
+              <ul className="admin-nav-list">
+                <li>
+                  <button 
+                    className={`admin-nav-item ${activeTab === 'Yöneticiler' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('Yöneticiler')}
+                  >
+                    <Shield size={18} />
+                    Yöneticiler ve Ekip
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    className={`admin-nav-item ${activeTab === 'Site Ayarları' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('Site Ayarları')}
+                  >
+                    <Settings size={18} />
+                    Site Ayarları
+                  </button>
+                </li>
+              </ul>
+            </>
+          )}
         </div>
       </aside>
 
@@ -232,7 +250,8 @@ const AdminDashboard = () => {
           {activeTab === 'Siparişler' && <AdminOrders />}
           {activeTab === 'Müşteriler' && <AdminCustomers />}
           {activeTab === 'Kategoriler & Markalar' && <CategoriesAndBrands />}
-          {activeTab === 'Site Ayarları' && <AdminSettings />}
+          {activeTab === 'Site Ayarları' && currentUser.role === 'Süper Admin' && <AdminSettings />}
+          {activeTab === 'Yöneticiler' && currentUser.role === 'Süper Admin' && <AdminUsers currentUser={currentUser} />}
           
           {activeTab === 'Ürünler' && (
             <>
@@ -360,7 +379,7 @@ const AdminDashboard = () => {
             </>
           )}
           
-          {activeTab !== 'Kontrol Paneli' && activeTab !== 'Ürünler' && activeTab !== 'Siparişler' && activeTab !== 'Kampanyalar' && activeTab !== 'Müşteriler' && activeTab !== 'Kategoriler & Markalar' && activeTab !== 'Raporlar' && activeTab !== 'Site Ayarları' && (
+          {activeTab !== 'Kontrol Paneli' && activeTab !== 'Ürünler' && activeTab !== 'Siparişler' && activeTab !== 'Kampanyalar' && activeTab !== 'Müşteriler' && activeTab !== 'Kategoriler & Markalar' && activeTab !== 'Raporlar' && activeTab !== 'Site Ayarları' && activeTab !== 'Yöneticiler' && (
             <div className="admin-empty-state">
               <h3>{activeTab} Modülü</h3>
               <p className="text-gray-500">Bu modül yapım aşamasındadır.</p>
