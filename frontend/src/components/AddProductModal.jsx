@@ -61,8 +61,6 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
   const isFormValid = () => {
     return formData.name.trim() !== '' && 
            formData.category !== '' && 
-           formData.brand !== '' &&
-           formData.model !== '' &&
            formData.price !== '' && 
            !isNaN(formData.price) && 
            Number(formData.price) > 0;
@@ -257,7 +255,7 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Uyumlu Marka <span className="text-danger">*</span></label>
+                  <label>Uyumlu Marka</label>
                   <select 
                     name="brand" 
                     value={formData.brand} 
@@ -271,7 +269,7 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Uyumlu Model <span className="text-danger">*</span></label>
+                  <label>Uyumlu Model</label>
                   <select 
                     name="model" 
                     value={formData.model} 

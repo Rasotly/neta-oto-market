@@ -218,7 +218,7 @@ const ProductDetail = () => {
                     <li><strong>Marka:</strong> {product.brand || 'Belirtilmemiş'}</li>
                     <li><strong>Model:</strong> {product.model || 'Belirtilmemiş'}</li>
                     <li><strong>Kategori:</strong> {product.category || 'Belirtilmemiş'}</li>
-                    <li><strong>Stok Durumu:</strong> {product.stock > 0 ? `${product.stock} adet stokta` : 'Tükendi'}</li>
+                    <li><strong>Stok Durumu:</strong> {product.stockCount > 0 ? `${product.stockCount} adet stokta` : 'Tükendi'}</li>
                   </ul>
                 </div>
               )}
