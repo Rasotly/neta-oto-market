@@ -6,7 +6,7 @@ import { useFavorites } from '../context/FavoritesContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
-import { ChevronLeft, Plus, Minus, ShieldCheck, PackageOpen, RefreshCw, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, Plus, Minus, ShieldCheck, PackageOpen, RefreshCw, ShoppingCart, Lock, Headset } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatPrice } from '../utils/formatters';
 import '../App.css';
@@ -162,12 +162,20 @@ const ProductDetail = () => {
 
               <div className="pd-trust-badges">
                 <div className="pd-trust-badge">
-                  <ShieldCheck size={20} className="pd-trust-icon" />
-                  <span>2 Yıl Garanti</span>
+                  <ShieldCheck size={16} className="pd-trust-icon" />
+                  <span>%100 Orijinal Ürün</span>
                 </div>
                 <div className="pd-trust-badge">
-                  <RefreshCw size={20} className="pd-trust-icon" />
-                  <span>14 Gün İade</span>
+                  <Lock size={16} className="pd-trust-icon" />
+                  <span>256-Bit Güvenli Ödeme</span>
+                </div>
+                <div className="pd-trust-badge">
+                  <Headset size={16} className="pd-trust-icon" />
+                  <span>Uzman Teknik Destek</span>
+                </div>
+                <div className="pd-trust-badge">
+                  <RefreshCw size={16} className="pd-trust-icon" />
+                  <span>Kolay İade & Değişim</span>
                 </div>
               </div>
             </div>
