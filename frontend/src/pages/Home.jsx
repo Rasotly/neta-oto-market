@@ -159,48 +159,50 @@ function Home() {
         {/* İÇERİK ALANI: Sidebar ve Grid Yanyana */}
         <div style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
           
-          <aside style={{ width: '260px', flexShrink: 0, marginRight: '2rem', marginTop: '5.5rem' }}>
-            <div className="filter-panel" style={{ width: '100%', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '0.75rem', padding: '1.5rem', boxSizing: 'border-box' }}>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem' }}>Kategoriler</h3>
-              <div style={{ marginBottom: '1.5rem' }}>
-                {categoryCounts.map(({ name, count }) => (
-                  <label key={name} className="filter-checkbox-container">
-                    <div className="filter-checkbox-left">
-                      <input 
-                        type="checkbox" 
-                        className="filter-checkbox-input"
-                        checked={filters.categories.includes(name)}
-                        onChange={() => handleCategoryChange(name)}
-                      />
-                      <span className="filter-label">{name}</span>
-                    </div>
-                    <span className="filter-count">{count}</span>
-                  </label>
-                ))}
-              </div>
+          {!showOnlyFavorites && (
+            <aside style={{ width: '260px', flexShrink: 0, marginRight: '2rem', marginTop: '5.5rem' }}>
+              <div className="filter-panel" style={{ width: '100%', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '0.75rem', padding: '1.5rem', boxSizing: 'border-box' }}>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem' }}>Kategoriler</h3>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  {categoryCounts.map(({ name, count }) => (
+                    <label key={name} className="filter-checkbox-container">
+                      <div className="filter-checkbox-left">
+                        <input 
+                          type="checkbox" 
+                          className="filter-checkbox-input"
+                          checked={filters.categories.includes(name)}
+                          onChange={() => handleCategoryChange(name)}
+                        />
+                        <span className="filter-label">{name}</span>
+                      </div>
+                      <span className="filter-count">{count}</span>
+                    </label>
+                  ))}
+                </div>
 
-              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem' }}>Markalar</h3>
-              <div>
-                {brandCounts.map(({ name, count }) => (
-                  <label key={name} className="filter-checkbox-container">
-                    <div className="filter-checkbox-left">
-                      <input 
-                        type="checkbox" 
-                        className="filter-checkbox-input"
-                        checked={filters.brands.includes(name)}
-                        onChange={() => handleBrandChange(name)}
-                      />
-                      <span className="filter-label">{name}</span>
-                    </div>
-                    <span className="filter-count">{count}</span>
-                  </label>
-                ))}
-              </div>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem' }}>Markalar</h3>
+                <div>
+                  {brandCounts.map(({ name, count }) => (
+                    <label key={name} className="filter-checkbox-container">
+                      <div className="filter-checkbox-left">
+                        <input 
+                          type="checkbox" 
+                          className="filter-checkbox-input"
+                          checked={filters.brands.includes(name)}
+                          onChange={() => handleBrandChange(name)}
+                        />
+                        <span className="filter-label">{name}</span>
+                      </div>
+                      <span className="filter-count">{count}</span>
+                    </label>
+                  ))}
+                </div>
 
-              <button className="btn-filter-submit" onClick={() => window.scrollTo(0, 0)}>Sonuçları Göster</button>
-              <button className="btn-filter-clear" onClick={handleClearFilters}>Filtreleri Temizle</button>
-            </div>
-          </aside>
+                <button className="btn-filter-submit" onClick={() => window.scrollTo(0, 0)}>Sonuçları Göster</button>
+                <button className="btn-filter-clear" onClick={handleClearFilters}>Filtreleri Temizle</button>
+              </div>
+            </aside>
+          )}
 
           <main className="catalog-main" style={{
             display: 'flex',
