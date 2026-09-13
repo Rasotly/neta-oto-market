@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle2 } from 'lucide-react';
+import { X, CheckCircle2, Upload } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useProducts } from '../context/ProductContext';
@@ -59,6 +59,20 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
            formData.price !== '' && 
            !isNaN(formData.price) && 
            Number(formData.price) > 0;
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({
+          ...prev,
+          imageUrl: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleChange = (e) => {
@@ -262,15 +276,32 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
               <h3 className="section-title">Medya & Detay</h3>
               
               <div className="form-group">
-                <label>Görsel URL</label>
-                <input 
-                  type="text" 
-                  name="imageUrl" 
-                  value={formData.imageUrl} 
-                  onChange={handleChange}
-                  className="modern-input"
-                  placeholder="https://..."
-                />
+                <label>Görsel Seç veya URL Girin</label>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <input 
+                    type="text" 
+                    name="imageUrl" 
+                    value={formData.imageUrl} 
+                    onChange={handleChange}
+                    className="modern-input"
+                    placeholder="https://... veya dosya seçin"
+                    style={{ flex: 1 }}
+                  />
+                  <label className="btn btn-secondary" style={{ cursor: 'pointer', margin: 0, padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Cihazdan Yükle">
+                    <Upload size={20} />
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleImageUpload} 
+                      style={{ display: 'none' }} 
+                    />
+                  </label>
+                </div>
+                {formData.imageUrl && formData.imageUrl.startsWith('data:image') && (
+                  <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#16a34a', fontWeight: '500' }}>
+                    ✓ Yerel görsel belleğe alındı.
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
