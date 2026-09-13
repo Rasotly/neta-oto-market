@@ -1,4 +1,4 @@
-﻿namespace NetaOtoMarket.API.Models
+namespace NetaOtoMarket.API.Models
 {
     public class Product
     {
@@ -8,6 +8,7 @@
         public decimal Price { get; set; }        // Yeni: Fiyat
         public string Description { get; set; }   // Yeni: Açıklama
         public string ImageUrl { get; set; }      // Yeni: Görsel Linki
+        public List<string>? ImageUrls { get; set; } = new List<string>(); // Çoklu Görsel
         public bool InStock { get; set; }
     }
 }

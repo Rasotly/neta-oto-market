@@ -14,10 +14,13 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
     stockCount: '',
     description: '',
     imageUrl: '',
+    imageUrls: [],
     brand: '',
     model: '',
     inStock: true
   });
+  
+  const [tempImageUrl, setTempImageUrl] = useState('');
   
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -30,10 +33,12 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
         stockCount: editProduct.stockCount || '',
         description: editProduct.description || '',
         imageUrl: editProduct.imageUrl || '',
+        imageUrls: editProduct.imageUrls || (editProduct.imageUrl ? [editProduct.imageUrl] : []),
         brand: editProduct.brand || '',
         model: editProduct.model || '',
         inStock: editProduct.inStock ?? true
       });
+      setTempImageUrl('');
     } else {
       setFormData({
         name: '',
@@ -42,10 +47,12 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
         stockCount: '',
         description: '',
         imageUrl: '',
+        imageUrls: [],
         brand: '',
         model: '',
         inStock: true
       });
+      setTempImageUrl('');
     }
   }, [editProduct, isOpen]);
 
@@ -68,11 +75,28 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
       reader.onloadend = () => {
         setFormData(prev => ({
           ...prev,
-          imageUrl: reader.result
+          imageUrls: [...prev.imageUrls, reader.result]
         }));
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleAddImageUrl = () => {
+    if (tempImageUrl.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        imageUrls: [...prev.imageUrls, tempImageUrl.trim()]
+      }));
+      setTempImageUrl('');
+    }
+  };
+
+  const handleRemoveImage = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      imageUrls: prev.imageUrls.filter((_, i) => i !== index)
+    }));
   };
 
   const handleChange = (e) => {
@@ -100,7 +124,8 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
       const payload = {
         ...formData,
         price: Number(formData.price),
-        stockCount: formData.stockCount ? Number(formData.stockCount) : 0
+        stockCount: formData.stockCount ? Number(formData.stockCount) : 0,
+        imageUrl: formData.imageUrls.length > 0 ? formData.imageUrls[0] : ''
       };
       
       if (editProduct) {
@@ -280,13 +305,13 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                   <input 
                     type="text" 
-                    name="imageUrl" 
-                    value={formData.imageUrl} 
-                    onChange={handleChange}
+                    value={tempImageUrl} 
+                    onChange={(e) => setTempImageUrl(e.target.value)}
                     className="modern-input"
                     placeholder="https://... veya dosya seçin"
                     style={{ flex: 1 }}
                   />
+                  <button type="button" onClick={handleAddImageUrl} className="btn btn-primary" style={{ padding: '0.75rem 1rem' }}>Ekle</button>
                   <label className="btn btn-secondary" style={{ cursor: 'pointer', margin: 0, padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Cihazdan Yükle">
                     <Upload size={20} />
                     <input 
@@ -297,9 +322,21 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
                     />
                   </label>
                 </div>
-                {formData.imageUrl && formData.imageUrl.startsWith('data:image') && (
-                  <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#16a34a', fontWeight: '500' }}>
-                    ✓ Yerel görsel belleğe alındı.
+                
+                {formData.imageUrls && formData.imageUrls.length > 0 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: '0.75rem', marginTop: '1rem' }}>
+                    {formData.imageUrls.map((url, idx) => (
+                      <div key={idx} style={{ position: 'relative', paddingBottom: '100%', border: '1px solid #e5e7eb', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                        <img src={url} alt={`Ürün ${idx + 1}`} style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <button 
+                          type="button" 
+                          onClick={() => handleRemoveImage(idx)} 
+                          style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(239,68,68,0.9)', color: 'white', border: 'none', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

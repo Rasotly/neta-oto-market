@@ -33,7 +33,11 @@ const ProductDetail = () => {
       const found = products.find(p => String(p.id) === String(id));
       if (found) {
         setProduct(found);
-        setActiveImage(found.imageUrl || '');
+        setActiveImage(
+          (found.imageUrls && found.imageUrls.length > 0) 
+            ? found.imageUrls[0] 
+            : (found.imageUrl || '')
+        );
         document.title = `${found.name} | Neta Oto Market`;
       } else {
         toast.error("Ürün bulunamadı!");
@@ -69,13 +73,10 @@ const ProductDetail = () => {
     toggleFavorite(product.id);
   };
 
-  // Mock data for gallery and compatibility
-  const mockGallery = [
-    product.imageUrl,
-    product.imageUrl,
-    product.imageUrl,
-    product.imageUrl
-  ].filter(Boolean);
+  // Real data for gallery
+  const productGallery = (product.imageUrls && product.imageUrls.length > 0)
+    ? product.imageUrls
+    : [product.imageUrl].filter(Boolean);
 
   const mockBadges = [
     "Uyumlu Çoğu Model", 
@@ -109,9 +110,9 @@ const ProductDetail = () => {
                   <div className="pd-no-image"><PackageOpen size={48}/></div>
                 )}
               </div>
-              {mockGallery.length > 0 && (
+              {productGallery.length > 0 && (
                 <div className="pd-thumbnails">
-                  {mockGallery.map((img, idx) => (
+                  {productGallery.map((img, idx) => (
                     <div 
                       key={idx} 
                       className={`pd-thumbnail ${activeImage === img ? 'active' : ''}`}
