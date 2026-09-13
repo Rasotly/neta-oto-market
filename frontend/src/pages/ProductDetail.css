@@ -50,12 +50,13 @@
 /* Gallery */
 .pd-gallery {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  flex-direction: row-reverse;
+  gap: 1.5rem;
+  align-items: flex-start;
 }
 
 .pd-main-image-wrapper {
-  width: 100%;
+  flex: 1;
   aspect-ratio: 1 / 1;
   border-radius: 12px;
   overflow: hidden;
@@ -78,7 +79,9 @@
 
 .pd-thumbnails {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
+  width: 80px;
 }
 
 .pd-thumbnail {
