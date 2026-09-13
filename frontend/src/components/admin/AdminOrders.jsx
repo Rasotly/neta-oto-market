@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { PackageOpen, X, ChevronDown, Check, Clock, Truck, XCircle, Search } from 'lucide-react';
+import { PackageOpen, X, ChevronDown, Check, Clock, Truck, XCircle, Search, Copy } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { formatPrice } from '../../utils/formatters';
 
 const AdminOrders = () => {
@@ -78,12 +79,23 @@ const AdminOrders = () => {
     }
   };
 
-  const [filterStatus, setFilterStatus] = useState('Tümü');
+  const tabs = ['Tüm Siparişler', 'Yeni (Bekleyen)', 'Kargodakiler', 'Teslim Edilenler'];
+  const [activeTab, setActiveTab] = useState('Tüm Siparişler');
   const [orderSearchTerm, setOrderSearchTerm] = useState('');
 
+  const getFilterStatusFromTab = (tab) => {
+    switch (tab) {
+      case 'Yeni (Bekleyen)': return 'Onay Bekliyor';
+      case 'Kargodakiler': return 'Kargoya Verildi';
+      case 'Teslim Edilenler': return 'Tamamlandı';
+      default: return 'Tümü';
+    }
+  };
+
   const filteredOrders = useMemo(() => {
+    const currentFilter = getFilterStatusFromTab(activeTab);
     return allOrders.filter(o => {
-      let matchesStatus = filterStatus === 'Tümü' || o.status === filterStatus;
+      let matchesStatus = currentFilter === 'Tümü' || o.status === currentFilter;
       
       let matchesSearch = true;
       if (orderSearchTerm) {
@@ -94,7 +106,13 @@ const AdminOrders = () => {
       
       return matchesStatus && matchesSearch;
     });
-  }, [allOrders, filterStatus, orderSearchTerm]);
+  }, [allOrders, activeTab, orderSearchTerm]);
+
+  const handleCopyTracking = (tracking) => {
+    if (!tracking) return;
+    navigator.clipboard.writeText(tracking);
+    toast.success('Takip No Kopyalandı', { position: 'top-right' });
+  };
 
   if (allOrders.length === 0) {
     return (
@@ -110,7 +128,31 @@ const AdminOrders = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
         <h2 className="admin-page-title" style={{ margin: 0, fontSize: '1.25rem' }}>Sipariş Listesi</h2>
         
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          
+          <div className="admin-orders-tabs" style={{ display: 'flex', gap: '1.5rem', borderBottom: '1px solid #e5e7eb', flex: 1, overflowX: 'auto', whiteSpace: 'nowrap' }}>
+            {tabs.map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: '0.75rem 0',
+                  fontSize: '0.9375rem',
+                  fontWeight: activeTab === tab ? '600' : '500',
+                  color: activeTab === tab ? '#111827' : '#6b7280',
+                  borderBottom: activeTab === tab ? '2px solid #f97316' : '2px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  marginBottom: '-1px'
+                }}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
           <div style={{ position: 'relative', width: '300px' }}>
             <Search size={18} color="#9ca3af" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
             <input 
@@ -129,28 +171,6 @@ const AdminOrders = () => {
               }}
             />
           </div>
-          
-          <select 
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            style={{ 
-              padding: '0.6rem 2rem 0.6rem 0.8rem', 
-              border: '1px solid #d1d5db',
-              borderRadius: '0.375rem',
-              backgroundColor: '#fff',
-              color: '#374151',
-              outline: 'none',
-              fontSize: '0.875rem',
-              cursor: 'pointer'
-            }}
-          >
-            <option value="Tümü">Tüm Durumlar</option>
-            <option value="Onay Bekliyor">Onay Bekliyor</option>
-            <option value="Hazırlanıyor">Hazırlanıyor</option>
-            <option value="Kargoya Verildi">Kargoya Verildi</option>
-            <option value="Tamamlandı">Tamamlandı</option>
-            <option value="İptal Edildi">İptal Edildi</option>
-          </select>
         </div>
       </div>
 
@@ -158,12 +178,26 @@ const AdminOrders = () => {
         <table className="admin-table">
           <thead>
             <tr>
-              <th>Sipariş No</th>
-              <th>Müşteri</th>
-              <th>Tarih</th>
-              <th>Tutar</th>
-              <th>Durum</th>
-              <th>İşlemler</th>
+              {activeTab === 'Kargodakiler' ? (
+                <>
+                  <th>Sipariş No</th>
+                  <th>Müşteri Adı</th>
+                  <th>Tarih</th>
+                  <th>Kargo Firması</th>
+                  <th style={{ width: '30%' }}>Kargo Takip No</th>
+                  <th>Durum</th>
+                  <th>İşlemler</th>
+                </>
+              ) : (
+                <>
+                  <th>Sipariş No</th>
+                  <th>Müşteri</th>
+                  <th>Tarih</th>
+                  <th>Tutar</th>
+                  <th>Durum</th>
+                  <th>İşlemler</th>
+                </>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -176,20 +210,62 @@ const AdminOrders = () => {
                 <tr key={order.id}>
                   <td><strong>{order.id}</strong></td>
                   <td>{order.userName}</td>
-                  <td>{new Date(order.date).toLocaleDateString('tr-TR')}</td>
-                  <td>{formatPrice(order.totalAmount)}</td>
+                  {activeTab === 'Kargodakiler' ? (
+                    <>
+                      <td>{new Date(order.date).toLocaleDateString('tr-TR')}</td>
+                      <td>Standart Kargo</td>
+                      <td>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb', padding: '0.375rem 0.75rem', borderRadius: '6px' }}>
+                          <span style={{ fontFamily: 'monospace', fontWeight: 600, color: '#374151' }}>{order.trackingNumber || 'Belirtilmedi'}</span>
+                          {order.trackingNumber && (
+                            <button 
+                              onClick={() => handleCopyTracking(order.trackingNumber)}
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', color: '#9ca3af', display: 'flex' }}
+                              title="Kopyala"
+                            >
+                              <Copy size={16} />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td>{new Date(order.date).toLocaleDateString('tr-TR')}</td>
+                      <td>{formatPrice(order.totalAmount)}</td>
+                    </>
+                  )}
                   <td>
-                    <select 
-                      className={`status-select ${getStatusBadgeClass(order.status)}`}
-                      value={order.status}
-                      onChange={(e) => handleStatusChange(order, e.target.value)}
-                    >
-                      <option className="status-option" value="Onay Bekliyor">Onay Bekliyor</option>
-                      <option className="status-option" value="Hazırlanıyor">Hazırlanıyor</option>
-                      <option className="status-option" value="Kargoya Verildi">Kargoya Verildi</option>
-                      <option className="status-option" value="Tamamlandı">Tamamlandı</option>
-                      <option className="status-option" value="İptal Edildi">İptal Edildi</option>
-                    </select>
+                    {order.status === 'Kargoya Verildi' ? (
+                      <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '0.375rem 0.75rem', borderRadius: '9999px', fontSize: '0.8125rem', fontWeight: 600, pointerEvents: 'none' }}>
+                          <Truck size={14} /> <span>Kargoda</span>
+                        </div>
+                        <select 
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                          value={order.status}
+                          onChange={(e) => handleStatusChange(order, e.target.value)}
+                        >
+                          <option className="status-option" value="Onay Bekliyor">Onay Bekliyor</option>
+                          <option className="status-option" value="Hazırlanıyor">Hazırlanıyor</option>
+                          <option className="status-option" value="Kargoya Verildi">Kargoya Verildi</option>
+                          <option className="status-option" value="Tamamlandı">Tamamlandı</option>
+                          <option className="status-option" value="İptal Edildi">İptal Edildi</option>
+                        </select>
+                      </div>
+                    ) : (
+                      <select 
+                        className={`status-select ${getStatusBadgeClass(order.status)}`}
+                        value={order.status}
+                        onChange={(e) => handleStatusChange(order, e.target.value)}
+                      >
+                        <option className="status-option" value="Onay Bekliyor">Onay Bekliyor</option>
+                        <option className="status-option" value="Hazırlanıyor">Hazırlanıyor</option>
+                        <option className="status-option" value="Kargoya Verildi">Kargoya Verildi</option>
+                        <option className="status-option" value="Tamamlandı">Tamamlandı</option>
+                        <option className="status-option" value="İptal Edildi">İptal Edildi</option>
+                      </select>
+                    )}
                   </td>
                   <td>
                     <button className="btn-order-detail-admin" onClick={() => openDetails(order)}>

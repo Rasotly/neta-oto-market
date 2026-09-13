@@ -4049,3 +4049,6 @@
     display: none; 
   }
 }
+/* Hide scrollbar for Admin Tabs */
+.admin-orders-tabs::-webkit-scrollbar { display: none; }
+.admin-orders-tabs { -ms-overflow-style: none; scrollbar-width: none; }
