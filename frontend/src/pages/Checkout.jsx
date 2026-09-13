@@ -133,6 +133,27 @@ const Checkout = () => {
       if (numbers.length > 8) formatted += ' ' + numbers.substring(8, 10);
       value = formatted;
     }
+    
+    if (name === 'cardNumber') {
+      let numbers = value.replace(/\D/g, '').substring(0, 16);
+      value = numbers.match(/.{1,4}/g)?.join(' ') || '';
+    }
+    
+    if (name === 'cardExpiry') {
+      let numbers = value.replace(/\D/g, '').substring(0, 4);
+      if (numbers.length === 2 && value.length > formData.cardExpiry.length) {
+        value = numbers + '/';
+      } else if (numbers.length > 2) {
+        value = numbers.substring(0, 2) + '/' + numbers.substring(2);
+      } else {
+        value = numbers;
+      }
+    }
+    
+    if (name === 'cardCvv') {
+      value = value.replace(/\D/g, '').substring(0, 4);
+    }
+
     setFormData({ ...formData, [name]: value });
     if (errors) setErrors(false);
   };
