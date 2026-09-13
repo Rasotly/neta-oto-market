@@ -11,14 +11,10 @@ const Footer = () => {
         {/* Sütun 1: Kurumsal Kimlik */}
         <div className="footer-col">
           <Link to="/">
-            <img src="/logo.png" alt="Neta Oto Market" style={{ height: '40px', marginBottom: '0.5rem', background: 'white', padding: '5px', borderRadius: '4px', width: 'fit-content' }} />
+            <img src="/logo.png" alt="Neta Oto Market" style={{ height: '40px', marginBottom: '0.5rem', width: 'fit-content' }} />
           </Link>
           <div className="footer-vision-text">
             Aracınız için en kaliteli oto aksesuarları, aydınlatma, multimedya ve body kit ürünlerinde güvenilir adresiniz. Neta Oto Market ile fark yaratın.
-          </div>
-          <div className="footer-contact-text" style={{ marginTop: '1rem' }}>
-            <MapPin size={16} />
-            <span>17 Ağustos Mah. 17 Ağustos Cad. No:8 Kartepe / Kocaeli</span>
           </div>
         </div>
 
@@ -52,6 +48,10 @@ const Footer = () => {
             </a>
             <a href="mailto:netaotomarket@gmail.com" className="footer-link-item" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Mail size={16} /> netaotomarket@gmail.com
+            </a>
+            <a href="https://www.google.com/maps/search/?api=1&query=17+Ağustos+Mah.+17+Ağustos+Cad.+No:8+Kartepe+Kocaeli" target="_blank" rel="noopener noreferrer" className="footer-link-item" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+              <MapPin size={16} style={{ marginTop: '2px', flexShrink: 0 }} />
+              <span>17 Ağustos Mah. 17 Ağustos Cad. No:8 Kartepe / Kocaeli</span>
             </a>
           </div>
           

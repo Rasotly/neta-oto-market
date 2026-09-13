@@ -4205,3 +4205,43 @@
   border-radius: 4px;
   padding: 2px 4px;
 }
+
+/* NEW FOOTER LIGHT THEME OVERRIDE */
+.footer-hard-reset {
+  background-color: #f8f9fa !important;
+  color: #111827 !important;
+}
+
+.footer-col-title {
+  color: #111827 !important;
+}
+
+.footer-vision-text,
+.footer-contact-text,
+.footer-copyright {
+  color: #4b5563 !important;
+}
+
+.footer-link-item {
+  color: #4b5563 !important;
+}
+
+.footer-link-item:hover {
+  color: #f97316 !important;
+}
+
+.footer-icons-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 0.75rem !important;
+  width: max-content !important;
+}
+
+.footer-bottom-bar {
+  border-top: 1px solid #d1d5db !important;
+}
+
+/* NEW FOOTER BACKGROUND COLOR FIX */
+.footer-hard-reset {
+  background-color: #f1f1f1 !important;
+}
