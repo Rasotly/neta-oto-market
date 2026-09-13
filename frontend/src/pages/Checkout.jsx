@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../utils/formatters';
 import { CheckCircle, ShieldCheck, CreditCard, ChevronLeft } from 'lucide-react';
@@ -14,6 +14,7 @@ const Checkout = () => {
   const clearCart = contextData.clearCart || (() => {});
   const discountCodes = contextData.discountCodes || [];
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, updateUser } = useAuth();
   
   const savedAddresses = user?.addresses || [];
@@ -178,10 +179,11 @@ const Checkout = () => {
 
     setIsSubmitting(true);
     setTimeout(() => {
+      let currentOrderId = '';
       if (user && cartItems.length > 0) {
-        const orderId = '#NETA-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+        currentOrderId = '#NETA-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
         const newOrder = {
-          id: orderId,
+          id: currentOrderId,
           date: new Date().toISOString(),
           totalAmount: cartTotal - discountAmount,
           status: 'Hazırlanıyor',
@@ -208,7 +210,7 @@ const Checkout = () => {
       }
 
       setIsSubmitting(false);
-      navigate('/checkout?step=success');
+      navigate('/checkout?step=success', { state: { orderId: currentOrderId } });
       clearCart();
     }, 1500);
   };
@@ -218,6 +220,11 @@ const Checkout = () => {
       <div className="checkout-page-success">
         <CheckCircle size={96} className="checkout-success-icon" />
         <h2 className="checkout-success-title">Siparişiniz Başarıyla Alındı!</h2>
+        {location.state?.orderId && (
+          <p style={{ fontWeight: '600', fontSize: '1.25rem', color: '#111827', margin: '0.5rem 0' }}>
+            Sipariş Numarası: <span style={{ color: '#f97316' }}>{location.state.orderId}</span>
+          </p>
+        )}
         <p className="checkout-success-desc">Müşteri temsilcimiz sipariş onayı için WhatsApp üzerinden sizinle iletişime geçecektir.</p>
         <Link to="/" className="checkout-success-btn">
           Alışverişe Dön
