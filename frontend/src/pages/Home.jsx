@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ProductCard from '../components/ProductCard';
 import CartDrawer from '../components/CartDrawer';
-import FilterBar from '../components/FilterBar';
+
 import Footer from '../components/Footer';
 import HeroSlider from '../components/HeroSlider';
 import { useCart } from '../context/CartContext';
@@ -41,10 +41,8 @@ function Home() {
   const { favoriteIds } = useFavorites();
   
   const [filters, setFilters] = useState({
-    category: '',
-    brand: '',
-    model: '',
-    year: ''
+    categories: [],
+    brands: []
   });
 
   const [sortOption, setSortOption] = useState('default');
@@ -56,38 +54,55 @@ function Home() {
     setCurrentPage(1);
   }, [filters, showOnlyFavorites]);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => {
-      const updated = { ...prev, [name]: value };
-      if (name === 'brand') {
-        updated.model = ''; // Reset model when brand changes
-        updated.year = '';
-      }
-      if (name === 'model') {
-        updated.year = '';
-      }
-      return updated;
-    });
+  const handleCategoryChange = (cat) => {
+    setFilters(prev => ({
+      ...prev,
+      categories: prev.categories.includes(cat)
+        ? prev.categories.filter(c => c !== cat)
+        : [...prev.categories, cat]
+    }));
+  };
+
+  const handleBrandChange = (brand) => {
+    setFilters(prev => ({
+      ...prev,
+      brands: prev.brands.includes(brand)
+        ? prev.brands.filter(b => b !== brand)
+        : [...prev.brands, brand]
+    }));
   };
 
   const handleClearFilters = () => {
-    setFilters({ category: '', brand: '', model: '', year: '' });
+    setFilters({ categories: [], brands: [] });
     setShowOnlyFavorites(false);
   };
 
-  const uniqueCategories = useMemo(() => {
-    return [...new Set(products.map(p => p.category).filter(Boolean))].sort();
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    products.forEach(p => {
+      if (p.category) {
+        counts[p.category] = (counts[p.category] || 0) + 1;
+      }
+    });
+    return Object.entries(counts).map(([name, count]) => ({ name, count })).sort((a, b) => a.name.localeCompare(b.name));
+  }, [products]);
+
+  const brandCounts = useMemo(() => {
+    const counts = {};
+    products.forEach(p => {
+      if (p.brand) {
+        counts[p.brand] = (counts[p.brand] || 0) + 1;
+      }
+    });
+    return Object.entries(counts).map(([name, count]) => ({ name, count })).sort((a, b) => a.name.localeCompare(b.name));
   }, [products]);
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
-      const matchCategory = !filters.category || p.category === filters.category;
-      const matchBrand = !filters.brand || p.brand === filters.brand;
-      const matchModel = !filters.model || p.model === filters.model;
-      const matchYear = !filters.year || filters.year === 'Tüm Yıllar' || p.year === filters.year;
+      const matchCategory = filters.categories.length === 0 || filters.categories.includes(p.category);
+      const matchBrand = filters.brands.length === 0 || filters.brands.includes(p.brand);
       const matchFavorites = !showOnlyFavorites || favoriteIds.includes(p.id);
-      return matchCategory && matchBrand && matchModel && matchYear && matchFavorites;
+      return matchCategory && matchBrand && matchFavorites;
     });
   }, [products, filters, showOnlyFavorites, favoriteIds]);
 
@@ -120,99 +135,161 @@ function Home() {
         onToggleFavorites={() => setShowOnlyFavorites(!showOnlyFavorites)}
         onLogoClick={() => {
           setShowOnlyFavorites(false);
-          setFilters({ category: '', brand: '', model: '', year: '' });
+          setFilters({ categories: [], brands: [] });
           navigate('/');
         }}
       />
       
       {!showOnlyFavorites && <HeroSlider />}
     
-      <FilterBar 
-        categories={uniqueCategories}
-        filters={filters}
-        onFilterChange={handleFilterChange}
-        onClearFilters={handleClearFilters}
-      />
-
       <CartDrawer 
         isOpen={isCartDrawerOpen} 
         onClose={() => setIsCartDrawerOpen(false)} 
       />
 
-      <main className="main-container">
-        <h1 className="page-title">
-          {showOnlyFavorites ? 'Favorilerim' : 'Ürün Kataloğu'}
-        </h1>
+      <div className="catalog-container" style={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        width: '100%', 
+        maxWidth: '1280px', 
+        margin: '0 auto', 
+        padding: '2rem 1rem'
+      }}>
+        
+        {/* ÜST BİLGİ ALANI: Başlık, Ürün Sayısı ve Sıralama */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <h1 className="page-title" style={{ margin: 0, color: '#111827' }}>
+            {showOnlyFavorites ? 'Favorilerim' : 'Ürün Kataloğu'}
+          </h1>
+          {!loading && !error && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <span className="results-count" style={{ color: '#64748b', fontWeight: '500' }}>
+                {sortedProducts.length} ürün bulundu
+              </span>
+              {filteredProducts.length > 0 && (
+                <SortDropdown 
+                  value={sortOption} 
+                  onChange={(val) => setSortOption(val)}
+                />
+              )}
+            </div>
+          )}
+        </div>
 
-        {loading && <p className="text-center">Yükleniyor...</p>}
-        {error && <p className="text-center text-error">{error}</p>}
-
-        {!loading && !error && (
-          <>
-            {filteredProducts.length === 0 ? (
-              <div className="empty-state-container">
-                <PackageOpen size={64} className="empty-state-icon" />
-                <h3 className="empty-state-text">Bu kriterlere uygun aksesuar bulunamadı.</h3>
-                <button className="btn btn-secondary mt-4" onClick={handleClearFilters} style={{ marginTop: '1rem' }}>
-                  Filtreleri Temizle
-                </button>
+        {/* ALT İÇERİK ALANI: Sidebar ve Grid Yanyana */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
+          
+          <aside style={{ width: '260px', flexShrink: 0, marginRight: '2rem' }}>
+            <div className="filter-panel" style={{ width: '100%', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '0.75rem', padding: '1.5rem', boxSizing: 'border-box' }}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem' }}>Kategoriler</h3>
+              <div style={{ marginBottom: '1.5rem' }}>
+                {categoryCounts.map(({ name, count }) => (
+                  <label key={name} className="filter-checkbox-container">
+                    <div className="filter-checkbox-left">
+                      <input 
+                        type="checkbox" 
+                        className="filter-checkbox-input"
+                        checked={filters.categories.includes(name)}
+                        onChange={() => handleCategoryChange(name)}
+                      />
+                      <span className="filter-label">{name}</span>
+                    </div>
+                    <span className="filter-count">{count}</span>
+                  </label>
+                ))}
               </div>
-            ) : (
+
+              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem' }}>Markalar</h3>
+              <div>
+                {brandCounts.map(({ name, count }) => (
+                  <label key={name} className="filter-checkbox-container">
+                    <div className="filter-checkbox-left">
+                      <input 
+                        type="checkbox" 
+                        className="filter-checkbox-input"
+                        checked={filters.brands.includes(name)}
+                        onChange={() => handleBrandChange(name)}
+                      />
+                      <span className="filter-label">{name}</span>
+                    </div>
+                    <span className="filter-count">{count}</span>
+                  </label>
+                ))}
+              </div>
+
+              <button className="btn-filter-submit" onClick={() => window.scrollTo(0, 0)}>Sonuçları Göster</button>
+              <button className="btn-filter-clear" onClick={handleClearFilters}>Filtreleri Temizle</button>
+            </div>
+          </aside>
+
+          <main className="catalog-main" style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1,
+            minWidth: 0
+          }}>
+            {loading && <p className="text-center w-full">Yükleniyor...</p>}
+            {error && <p className="text-center text-error w-full">{error}</p>}
+
+            {!loading && !error && (
               <>
-                <div className="catalog-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-                  <span className="results-count" style={{ color: '#64748b', fontWeight: '500' }}>
-                    {sortedProducts.length} ürün bulundu
-                  </span>
-                  <SortDropdown 
-                    value={sortOption} 
-                    onChange={(val) => setSortOption(val)}
-                  />
-                </div>
-                
-                <div className="product-grid">
-                  {paginatedProducts.map((item) => (
-                    <ProductCard 
-                      key={item.id} 
-                      product={item} 
-                      onClick={(prod) => navigate('/product/' + prod.id)}
-                    />
-                  ))}
-                </div>
-
-                {totalPages > 1 && (
-                  <div className="pagination-container" style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '3rem' }}>
-                    <button 
-                      className="page-btn prev-next" 
-                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                      disabled={currentPage === 1}
-                    >
-                      Önceki
-                    </button>
-                    
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                      <button 
-                        key={page}
-                        className={`page-btn ${currentPage === page ? 'active' : ''}`}
-                        onClick={() => setCurrentPage(page)}
-                      >
-                        {page}
-                      </button>
-                    ))}
-
-                    <button 
-                      className="page-btn prev-next" 
-                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                      disabled={currentPage === totalPages}
-                    >
-                      Sonraki
+                {filteredProducts.length === 0 ? (
+                  <div className="empty-state-container w-full">
+                    <PackageOpen size={64} className="empty-state-icon" />
+                    <h3 className="empty-state-text">Bu kriterlere uygun aksesuar bulunamadı.</h3>
+                    <button className="btn btn-secondary mt-4" onClick={handleClearFilters} style={{ marginTop: '1rem' }}>
+                      Filtreleri Temizle
                     </button>
                   </div>
-                )}
-              </>
-            )}
-          </>
-        )}
-      </main>
+                ) : (
+                  <>
+                    {/* Ürün Grid Bileşeni (Ürün Kartları) */}
+                    <div className="product-grid w-full" style={{ marginTop: 0 }}>
+                      {paginatedProducts.map((item) => (
+                        <ProductCard 
+                          key={item.id} 
+                          product={item} 
+                          onClick={(prod) => navigate('/product/' + prod.id)}
+                        />
+                      ))}
+                    </div>
+
+                  {totalPages > 1 && (
+                    <div className="pagination-container w-full" style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem' }}>
+                      <button 
+                        className="page-btn prev-next" 
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                      >
+                        Önceki
+                      </button>
+                      
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                        <button 
+                          key={page}
+                          className={`page-btn ${currentPage === page ? 'active' : ''}`}
+                          onClick={() => setCurrentPage(page)}
+                        >
+                          {page}
+                        </button>
+                      ))}
+
+                      <button 
+                        className="page-btn prev-next" 
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                      >
+                        Sonraki
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </main>
+      </div>
+      </div>
       
       <Footer />
     </div>

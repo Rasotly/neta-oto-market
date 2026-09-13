@@ -17,6 +17,144 @@
   box-sizing: border-box;
 }
 
+/* Catalog Page Layout */
+.catalog-container {
+  width: 100%;
+  max-width: 1280px; /* max-w-7xl */
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile: 1 column */
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .catalog-container {
+    padding: 2rem;
+    grid-template-columns: 260px 1fr; /* Desktop: fixed sidebar, fluid content */
+  }
+}
+
+.catalog-sidebar {
+  width: 100%;
+  position: sticky;
+  top: 100px; /* Accounts for navbar */
+}
+
+.catalog-main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Panel Tasarımı */
+.filter-panel {
+  width: 100%;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+/* Özel Checkbox Yapısı */
+.filter-checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+}
+
+.filter-checkbox-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-checkbox-input {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 0.25rem;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  background-color: white;
+  margin: 0;
+  display: grid;
+  place-content: center;
+}
+
+.filter-checkbox-input:checked {
+  background-color: #f97316;
+  border-color: #f97316;
+  color: white;
+}
+
+.filter-checkbox-input::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transform-origin: bottom left;
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em white;
+  background-color: white;
+}
+
+.filter-checkbox-input:checked::before {
+  transform: scale(1);
+}
+
+.filter-count {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.filter-label {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+/* Aksiyon Butonları */
+.btn-filter-submit {
+  width: 100%;
+  background-color: #f97316;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 0;
+  border-radius: 0.75rem;
+  margin-top: 1.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-filter-submit:hover {
+  background-color: #ea580c;
+}
+
+.btn-filter-clear {
+  display: block;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.75rem;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+}
+
+.btn-filter-clear:hover {
+  color: #1f2937;
+}
+
 /* Navbar Styles */
 .navbar {
   position: sticky;
@@ -125,10 +263,23 @@
 
 /* Product Grid */
 .product-grid {
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.5rem;
   margin-top: 1rem;
+}
+
+@media (min-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 /* Product Card */
