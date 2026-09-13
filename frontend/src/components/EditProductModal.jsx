@@ -160,19 +160,11 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="edit-imageUrl">Görsel Seç veya URL Girin</label>
+            <label>Görsel Yükle</label>
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <input
-                type="text"
-                id="edit-imageUrl"
-                name="imageUrl"
-                value={formData.imageUrl}
-                onChange={handleChange}
-                placeholder="https://... veya dosya seçin"
-                style={{ flex: 1 }}
-              />
-              <label className="btn btn-secondary" style={{ cursor: 'pointer', margin: 0, padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Cihazdan Yükle">
+              <label className="btn btn-secondary" style={{ cursor: 'pointer', margin: 0, padding: '0.75rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, gap: '0.75rem', border: '1px dashed #d1d5db', backgroundColor: '#f9fafb', color: '#4b5563' }} title="Cihazdan Yükle">
                 <Upload size={20} />
+                <span>Cihazdan Dosya Seç</span>
                 <input 
                   type="file" 
                   accept="image/*" 

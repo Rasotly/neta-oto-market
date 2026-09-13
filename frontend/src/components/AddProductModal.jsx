@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle2, Upload } from 'lucide-react';
+import { X, CheckCircle2, Upload, Plus } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useProducts } from '../context/ProductContext';
@@ -305,11 +305,12 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
                     type="text" 
                     value={tempImageUrl} 
                     onChange={(e) => setTempImageUrl(e.target.value)}
+                    onBlur={handleAddImageUrl}
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddImageUrl())}
                     className="modern-input"
                     placeholder="https://... veya dosya seçin"
                     style={{ flex: 1 }}
                   />
-                  <button type="button" onClick={handleAddImageUrl} className="btn btn-primary" style={{ padding: '0.75rem 1rem' }}>Ekle</button>
                   <label className="btn btn-secondary" style={{ cursor: 'pointer', margin: 0, padding: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Cihazdan Yükle">
                     <Upload size={20} />
                     <input 
