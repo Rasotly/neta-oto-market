@@ -50,23 +50,6 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
 
         {/* Right Icons - Desktop */}
         <div className="navbar-actions desktop-only">
-
-          <button className={`icon-btn favorite-btn-container ${showOnlyFavorites ? 'active' : ''}`} onClick={onToggleFavorites}>
-            <div className="favorite-icon-wrapper nav-heart-wrapper">
-              <FaRegHeart className="heart-outline" size={22} />
-              <FaHeart className="heart-solid" size={22} />
-              {favoritesCount > 0 && <span className="favorite-badge">{favoritesCount}</span>}
-            </div>
-            <span className="icon-text">Favoriler</span>
-          </button>
-
-          <button className="icon-btn cart-btn-container" onClick={onCartClick}>
-            <div className="cart-icon-wrapper">
-              <RiShoppingCart2Line size={26} />
-              {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
-            </div>
-            <span className="icon-text">Sepet</span>
-          </button>
           
           {(isAdmin || user) ? (
             <div className="profile-dropdown-container" ref={profileDropdownRef}>
@@ -119,6 +102,24 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
               <span className="icon-text">Giriş Yap</span>
             </button>
           )}
+
+          <button className={`icon-btn favorite-btn-container ${showOnlyFavorites ? 'active' : ''}`} onClick={onToggleFavorites}>
+            <div className="favorite-icon-wrapper nav-heart-wrapper">
+              <FaRegHeart className="heart-outline" size={22} />
+              <FaHeart className="heart-solid" size={22} />
+              {favoritesCount > 0 && <span className="favorite-badge">{favoritesCount}</span>}
+            </div>
+            <span className="icon-text">Favoriler</span>
+          </button>
+
+          <button className="icon-btn cart-btn-container" onClick={onCartClick}>
+            <div className="cart-icon-wrapper">
+              <RiShoppingCart2Line size={26} />
+              {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
+            </div>
+            <span className="icon-text">Sepet</span>
+          </button>
+          
         </div>
 
         {/* Mobile Menu Toggle */}
