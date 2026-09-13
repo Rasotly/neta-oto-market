@@ -4058,3 +4058,150 @@
 /* Hide scrollbar for Admin Tabs */
 .admin-orders-tabs::-webkit-scrollbar { display: none; }
 .admin-orders-tabs { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* NEW FOOTER STYLES OVERRIDE */
+.footer-hard-reset {
+  background-color: #030712 !important;
+  color: #ffffff !important;
+  padding: 4rem 0 2rem 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+.footer-grid-container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .footer-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .footer-grid-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-col-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 1.25rem 0;
+  color: #ffffff;
+}
+
+.footer-vision-text {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+}
+
+.footer-contact-text {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.6;
+}
+
+.footer-link-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-link-item {
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+  align-self: flex-start;
+}
+
+.footer-link-item:hover {
+  color: #f97316;
+}
+
+.footer-icons-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.footer-hr-btn {
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 0.2s;
+  color: #ffffff !important;
+  width: max-content !important;
+}
+
+.footer-hr-btn:hover {
+  transform: scale(1.05);
+}
+
+.footer-hr-btn-phone { background-color: #2ecc71 !important; }
+.footer-hr-btn-mail { background-color: #e74c3c !important; }
+.footer-hr-btn-map { background-color: #27ae60 !important; }
+.footer-hr-btn-store { background-color: #f1c40f !important; color: #000000 !important; }
+.footer-hr-btn-ig { background: linear-gradient(to right, #a855f7, #ec4899) !important; }
+.footer-hr-btn-fb { background-color: #1877f2 !important; }
+
+.footer-bottom-bar {
+  max-width: 1280px;
+  width: 100%;
+  margin: 3rem auto 0 auto;
+  padding: 2rem 1.5rem 0 1.5rem;
+  border-top: 1px solid #1f2937;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .footer-bottom-bar {
+    flex-direction: row;
+  }
+}
+
+.footer-copyright {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.footer-payment-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.footer-payment-icons img {
+  height: 24px;
+  object-fit: contain;
+  background-color: white;
+  border-radius: 4px;
+  padding: 2px 4px;
+}

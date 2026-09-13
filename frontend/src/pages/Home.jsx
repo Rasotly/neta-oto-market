@@ -127,6 +127,18 @@ function Home() {
     return sortedProducts.slice(startIndex, startIndex + itemsPerPage);
   }, [sortedProducts, currentPage]);
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    const catalogElement = document.querySelector('.catalog-container');
+    if (catalogElement) {
+      const yOffset = -80;
+      const y = catalogElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="app-wrapper">
       <Navbar 
@@ -263,7 +275,7 @@ function Home() {
                     <div className="pagination-container w-full" style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem' }}>
                       <button 
                         className="page-btn prev-next" 
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                         disabled={currentPage === 1}
                       >
                         Önceki
@@ -273,7 +285,7 @@ function Home() {
                         <button 
                           key={page}
                           className={`page-btn ${currentPage === page ? 'active' : ''}`}
-                          onClick={() => setCurrentPage(page)}
+                          onClick={() => handlePageChange(page)}
                         >
                           {page}
                         </button>
@@ -281,7 +293,7 @@ function Home() {
 
                       <button 
                         className="page-btn prev-next" 
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                         disabled={currentPage === totalPages}
                       >
                         Sonraki
