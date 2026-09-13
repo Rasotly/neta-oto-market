@@ -156,30 +156,10 @@ function Home() {
         padding: '2rem 1rem'
       }}>
         
-        {/* ÜST BİLGİ ALANI: Başlık, Ürün Sayısı ve Sıralama */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <h1 className="page-title" style={{ margin: 0, color: '#111827' }}>
-            {showOnlyFavorites ? 'Favorilerim' : 'Ürün Kataloğu'}
-          </h1>
-          {!loading && !error && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span className="results-count" style={{ color: '#64748b', fontWeight: '500' }}>
-                {sortedProducts.length} ürün bulundu
-              </span>
-              {filteredProducts.length > 0 && (
-                <SortDropdown 
-                  value={sortOption} 
-                  onChange={(val) => setSortOption(val)}
-                />
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* ALT İÇERİK ALANI: Sidebar ve Grid Yanyana */}
+        {/* İÇERİK ALANI: Sidebar ve Grid Yanyana */}
         <div style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
           
-          <aside style={{ width: '260px', flexShrink: 0, marginRight: '2rem' }}>
+          <aside style={{ width: '260px', flexShrink: 0, marginRight: '2rem', marginTop: '5.5rem' }}>
             <div className="filter-panel" style={{ width: '100%', backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '0.75rem', padding: '1.5rem', boxSizing: 'border-box' }}>
               <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem' }}>Kategoriler</h3>
               <div style={{ marginBottom: '1.5rem' }}>
@@ -228,6 +208,29 @@ function Home() {
             flexGrow: 1,
             minWidth: 0
           }}>
+            
+            {/* ÜST BİLGİ ALANI: Başlık, Ürün Sayısı ve Sıralama */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem', width: '100%' }}>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <h1 className="page-title" style={{ margin: 0, color: '#111827' }}>
+                  {showOnlyFavorites ? 'Favorilerim' : 'Ürün Kataloğu'}
+                </h1>
+                {!loading && !error && (
+                  <span className="results-count" style={{ color: '#64748b', fontWeight: '500', marginTop: '4px' }}>
+                    {sortedProducts.length} ürün bulundu
+                  </span>
+                )}
+              </div>
+
+              {!loading && !error && filteredProducts.length > 0 && (
+                <SortDropdown 
+                  value={sortOption} 
+                  onChange={(val) => setSortOption(val)}
+                />
+              )}
+
+            </div>
             {loading && <p className="text-center w-full">Yükleniyor...</p>}
             {error && <p className="text-center text-error w-full">{error}</p>}
 
