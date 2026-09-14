@@ -11,6 +11,7 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
     name: '',
     category: '',
     price: '',
+    discountedPrice: '',
     stockCount: '',
     description: '',
     imageUrl: '',
@@ -30,6 +31,7 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
         name: editProduct.name || '',
         category: editProduct.category || '',
         price: editProduct.price || '',
+        discountedPrice: editProduct.discountedPrice || '',
         stockCount: editProduct.stockCount || '',
         description: editProduct.description || '',
         imageUrl: editProduct.imageUrl || '',
@@ -44,6 +46,7 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
         name: '',
         category: '',
         price: '',
+        discountedPrice: '',
         stockCount: '',
         description: '',
         imageUrl: '',
@@ -58,12 +61,20 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
 
   if (!isOpen) return null;
 
+  const currentPrice = Number(formData.price) || 0;
+  const currentDiscount = Number(formData.discountedPrice) || 0;
+  const discountPercentage = (currentPrice > 0 && currentDiscount > 0 && currentPrice > currentDiscount) 
+    ? Math.round(((currentPrice - currentDiscount) / currentPrice) * 100) 
+    : 0;
+  const hasDiscountError = currentDiscount >= currentPrice && currentDiscount > 0;
+
   const isFormValid = () => {
     return formData.name.trim() !== '' && 
            formData.category !== '' && 
            formData.price !== '' && 
            !isNaN(formData.price) && 
-           Number(formData.price) > 0;
+           Number(formData.price) > 0 &&
+           !hasDiscountError;
   };
 
   const handleImageUpload = (e) => {
@@ -122,6 +133,7 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
       const payload = {
         ...formData,
         price: Number(formData.price),
+        discountedPrice: formData.discountedPrice ? Number(formData.discountedPrice) : null,
         stockCount: formData.stockCount ? Number(formData.stockCount) : 0,
         imageUrl: formData.imageUrls.length > 0 ? formData.imageUrls[0] : ''
       };
@@ -183,9 +195,9 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
                 />
               </div>
 
-              <div className="form-row">
+              <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="form-group">
-                  <label>Fiyat (₺) <span className="text-danger">*</span></label>
+                  <label>Normal Fiyat (₺) <span className="text-danger">*</span></label>
                   <input 
                     type="number" 
                     name="price" 
@@ -196,6 +208,31 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
                     step="0.01"
                   />
                 </div>
+                <div className="form-group relative">
+                  <div className="flex justify-between items-center" style={{ marginBottom: '0.5rem' }}>
+                    <label style={{ margin: 0 }}>İndirimli Fiyat (₺)</label>
+                    {discountPercentage > 0 && !hasDiscountError && (
+                      <span className="bg-green-100 text-green-700 font-bold px-2 py-1 rounded-md text-xs">
+                        %{discountPercentage} İndirim
+                      </span>
+                    )}
+                  </div>
+                  <input 
+                    type="number" 
+                    name="discountedPrice" 
+                    value={formData.discountedPrice} 
+                    onChange={handleChange}
+                    className={`modern-input ${hasDiscountError ? 'input-error' : ''}`}
+                    placeholder="Opsiyonel"
+                    step="0.01"
+                  />
+                  {hasDiscountError && (
+                    <span className="text-red-500 text-xs mt-1">İndirimli fiyat, normal fiyattan yüksek olamaz!</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="form-row">
                 <div className="form-group">
                   <label>Stok Adedi</label>
                   <input 

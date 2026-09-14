@@ -6,6 +6,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
   const [formData, setFormData] = useState({
     name: '',
     price: '',
+    discountedPrice: '',
     description: '',
     imageUrl: '',
     category: '',
@@ -22,6 +23,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
       setFormData({
         name: product.name || '',
         price: product.price || '',
+        discountedPrice: product.discountedPrice || '',
         description: product.description || '',
         imageUrl: product.imageUrl || '',
         category: product.category || '',
@@ -56,6 +58,14 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
     }));
   };
 
+  const currentPrice = Number(formData.price) || 0;
+  const currentDiscount = Number(formData.discountedPrice) || 0;
+  const discountPercentage = (currentPrice > 0 && currentDiscount > 0 && currentPrice > currentDiscount) 
+    ? Math.round(((currentPrice - currentDiscount) / currentPrice) * 100) 
+    : 0;
+  const hasDiscountError = currentDiscount >= currentPrice && currentDiscount > 0;
+  const isFormValid = !hasDiscountError && formData.name.trim() !== '' && formData.price !== '' && Number(formData.price) > 0;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -65,6 +75,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
       id: product.id,
       name: formData.name,
       price: parseFloat(formData.price),
+      discountedPrice: formData.discountedPrice ? parseFloat(formData.discountedPrice) : null,
       description: formData.description,
       imageUrl: formData.imageUrl,
       category: formData.category,
@@ -109,9 +120,9 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
             />
           </div>
 
-          <div className="form-row">
+          <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="form-group">
-              <label htmlFor="edit-price">Fiyat (₺) *</label>
+              <label htmlFor="edit-price">Normal Fiyat (₺) *</label>
               <input
                 type="number"
                 id="edit-price"
@@ -123,6 +134,33 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
                 required
               />
             </div>
+            <div className="form-group relative">
+              <div className="flex justify-between items-center" style={{ marginBottom: '0.5rem' }}>
+                <label htmlFor="edit-discount" style={{ margin: 0 }}>İndirimli Fiyat (₺)</label>
+                {discountPercentage > 0 && !hasDiscountError && (
+                  <span className="bg-green-100 text-green-700 font-bold px-2 py-1 rounded-md text-xs">
+                    %{discountPercentage} İndirim
+                  </span>
+                )}
+              </div>
+              <input
+                type="number"
+                id="edit-discount"
+                name="discountedPrice"
+                value={formData.discountedPrice}
+                onChange={handleChange}
+                className={hasDiscountError ? 'input-error' : ''}
+                placeholder="Opsiyonel"
+                min="0"
+                step="0.01"
+              />
+              {hasDiscountError && (
+                <span className="text-red-500 text-xs mt-1">İndirimli fiyat, normal fiyattan yüksek olamaz!</span>
+              )}
+            </div>
+          </div>
+
+          <div className="form-row">
             <div className="form-group">
               <label htmlFor="edit-category">Kategori *</label>
               <input
@@ -207,7 +245,7 @@ const EditProductModal = ({ isOpen, onClose, product, onProductUpdated }) => {
             <button type="button" className="btn btn-secondary" onClick={onClose}>
               İptal
             </button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="btn btn-primary" disabled={loading || !isFormValid}>
               {loading ? 'Güncelleniyor...' : 'Değişiklikleri Kaydet'}
             </button>
           </div>
