@@ -104,9 +104,9 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
           )}
 
           <button className={`icon-btn favorite-btn-container ${showOnlyFavorites ? 'active' : ''}`} onClick={onToggleFavorites}>
-            <div className="favorite-icon-wrapper nav-heart-wrapper">
-              <FaRegHeart className="heart-outline" size={22} />
-              <FaHeart className="heart-solid" size={22} />
+            <div className="favorite-icon-wrapper nav-heart-wrapper" style={{ height: '26px' }}>
+              <FaRegHeart className="heart-outline" size={24} />
+              <FaHeart className="heart-solid" size={24} />
               {favoritesCount > 0 && <span className="favorite-badge">{favoritesCount}</span>}
             </div>
             <span className="icon-text">Favoriler</span>
