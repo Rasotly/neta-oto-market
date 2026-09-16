@@ -18,7 +18,18 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Sütun 2: Hızlı Linkler */}
+        {/* Sütun 2: Üyelik */}
+        <div className="footer-col">
+          <h3 className="footer-col-title">Üyelik</h3>
+          <div className="footer-link-list">
+            <Link to="/auth?mode=register" className="footer-link-item">Yeni Üyelik</Link>
+            <Link to="/auth" className="footer-link-item">Üye Girişi</Link>
+            <Link to="/auth?mode=forgot" className="footer-link-item">Şifremi Unuttum</Link>
+            <Link to="/checkout" className="footer-link-item">Sepetiniz</Link>
+          </div>
+        </div>
+
+        {/* Sütun 3: Hızlı Linkler */}
         <div className="footer-col">
           <h3 className="footer-col-title">Kurumsal</h3>
           <div className="footer-link-list">
@@ -29,7 +40,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Sütun 3: Kategoriler */}
+        {/* Sütun 4: Kategoriler */}
         <div className="footer-col">
           <h3 className="footer-col-title">Popüler Kategoriler</h3>
           <div className="footer-link-list">
@@ -39,7 +50,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Sütun 4: İletişim ve Sosyal Medya */}
+        {/* Sütun 5: İletişim ve Sosyal Medya */}
         <div className="footer-col">
           <h3 className="footer-col-title">Bize Ulaşın</h3>
           <div className="footer-link-list" style={{ marginBottom: '1.25rem' }}>
