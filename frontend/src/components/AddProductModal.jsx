@@ -247,22 +247,21 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
                     min="0"
                   />
                 </div>
-              </div>
-
-              <div className="form-group toggle-group">
-                <div className="toggle-label-area">
+                <div className="form-group">
                   <label>Stok Durumu</label>
-                  <span className="toggle-desc">Ürün şu anda satışa uygun mu?</span>
+                  <div className="toggle-group" style={{ margin: 0, padding: '0 1rem', height: '42px', backgroundColor: 'transparent', border: '1px solid #e5e7eb', borderRadius: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>Satışa uygun mu?</span>
+                    <label className="toggle-switch" style={{ transform: 'scale(0.85)', margin: 0 }}>
+                      <input 
+                        type="checkbox" 
+                        name="inStock"
+                        checked={formData.inStock}
+                        onChange={handleChange}
+                      />
+                      <span className="slider round"></span>
+                    </label>
+                  </div>
                 </div>
-                <label className="toggle-switch">
-                  <input 
-                    type="checkbox" 
-                    name="inStock"
-                    checked={formData.inStock}
-                    onChange={handleChange}
-                  />
-                  <span className="slider round"></span>
-                </label>
               </div>
             </div>
 
