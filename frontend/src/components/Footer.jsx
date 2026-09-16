@@ -37,6 +37,7 @@ const Footer = () => {
             <Link to="/hakkimizda" className="footer-link-item">Hakkımızda</Link>
             <Link to="/iade-kosullari" className="footer-link-item">İade Koşulları</Link>
             <Link to="/gizlilik-politikasi" className="footer-link-item">Gizlilik Politikası</Link>
+            <Link to="/gizlilik-ve-guvenlik" className="footer-link-item">Gizlilik ve Güvenlik</Link>
           </div>
         </div>
 

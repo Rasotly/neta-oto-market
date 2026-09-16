@@ -14,6 +14,7 @@ import WhatsAppButton from './components/WhatsAppButton';
 import About from './pages/About';
 import ReturnPolicy from './pages/ReturnPolicy';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import SecurityPolicy from './pages/SecurityPolicy';
 import ScrollToTop from './components/ScrollToTop';
 import './App.css';
 
@@ -56,6 +57,7 @@ function App() {
             <Route path="/hakkimizda" element={<About />} />
             <Route path="/iade-kosullari" element={<ReturnPolicy />} />
             <Route path="/gizlilik-politikasi" element={<PrivacyPolicy />} />
+            <Route path="/gizlilik-ve-guvenlik" element={<SecurityPolicy />} />
           </Routes>
           
           <WhatsAppButton />
