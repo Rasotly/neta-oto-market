@@ -11,6 +11,11 @@ const ProductCard = ({ product, onClick }) => {
 
   const isFav = isFavorite(product.id);
 
+  const hasDiscount = product.discountedPrice && product.discountedPrice < product.price;
+  const discountPercentage = hasDiscount 
+    ? Math.round(((product.price - product.discountedPrice) / product.price) * 100) 
+    : 0;
+
   const handleAddToCart = (e) => {
     e.stopPropagation();
     addToCart(product);
@@ -46,6 +51,12 @@ const ProductCard = ({ product, onClick }) => {
             Görsel Yok
           </div>
         )}
+
+        {hasDiscount && (
+          <div className="absolute top-3 left-3 bg-red-500 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-sm z-10">
+            %{discountPercentage}
+          </div>
+        )}
         
         <button 
           className={`absolute top-3 right-3 w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center transition-colors z-10 ${
@@ -72,9 +83,22 @@ const ProductCard = ({ product, onClick }) => {
         {/* Fiyat ve Stok Düzeni */}
         <div className="flex items-end justify-between mb-4 mt-auto">
           {product.price ? (
-            <p className="text-xl font-bold text-gray-900">
-              {formatPrice(product.price).replace(' ₺', '')} <span className="text-sm font-normal">₺</span>
-            </p>
+            <div className="flex items-baseline gap-2">
+              {hasDiscount ? (
+                <>
+                  <p className="text-xl font-bold text-red-500">
+                    {formatPrice(product.discountedPrice).replace(' ₺', '')} <span className="text-sm font-normal">₺</span>
+                  </p>
+                  <p className="text-sm font-medium text-gray-500 line-through">
+                    {formatPrice(product.price).replace(' ₺', '')} <span className="text-xs font-normal">₺</span>
+                  </p>
+                </>
+              ) : (
+                <p className="text-xl font-bold text-gray-900">
+                  {formatPrice(product.price).replace(' ₺', '')} <span className="text-sm font-normal">₺</span>
+                </p>
+              )}
+            </div>
           ) : (
             <p className="text-base font-medium text-gray-500">Fiyat Yok</p>
           )}
