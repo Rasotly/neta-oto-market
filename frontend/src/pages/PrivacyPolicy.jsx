@@ -19,19 +19,44 @@ const PrivacyPolicy = () => {
             Gizlilik Politikası
           </h1>
           
-          <div className="text-gray-600 leading-relaxed space-y-6 text-base">
-            <p>
-              Neta Oto Market ("biz", "bize" veya "bizim") olarak, netaotomarket.com ("Web Sitesi") adresini ziyaret eden veya alışveriş yapan kullanıcılarımızın ("Kullanıcı") kişisel verilerinin korunmasına büyük önem veriyoruz. Bu gizlilik politikası, hangi verileri topladığımızı, bu verileri nasıl kullandığımızı ve koruduğumuzu açıklamaktadır.
-            </p>
-            <p>
-              Web sitemize üye olurken veya alışveriş yaparken adınız, soyadınız, e-posta adresiniz, teslimat ve fatura adresiniz ile telefon numaranız gibi temel iletişim ve kimlik bilgilerinizi topluyoruz. Bu bilgiler, siparişlerinizin sorunsuz bir şekilde teslim edilmesi, size kampanya ve duyurular hakkında bilgi verilmesi (onayınız dahilinde) ve müşteri hizmetleri süreçlerinin yürütülmesi amacıyla kullanılmaktadır.
-            </p>
-            <p>
-              Ödeme aşamasında kullandığınız kredi kartı veya banka kartı bilgileriniz sistemlerimizde kesinlikle saklanmamaktadır. Tüm ödeme işlemleri, güvenli (SSL) bağlantılar üzerinden doğrudan anlaşmalı olduğumuz bankalar veya güvenilir ödeme altyapısı sağlayıcıları aracılığıyla gerçekleştirilmektedir.
-            </p>
-            <p>
-              Kişisel verileriniz, yasal zorunluluklar haricinde hiçbir şekilde üçüncü şahıslarla paylaşılmamakta ve satılmamaktadır. Verilerinizin güvenliğini sağlamak amacıyla endüstri standartlarında güvenlik duvarları, şifreleme ve veri koruma protokolleri kullanmaktayız. Gizlilik haklarınız ve kişisel verilerinizin silinmesi talepleriniz için bizimle netaotomarket@gmail.com adresi üzerinden iletişime geçebilirsiniz.
-            </p>
+          <div className="text-gray-600 leading-relaxed space-y-8 text-base">
+            
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Kişisel Verilerin Toplanması</h2>
+              <p>
+                Neta Oto Market olarak; ad, soyad, adres ve iletişim bilgileriniz sadece sipariş ve teslimat süreçlerinin sorunsuz yürütülmesi amacıyla kullanılmaktadır. Sitemizde yapılan ziyaretçi davranışları ve genel kullanıcı analizleri tamamen anonim olarak gerçekleştirilir, kişisel verilerinizle eşleştirilmez.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Ödeme Güvenliği</h2>
+              <p>
+                Sitemizde tüm veri akışı 256-bit SSL (Secure Sockets Layer) şifreleme teknolojisiyle güvence altına alınmıştır. Kredi kartı ve banka kartı bilgileriniz sunucularımızda, loglarımızda veya veri tabanlarımızda <strong>asla</strong> saklanmaz. Ödeme işlemleri onay için doğrudan Troy, Visa ve Mastercard gibi güvenilir altyapı sağlayıcılarına şifreli ve kapalı devre olarak iletilir.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">3. Bilgi Paylaşımı</h2>
+              <p>
+                Sistemimize kayıtlı olan hiçbir kişisel veriniz, üçüncü şahıslara veya kurumlara ticari amaçla satılmaz, kiralanmaz ve paylaşılmaz. Bilgileriniz yalnızca satın aldığınız ürünlerin size güvenli bir biçimde ulaşabilmesi için, resmi anlaşmamız bulunan kargo ve lojistik firmalarıyla (gerekli olduğu kadarıyla) paylaşılmaktadır.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">4. Çerezler (Cookies) ve Haklarınız</h2>
+              <p className="mb-3">
+                Web sitemizde, sepet deneyiminizi iyileştirmek, oturumunuzu açık tutmak ve size daha iyi hizmet sunabilmek amacıyla temel çerezler (cookies) kullanılmaktadır. KVKK (Kişisel Verilerin Korunması Kanunu) kapsamında sahip olduğunuz haklar:
+              </p>
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme,</li>
+                <li>Verileriniz işlenmişse buna ilişkin bilgi talep etme,</li>
+                <li>Verilerinizin eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme.</li>
+              </ul>
+              <p className="mt-4">
+                KVKK haklarınız kapsamında sistemimizdeki verilerinizin tamamen silinmesi, güncellenmesi veya bilgi talepleriniz için bize <a href="mailto:netaotomarket@gmail.com" className="font-semibold text-orange-500 hover:underline">netaotomarket@gmail.com</a> adresi üzerinden dilediğiniz zaman ulaşabilirsiniz.
+              </p>
+            </section>
+
           </div>
         </div>
       </div>
