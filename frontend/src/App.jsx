@@ -11,6 +11,9 @@ import Auth from './pages/Auth';
 import ProfileDashboard from './pages/ProfileDashboard';
 import ProductDetail from './pages/ProductDetail';
 import WhatsAppButton from './components/WhatsAppButton';
+import About from './pages/About';
+import ReturnPolicy from './pages/ReturnPolicy';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import './App.css';
 
 function App() {
@@ -47,6 +50,9 @@ function App() {
             <Route path="/register" element={<Auth />} />
             <Route path="/profile" element={<ProfileDashboard />} />
             <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/hakkimizda" element={<About />} />
+            <Route path="/iade-kosullari" element={<ReturnPolicy />} />
+            <Route path="/gizlilik-politikasi" element={<PrivacyPolicy />} />
           </Routes>
           
           <WhatsAppButton />
