@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Menu, X, LogOut } from 'lucide-react';
+import { Search, Menu, X, LogOut, User, UserCog } from 'lucide-react';
 import { RiShoppingCart2Line } from "react-icons/ri";
-import { IoPersonSharp, IoPersonOutline } from "react-icons/io5";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -64,14 +63,19 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
                       alt="Profile" 
                       style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover' }} 
                     />
+                  ) : isAdmin ? (
+                    <>
+                      <UserCog className="person-outline" size={26} strokeWidth={1.5} />
+                      <UserCog className="person-solid" size={26} strokeWidth={1.5} />
+                    </>
                   ) : (user?.name ? (
                     <div style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#f97316', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 'bold' }}>
                       {user.name.charAt(0).toUpperCase()}
                     </div>
                   ) : (
                     <>
-                      <IoPersonOutline className="person-outline" size={26} />
-                      <IoPersonSharp className="person-solid" size={26} />
+                      <User className="person-outline" size={26} strokeWidth={1.5} />
+                      <User className="person-solid" size={26} strokeWidth={1.5} />
                     </>
                   ))}
                 </div>
@@ -96,8 +100,8 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
           ) : (
             <button className="icon-btn login-btn" onClick={() => navigate('/auth')}>
               <div className="nav-person-wrapper">
-                <IoPersonOutline className="person-outline" size={26} />
-                <IoPersonSharp className="person-solid" size={26} />
+                <User className="person-outline" size={26} strokeWidth={1.5} />
+                <User className="person-solid" size={26} strokeWidth={1.5} />
               </div>
               <span className="icon-text">Giriş Yap</span>
             </button>
@@ -164,14 +168,19 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
                         alt="Profile" 
                         style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} 
                       />
+                    ) : isAdmin ? (
+                      <>
+                        <UserCog className="person-outline" size={28} strokeWidth={1.5} />
+                        <UserCog className="person-solid" size={28} strokeWidth={1.5} />
+                      </>
                     ) : (user?.name ? (
                       <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#f97316', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 'bold' }}>
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                     ) : (
                       <>
-                        <IoPersonOutline className="person-outline" size={28} />
-                        <IoPersonSharp className="person-solid" size={28} />
+                        <User className="person-outline" size={28} strokeWidth={1.5} />
+                        <User className="person-solid" size={28} strokeWidth={1.5} />
                       </>
                     ))}
                   </div>
@@ -180,16 +189,16 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
                 {isAdmin && (
                   <button className="icon-btn login-btn" onClick={() => { setIsMenuOpen(false); navigate('/admin'); }}>
                     <div className="nav-person-wrapper">
-                      <IoPersonOutline className="person-outline" size={28} />
-                      <IoPersonSharp className="person-solid" size={28} />
+                      <UserCog className="person-outline" size={28} strokeWidth={1.5} />
+                      <UserCog className="person-solid" size={28} strokeWidth={1.5} />
                     </div>
                     <span>Admin Paneli</span>
                   </button>
                 )}
                 <button className="icon-btn login-btn" onClick={() => { setIsMenuOpen(false); logout(); }} style={{ color: '#ef4444' }}>
                   <div className="nav-person-wrapper">
-                    <IoPersonOutline className="person-outline" size={28} style={{ color: '#ef4444' }} />
-                    <IoPersonSharp className="person-solid" size={28} style={{ color: '#ef4444' }} />
+                    <User className="person-outline" size={28} strokeWidth={1.5} style={{ color: '#ef4444' }} />
+                    <User className="person-solid" size={28} strokeWidth={1.5} style={{ color: '#ef4444' }} />
                   </div>
                   <span>Çıkış Yap</span>
                 </button>
@@ -197,8 +206,8 @@ const Navbar = ({ onCartClick, showOnlyFavorites, onToggleFavorites, onLogoClick
             ) : (
               <button className="icon-btn login-btn" onClick={() => { navigate('/auth'); setIsMenuOpen(false); }}>
                 <div className="nav-person-wrapper">
-                  <IoPersonOutline className="person-outline" size={28} />
-                  <IoPersonSharp className="person-solid" size={28} />
+                  <User className="person-outline" size={28} strokeWidth={1.5} />
+                  <User className="person-solid" size={28} strokeWidth={1.5} />
                 </div>
                 <span>Giriş Yap</span>
               </button>
