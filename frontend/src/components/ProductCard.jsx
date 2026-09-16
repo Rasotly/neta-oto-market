@@ -59,7 +59,7 @@ const ProductCard = ({ product, onClick }) => {
         )}
         
         <button 
-          className={`absolute top-3 right-3 w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center transition-colors z-10 ${
+          className={`absolute top-3 right-3 w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center transition-colors z-20 ${
             isFav ? 'text-orange-500' : 'text-gray-400 hover:text-orange-500'
           }`}
           onClick={handleFavoriteClick}
@@ -106,7 +106,7 @@ const ProductCard = ({ product, onClick }) => {
         
         {/* Aksiyon Butonu */}
         <button 
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-auto" 
+          className="w-full border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-semibold py-[10px] rounded-xl transition-all duration-300 flex justify-center items-center gap-2 outline-none disabled:opacity-50 disabled:cursor-not-allowed mt-auto" 
           disabled={!product.inStock}
           onClick={handleAddToCart}
         >
