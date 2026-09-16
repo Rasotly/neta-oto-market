@@ -9,10 +9,10 @@ const Footer = () => {
       <div className="footer-grid-container">
         
         {/* Sütun 1: Kurumsal Kimlik */}
-        <div className="footer-col">
-          <Link to="/">
-            <img src="/logo.png" alt="Neta Oto Market" style={{ height: '40px', marginBottom: '0.5rem', width: 'fit-content' }} />
-          </Link>
+          <div className="footer-col">
+            <Link to="/">
+              <img src="/footer-logo.jpg" alt="Neta Oto Market" style={{ height: '60px', marginBottom: '1rem', width: 'auto', borderRadius: '4px' }} />
+            </Link>
           <div className="footer-vision-text">
             Aracınız için en kaliteli oto aksesuarları, aydınlatma, multimedya ve body kit ürünlerinde güvenilir adresiniz. Neta Oto Market ile fark yaratın.
           </div>
