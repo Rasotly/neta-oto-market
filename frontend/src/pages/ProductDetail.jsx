@@ -6,7 +6,7 @@ import { useFavorites } from '../context/FavoritesContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
-import { ChevronLeft, Plus, Minus, ShieldCheck, PackageOpen, RefreshCw, ShoppingCart, Lock, Headset } from 'lucide-react';
+import { ChevronLeft, Plus, Minus, ShieldCheck, PackageOpen, RefreshCw, ShoppingCart, Lock, Headset, Truck, Zap, ChevronDown, Settings2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatPrice } from '../utils/formatters';
 import '../App.css';
@@ -170,32 +170,53 @@ const ProductDetail = () => {
             </div>
 
             {/* Right: Info & Actions */}
-            <div className="pd-info">
+            <div className="pd-info-cards">
+              
+              {/* Card 1: Basic Info */}
+              <div className="pd-card">
               <div className="pd-brand">{product.category || 'Kategori Yok'} {product.brand ? `• ${product.brand}` : ''}</div>
               <h1 className="pd-title">{product.name}</h1>
-              <div className="pd-price">{formatPrice(product.price)}</div>
+              
+              <div className="pd-price-container" style={{ display: 'flex', alignItems: 'flex-end', gap: '1rem', margin: '1rem 0 2rem 0' }}>
+                {product.discountedPrice && product.discountedPrice < product.price ? (
+                  <>
+                    <div className="pd-price" style={{ margin: 0, fontSize: '2.5rem', color: '#111827' }}>{formatPrice(product.discountedPrice)}</div>
+                    <div style={{ fontSize: '1.25rem', color: '#9ca3af', textDecoration: 'line-through', marginBottom: '0.5rem' }}>{formatPrice(product.price)}</div>
+                  </>
+                ) : (
+                  <div className="pd-price" style={{ margin: 0, fontSize: '2.5rem', color: '#111827' }}>{formatPrice(product.price)}</div>
+                )}
+              </div>
 
-              <div className="pd-badges-section">
-                <span className="pd-badges-title">Uyumlu Araçlar:</span>
-                <div className="pd-badges">
-                  {mockBadges.map((badge, idx) => (
-                    <span key={idx} className="pd-badge">{badge}</span>
-                  ))}
+              </div>
+
+              {/* Card 2: Compatibility */}
+              <div className="pd-card">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', borderBottom: '1px solid #f3f4f6', paddingBottom: '0.75rem' }}>
+                  <div style={{ backgroundColor: '#f97316', color: 'white', padding: '0.4rem', borderRadius: '8px' }}>
+                    <Settings2 size={20} />
+                  </div>
+                  <div style={{ fontWeight: '700', fontSize: '1rem', color: '#111827' }}>Uyumluluk Bilgisi</div>
+                </div>
+                <div style={{ fontSize: '0.95rem', lineHeight: '1.6', color: '#4b5563' }}>
+                  {mockBadges.join(' • ')}
                 </div>
               </div>
 
-              <div className="pd-actions-wrapper">
-                <div className="pd-quantity">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="pd-qty-btn"><Minus size={18} /></button>
-                  <span className="pd-qty-value">{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className="pd-qty-btn"><Plus size={18} /></button>
-                </div>
+              {/* Card 3: Actions */}
+              <div className="pd-card">
+                <div className="pd-actions-wrapper">
+                  <div className="pd-quantity">
+                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="pd-qty-btn"><Minus size={18} /></button>
+                    <span className="pd-qty-value">{quantity}</span>
+                    <button onClick={() => setQuantity(quantity + 1)} className="pd-qty-btn"><Plus size={18} /></button>
+                  </div>
 
-                <div className="pd-main-actions">
                   <button className="pd-add-to-cart" onClick={handleAddToCart}>
                     <ShoppingCart size={20} style={{marginRight: '8px'}} />
                     Sepete Ekle
                   </button>
+
                   <button 
                     className={`pd-favorite-btn ${isFavorite ? 'active' : ''}`}
                     onClick={handleToggleFavorite}
@@ -205,7 +226,8 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              <div className="pd-trust-badges">
+              {/* Card 4: Trust Badges */}
+              <div className="pd-card pd-trust-badges">
                 <div className="pd-trust-badge">
                   <ShieldCheck size={16} className="pd-trust-icon" />
                   <span>%100 Orijinal Ürün</span>
