@@ -197,7 +197,9 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
 
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="form-group">
-                  <label>Normal Fiyat (₺) <span className="text-danger">*</span></label>
+                  <div className="flex items-center h-8">
+                    <label style={{ margin: 0 }}>Normal Fiyat (₺) <span className="text-danger">*</span></label>
+                  </div>
                   <input 
                     type="number" 
                     name="price" 
@@ -209,7 +211,7 @@ const AddProductModal = ({ isOpen, onClose, editProduct }) => {
                   />
                 </div>
                 <div className="form-group relative">
-                  <div className="flex justify-between items-center" style={{ marginBottom: '0.5rem' }}>
+                  <div className="flex justify-between items-center h-8">
                     <label style={{ margin: 0 }}>İndirimli Fiyat (₺)</label>
                     {discountPercentage > 0 && !hasDiscountError && (
                       <span className="bg-green-100 text-green-700 font-bold px-2 py-1 rounded-md text-xs">
