@@ -14,6 +14,7 @@ import WhatsAppButton from './components/WhatsAppButton';
 import About from './pages/About';
 import ReturnPolicy from './pages/ReturnPolicy';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import ScrollToTop from './components/ScrollToTop';
 import './App.css';
 
 function App() {
@@ -40,6 +41,8 @@ function App() {
               },
             }}
           />
+          
+          <ScrollToTop />
           
           <Routes>
             <Route path="/" element={<Home />} />
