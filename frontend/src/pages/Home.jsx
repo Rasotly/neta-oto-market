@@ -108,14 +108,26 @@ function Home() {
 
   const sortedProducts = useMemo(() => {
     let sorted = [...filteredProducts];
+    
+    const getActualPrice = (product) => product.discountedPrice > 0 ? product.discountedPrice : (product.price || 0);
+
     if (sortOption === 'price-asc') {
-      sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
+      sorted.sort((a, b) => getActualPrice(a) - getActualPrice(b));
     } else if (sortOption === 'price-desc') {
-      sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
+      sorted.sort((a, b) => getActualPrice(b) - getActualPrice(a));
     } else if (sortOption === 'newest') {
       // Assuming higher ID means newer, or string comparison if uuid
       // If id is string and we can't sort nicely, we'll just sort by string reverse
       sorted.sort((a, b) => String(b.id).localeCompare(String(a.id)));
+    } else {
+      // Default Sort (Önerilen Sıralama) Sabitlenmesi
+      sorted.sort((a, b) => {
+        if (a.createdAt && b.createdAt) {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        // id'ye göre sıralayarak mutasyonu ve listenin sonuna düşmeyi engelle
+        return a.id - b.id;
+      });
     }
     return sorted;
   }, [filteredProducts, sortOption]);
