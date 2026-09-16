@@ -80,8 +80,8 @@ const ProductCard = ({ product, onClick }) => {
           {product.name}
         </h3>
         
-        {/* Fiyat ve Stok Düzeni */}
-        <div className="flex items-end justify-between mb-4 mt-auto">
+        {/* Fiyat Alanı */}
+        <div className="flex items-end mb-4 mt-auto">
           {product.price ? (
             <div className="flex items-baseline gap-2">
               {hasDiscount ? (
@@ -102,18 +102,11 @@ const ProductCard = ({ product, onClick }) => {
           ) : (
             <p className="text-base font-medium text-gray-500">Fiyat Yok</p>
           )}
-
-          <div className="flex items-center gap-1.5">
-            <span className={`w-2 h-2 rounded-full ${product.inStock ? 'bg-green-500' : 'bg-red-500'}`}></span>
-            <span className="text-xs font-medium text-gray-600">
-              {product.inStock ? 'Stokta' : 'Tükendi'}
-            </span>
-          </div>
         </div>
         
         {/* Aksiyon Butonu */}
         <button 
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-auto" 
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-auto" 
           disabled={!product.inStock}
           onClick={handleAddToCart}
         >
