@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useFavorites } from '../context/FavoritesContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Pencil, LogOut, X, PackageOpen } from 'lucide-react';
+import { Pencil, LogOut, X, PackageOpen, Heart, Car } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatPrice } from '../utils/formatters';
 
@@ -31,12 +32,13 @@ const formatPhoneNumber = (value) => {
 
 const ProfileDashboard = () => {
   const { user, isAdmin, logout, updateUser } = useAuth();
+  const { favoritesCount } = useFavorites();
   const navigate = useNavigate();
   const location = useLocation();
 
   // Parse URL query parameter for default tab
   const queryParams = new URLSearchParams(location.search);
-  const initialTab = queryParams.get('tab') || 'account';
+  const initialTab = queryParams.get('tab') || 'dashboard';
 
   const [activeTab, setActiveTab] = useState(initialTab);
   const fileInputRef = useRef(null);
@@ -202,6 +204,88 @@ const ProfileDashboard = () => {
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'dashboard':
+        const activeOrders = (user?.orders || []).filter(o => o.status !== 'Teslim Edildi' && o.status !== 'İptal Edildi').length;
+        const recentOrders = (user?.orders || []).slice(0, 5);
+        
+        return (
+          <div className="profile-section">
+            <h2 className="text-2xl font-bold text-gray-900 mb-1">Merhaba, {currentUser.name}!</h2>
+            <p className="text-sm text-gray-500 mb-8">Buradan hesap hareketlerinizi ve siparişlerinizi yönetebilirsiniz.</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+              {/* Kart 1 */}
+              <div className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500 font-medium mb-1">Aktif Siparişlerim</p>
+                  <p className="text-2xl font-bold text-gray-900">{activeOrders}</p>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
+                  <PackageOpen className="text-[#D5A738]" size={24} />
+                </div>
+              </div>
+              
+              {/* Kart 2 */}
+              <div className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500 font-medium mb-1">Favorilerim</p>
+                  <p className="text-2xl font-bold text-gray-900">{favoritesCount}</p>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
+                  <Heart className="text-[#D5A738]" size={24} />
+                </div>
+              </div>
+
+              {/* Kart 3 */}
+              <div className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500 font-medium mb-1">Kayıtlı Araçlar</p>
+                  <p className="text-2xl font-bold text-gray-900">0</p>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
+                  <Car className="text-[#D5A738]" size={24} />
+                </div>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold mb-4">Son Siparişlerim</h3>
+            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+              {recentOrders.length === 0 ? (
+                <div className="p-6 text-center text-gray-500 text-sm">Henüz siparişiniz bulunmuyor.</div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm whitespace-nowrap">
+                    <thead className="bg-gray-50 text-gray-600 border-b border-gray-100">
+                      <tr>
+                        <th className="py-3 px-4 font-medium">Sipariş No</th>
+                        <th className="py-3 px-4 font-medium">Tarih</th>
+                        <th className="py-3 px-4 font-medium">Tutar</th>
+                        <th className="py-3 px-4 font-medium">Durum</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentOrders.map(order => (
+                        <tr key={order.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                          <td className="py-3 px-4 font-medium text-gray-900">{order.id}</td>
+                          <td className="py-3 px-4 text-gray-500">{new Date(order.date).toLocaleDateString('tr-TR')}</td>
+                          <td className="py-3 px-4 font-medium">{formatPrice(order.totalAmount)}</td>
+                          <td className="py-3 px-4">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                              ${order.status === 'Hazırlanıyor' ? 'bg-yellow-100 text-yellow-700' :
+                                order.status === 'Kargoya Verildi' ? 'bg-blue-100 text-blue-700' :
+                                'bg-green-100 text-green-700'}`}>
+                              {order.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        );
       case 'account':
         return (
           <div className="profile-section">
@@ -238,11 +322,11 @@ const ProfileDashboard = () => {
                 />
               </div>
               {hasChanges && (
-                <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
-                  <button type="button" className="auth-submit-btn profile-save-btn" onClick={handleSave} style={{ width: 'auto', padding: '0.6rem 2rem' }}>
+                <div className="mt-4 flex flex-col md:flex-row gap-4">
+                  <button type="button" className="w-full md:w-auto px-6 py-2.5 bg-[#D5A738] hover:opacity-90 text-white font-medium rounded-xl transition-all" onClick={handleSave}>
                     Değişiklikleri Kaydet
                   </button>
-                  <button type="button" className="auth-submit-btn profile-cancel-btn" onClick={handleCancel} style={{ width: 'auto', padding: '0.6rem 2rem' }}>
+                  <button type="button" className="w-full md:w-auto px-6 py-2.5 border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium rounded-xl transition-all" onClick={handleCancel}>
                     İptal Et
                   </button>
                 </div>
@@ -414,19 +498,25 @@ const ProfileDashboard = () => {
 
             <nav className="profile-nav">
               <button 
-                className={`profile-nav-item ${activeTab === 'account' ? 'active' : ''}`}
+                className={`profile-nav-item ${activeTab === 'dashboard' ? 'bg-[#D5A738] text-white' : ''}`}
+                onClick={() => { setActiveTab('dashboard'); navigate('/profile?tab=dashboard'); }}
+              >
+                Özet
+              </button>
+              <button 
+                className={`profile-nav-item ${activeTab === 'account' ? 'bg-[#D5A738] text-white' : ''}`}
                 onClick={() => { setActiveTab('account'); navigate('/profile?tab=account'); }}
               >
                 Hesap Bilgilerim
               </button>
               <button 
-                className={`profile-nav-item ${activeTab === 'addresses' ? 'active' : ''}`}
+                className={`profile-nav-item ${activeTab === 'addresses' ? 'bg-[#D5A738] text-white' : ''}`}
                 onClick={() => { setActiveTab('addresses'); navigate('/profile?tab=addresses'); }}
               >
                 Adreslerim
               </button>
               <button 
-                className={`profile-nav-item ${activeTab === 'orders' ? 'active' : ''}`}
+                className={`profile-nav-item ${activeTab === 'orders' ? 'bg-[#D5A738] text-white' : ''}`}
                 onClick={() => { setActiveTab('orders'); navigate('/profile?tab=orders'); }}
               >
                 Siparişlerim
