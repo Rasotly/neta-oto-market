@@ -10,8 +10,9 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useProducts } from '../context/ProductContext';
-import { PackageOpen } from 'lucide-react';
+import { PackageOpen, X } from 'lucide-react';
 import SortDropdown from '../components/SortDropdown';
+import VehicleFilterBar from '../components/VehicleFilterBar';
 import '../App.css';
 
 function Home() {
@@ -44,6 +45,8 @@ function Home() {
     categories: [],
     brands: []
   });
+
+  const [activeVehicleFilter, setActiveVehicleFilter] = useState(null);
 
   const [sortOption, setSortOption] = useState('default');
   const [currentPage, setCurrentPage] = useState(1);
@@ -102,9 +105,26 @@ function Home() {
       const matchCategory = filters.categories.length === 0 || filters.categories.includes(p.category);
       const matchBrand = filters.brands.length === 0 || filters.brands.includes(p.brand);
       const matchFavorites = !showOnlyFavorites || favoriteIds.includes(p.id);
-      return matchCategory && matchBrand && matchFavorites;
+      
+      let matchVehicle = true;
+      if (activeVehicleFilter) {
+        if (p.category === 'Universal') {
+          matchVehicle = true;
+        } else {
+          const pName = (p.name || '').toLowerCase();
+          const pDesc = (p.description || '').toLowerCase();
+          const searchText = pName + ' ' + pDesc;
+          
+          const modelStr = activeVehicleFilter.model.toLowerCase();
+          const chassisStr = activeVehicleFilter.year.split(' ')[0].toLowerCase(); // e.g. "FE1" from "FE1 2022+"
+          
+          matchVehicle = searchText.includes(chassisStr) || searchText.includes(modelStr);
+        }
+      }
+
+      return matchCategory && matchBrand && matchFavorites && matchVehicle;
     });
-  }, [products, filters, showOnlyFavorites, favoriteIds]);
+  }, [products, filters, showOnlyFavorites, favoriteIds, activeVehicleFilter]);
 
   const sortedProducts = useMemo(() => {
     let sorted = [...filteredProducts];
@@ -160,11 +180,17 @@ function Home() {
         onLogoClick={() => {
           setShowOnlyFavorites(false);
           setFilters({ categories: [], brands: [] });
+          setActiveVehicleFilter(null);
           navigate('/');
         }}
       />
       
       {!showOnlyFavorites && <HeroSlider />}
+      {!showOnlyFavorites && (
+        <div className="px-4">
+          <VehicleFilterBar onFilterSubmit={setActiveVehicleFilter} />
+        </div>
+      )}
     
       <CartDrawer 
         isOpen={isCartDrawerOpen} 
@@ -238,10 +264,24 @@ function Home() {
             {/* ÜST BİLGİ ALANI: Başlık, Ürün Sayısı ve Sıralama */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem', width: '100%' }}>
               
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <h1 className="page-title" style={{ margin: 0, color: '#111827' }}>
                   {showOnlyFavorites ? 'Favorilerim' : 'Ürün Kataloğu'}
                 </h1>
+                
+                {activeVehicleFilter && (
+                  <div className="flex items-center gap-2 bg-blue-50 text-blue-800 px-4 py-2 rounded-full text-sm font-medium border border-blue-100 shadow-sm">
+                    <span>Şu an 🚘 <strong>{activeVehicleFilter.make} {activeVehicleFilter.model} {activeVehicleFilter.year}</strong> için uyumlu ürünleri görüyorsunuz.</span>
+                    <button 
+                      onClick={() => setActiveVehicleFilter(null)}
+                      className="text-blue-500 hover:text-blue-700 bg-white rounded-full p-1 shadow-sm transition-colors"
+                      title="Filtreyi Temizle"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
+                
                 {!loading && !error && (
                   <span className="results-count" style={{ color: '#64748b', fontWeight: '500', marginTop: '4px' }}>
                     {sortedProducts.length} ürün bulundu
