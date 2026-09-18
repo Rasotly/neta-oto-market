@@ -108,18 +108,16 @@ function Home() {
       
       let matchVehicle = true;
       if (activeVehicleFilter) {
-        if (p.category === 'Universal') {
-          matchVehicle = true;
-        } else {
-          const pName = (p.name || '').toLowerCase();
-          const pDesc = (p.description || '').toLowerCase();
-          const searchText = pName + ' ' + pDesc;
-          
-          const modelStr = activeVehicleFilter.model.toLowerCase();
-          const chassisStr = activeVehicleFilter.year.split(' ')[0].toLowerCase(); // e.g. "FE1" from "FE1 2022+"
-          
-          matchVehicle = searchText.includes(chassisStr) || searchText.includes(modelStr);
-        }
+        const pName = (p.name || '').toLowerCase();
+        const pDesc = (p.description || '').toLowerCase();
+        const searchText = pName + ' ' + pDesc;
+        
+        const modelStr = activeVehicleFilter.model.toLowerCase();
+        const chassisStr = activeVehicleFilter.year.split(' ')[0].toLowerCase(); // e.g. "FE1" from "FE1 2022+"
+        
+        // Sadece isminde veya açıklamasında aracın modeli veya kasa kodu geçen ürünleri getir.
+        // Hatalı girilmiş "Universal" kategorili ürünlerin rastgele gelmesini önler.
+        matchVehicle = searchText.includes(chassisStr) || searchText.includes(modelStr);
       }
 
       return matchCategory && matchBrand && matchFavorites && matchVehicle;
