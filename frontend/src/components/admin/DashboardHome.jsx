@@ -102,12 +102,12 @@ const DashboardHome = () => {
                       <td className="py-3 px-5 font-medium">{order.total}</td>
                       <td className="py-3 px-5 text-gray-500">{order.date}</td>
                       <td className="py-3 px-5 text-right">
-                        <button 
+                        <div 
                           onClick={() => handleAction(order.id, order.status)}
-                          className="bg-[#D5A738] hover:opacity-90 transition-opacity text-white px-3 py-1.5 rounded-lg text-sm font-medium"
+                          className="inline-block bg-[#D5A738] hover:opacity-90 transition-opacity text-white px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer border-0 shadow-none"
                         >
                           {order.status === 'Onay Bekliyor' ? 'Onayla' : 'Kargoya Ver'}
-                        </button>
+                        </div>
                       </td>
                     </tr>
                   ))
