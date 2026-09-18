@@ -371,9 +371,11 @@ const AdminDashboard = () => {
                               <div className="flex items-center gap-3">
                                 <div
                                   onClick={() => toggleStockStatus(product)}
-                                  className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${product.inStock ? 'bg-[#D5A738]' : 'bg-gray-300'}`}
+                                  className={`relative w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 ease-in-out flex items-center ${product.inStock ? 'bg-[#D5A738]' : 'bg-gray-300'}`}
                                 >
-                                  <div className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${product.inStock ? 'translate-x-5' : 'translate-x-0'}`} />
+                                  <div 
+                                    className={`absolute left-1 bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${product.inStock ? 'translate-x-6' : 'translate-x-0'}`} 
+                                  />
                                 </div>
                                 <span className={`text-sm font-medium ${product.inStock ? 'text-green-600' : 'text-red-500'}`}>
                                   {product.inStock ? 'Stokta Var' : 'Tükendi'}
