@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, ArrowLeft, X } from 'lucide-react';
@@ -59,6 +59,15 @@ const Auth = () => {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [loginSubmitAttempted, setLoginSubmitAttempted] = useState(false);
   const [loginCaptchaToken, setLoginCaptchaToken] = useState(null);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+      setLoginEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   // Register Form State
   const [regFirstName, setRegFirstName] = useState('');
@@ -94,6 +103,11 @@ const Auth = () => {
     const result = await customerLogin(loginEmail, loginPassword, loginCaptchaToken);
     
     if (result.success) {
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', loginEmail);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+      }
       toast.success('Giriş başarılı! Yönlendiriliyorsunuz...');
       if (loginEmail === 'admin' || loginEmail === 'admin@admin.com') {
         navigate('/admin');
@@ -238,7 +252,12 @@ const Auth = () => {
 
             <div className="auth-form-options">
               <label className="remember-me">
-                <input type="checkbox" className="custom-checkbox" />
+                <input 
+                  type="checkbox" 
+                  className="custom-checkbox" 
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
                 <span>Beni Hatırla</span>
               </label>
               <a href="#" className="forgot-password">Şifremi Unuttum</a>
