@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, ArrowLeft, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google';
+import ReCAPTCHA from 'react-google-recaptcha';
 import FacebookLoginModule from 'react-facebook-login/dist/facebook-login-render-props';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -55,6 +56,9 @@ const Auth = () => {
   // Login Form State
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [loginSubmitAttempted, setLoginSubmitAttempted] = useState(false);
+  const [loginCaptchaToken, setLoginCaptchaToken] = useState(null);
 
   // Register Form State
   const [regFirstName, setRegFirstName] = useState('');
@@ -69,11 +73,17 @@ const Auth = () => {
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [regGender, setRegGender] = useState('');
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [registerCaptchaToken, setRegisterCaptchaToken] = useState(null);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    setLoginSubmitAttempted(true);
+
+    if (!loginEmail || !loginPassword || !loginCaptchaToken) {
+      return;
+    }
     
     // Exception for admin email logic
     if (loginEmail !== 'admin' && !emailRegex.test(loginEmail)) {
@@ -81,7 +91,7 @@ const Auth = () => {
       return;
     }
 
-    const result = customerLogin(loginEmail, loginPassword);
+    const result = await customerLogin(loginEmail, loginPassword, loginCaptchaToken);
     
     if (result.success) {
       toast.success('Giriş başarılı! Yönlendiriliyorsunuz...');
@@ -95,11 +105,11 @@ const Auth = () => {
     }
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setSubmitAttempted(true);
     
-    if (!regFirstName || !regLastName || !regEmail || !regPhone || regPassword.length < 6 || !regGender || !termsAccepted || !privacyAccepted) {
+    if (!regFirstName || !regLastName || !regEmail || !regPhone || regPassword.length < 6 || !regGender || !termsAccepted || !privacyAccepted || !registerCaptchaToken) {
       return;
     }
 
@@ -117,7 +127,7 @@ const Auth = () => {
       gender: regGender
     };
 
-    const result = customerRegister(userData);
+    const result = await customerRegister(userData, registerCaptchaToken);
 
     if (result.success) {
       // Don't register yet, show OTP modal
@@ -228,10 +238,20 @@ const Auth = () => {
 
             <div className="auth-form-options">
               <label className="remember-me">
-                <input type="checkbox" />
+                <input type="checkbox" className="custom-checkbox" />
                 <span>Beni Hatırla</span>
               </label>
               <a href="#" className="forgot-password">Şifremi Unuttum</a>
+            </div>
+
+            <div className="flex flex-col items-start gap-2">
+              <ReCAPTCHA
+                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'}
+                onChange={(token) => setLoginCaptchaToken(token)}
+              />
+              {loginSubmitAttempted && !loginCaptchaToken && (
+                <span className="text-red-500 text-[13px] font-medium mt-1">Lütfen robot olmadığınızı doğrulayın</span>
+              )}
             </div>
 
             <button type="submit" className="auth-submit-btn login-btn">
@@ -368,7 +388,7 @@ const Auth = () => {
               {submitAttempted && !regPhone && <span className="text-red-500 text-[11px] mt-1 block text-left">Lütfen Cep Telefonu giriniz.</span>}
             </div>
 
-            <div className="flex flex-col gap-3 my-4">
+            <div className="flex flex-col gap-3 mt-2">
               <label className="terms-checkbox items-start flex gap-2">
                 <input 
                   type="checkbox" 
@@ -398,6 +418,16 @@ const Auth = () => {
                 />
                 <span className="text-sm">Kişisel verilerin işlenmesine ilişkin <span onClick={() => setShowPrivacyModal(true)} className="text-blue-600 underline hover:text-[#D5A738] transition-colors cursor-pointer">Aydınlatma Metnini</span> okudum.</span>
               </label>
+            </div>
+
+            <div className="flex flex-col items-start gap-2 -mt-2">
+              <ReCAPTCHA
+                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'}
+                onChange={(token) => setRegisterCaptchaToken(token)}
+              />
+              {submitAttempted && !registerCaptchaToken && (
+                <span className="text-red-500 text-[13px] font-medium mt-1">Lütfen robot olmadığınızı doğrulayın</span>
+              )}
             </div>
 
             <button type="submit" className="auth-submit-btn register-btn">

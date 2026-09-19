@@ -30,7 +30,12 @@ export const AuthProvider = ({ children }) => {
     return { success: false, message: 'Hatalı yönetici bilgileri' };
   };
 
-  const customerLogin = (email, password) => {
+  const customerLogin = (email, password, captchaToken) => {
+    // Simulate reCAPTCHA Verification API call
+    if (!captchaToken) {
+      return { success: false, message: 'Google reCAPTCHA doğrulaması eksik. Lütfen robot olmadığınızı doğrulayın.' };
+    }
+
     if (email === 'admin' || email === 'admin@admin.com') {
       return login(email, password);
     }
@@ -57,7 +62,12 @@ export const AuthProvider = ({ children }) => {
     return { success: true, user: existingUser };
   };
 
-  const customerRegister = (userData) => {
+  const customerRegister = (userData, captchaToken) => {
+    // Simulate reCAPTCHA Verification API call
+    if (!captchaToken) {
+      return { success: false, message: 'Google reCAPTCHA doğrulaması eksik. Lütfen robot olmadığınızı doğrulayın.' };
+    }
+
     // Basic validation
     if (!userData.email || !userData.password || !userData.firstName) {
       return { success: false, message: 'Lütfen tüm zorunlu alanları doldurun.' };
