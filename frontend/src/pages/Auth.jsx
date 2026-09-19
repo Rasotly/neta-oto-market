@@ -353,36 +353,36 @@ const Auth = () => {
             </div>
 
             <div className="flex flex-col gap-3 my-4">
-              <label className="terms-checkbox items-start">
+              <label className="terms-checkbox items-start flex gap-2">
                 <input 
                   type="checkbox" 
-                  className="mt-1"
+                  className="mt-1 custom-checkbox"
                   checked={marketingAccepted}
                   onChange={(e) => setMarketingAccepted(e.target.checked)}
                 />
-                <span>Aydınlatma Metninde belirtilen ilkeler nezdinde Elektronik Ticaret İletisi almak istiyorum.</span>
+                <span className="text-sm"><span onClick={() => setShowPrivacyModal(true)} className="text-blue-600 underline hover:text-[#D5A738] transition-colors cursor-pointer">Aydınlatma Metninde</span> belirtilen ilkeler nezdinde Elektronik Ticaret İletisi almak istiyorum.</span>
               </label>
 
-              <label className="terms-checkbox items-start">
+              <label className="terms-checkbox items-start flex gap-2">
                 <input 
                   type="checkbox" 
-                  className="mt-1"
+                  className="mt-1 custom-checkbox"
                   checked={termsAccepted}
                   onChange={(e) => setTermsAccepted(e.target.checked)}
                   required
                 />
-                <span><button type="button" onClick={() => setShowTermsModal(true)} className="text-blue-600 hover:underline">Üyelik sözleşmesini</button> kabul ediyorum.</span>
+                <span className="text-sm"><span onClick={() => setShowTermsModal(true)} className="text-blue-600 underline hover:text-[#D5A738] transition-colors cursor-pointer">Üyelik sözleşmesini</span> kabul ediyorum.</span>
               </label>
 
-              <label className="terms-checkbox items-start">
+              <label className="terms-checkbox items-start flex gap-2">
                 <input 
                   type="checkbox" 
-                  className="mt-1"
+                  className="mt-1 custom-checkbox"
                   checked={privacyAccepted}
                   onChange={(e) => setPrivacyAccepted(e.target.checked)}
                   required
                 />
-                <span>Kişisel verilerin işlenmesine ilişkin <button type="button" onClick={() => setShowPrivacyModal(true)} className="text-blue-600 hover:underline">Aydınlatma Metnini</button> okudum.</span>
+                <span className="text-sm">Kişisel verilerin işlenmesine ilişkin <span onClick={() => setShowPrivacyModal(true)} className="text-blue-600 underline hover:text-[#D5A738] transition-colors cursor-pointer">Aydınlatma Metnini</span> okudum.</span>
               </label>
             </div>
 

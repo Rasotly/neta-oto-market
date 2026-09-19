@@ -2421,6 +2421,63 @@
   margin: 0;
 }
 
+:root {
+  --bg: #f9fafb;
+  --bg-card: #ffffff;
+  --text-h: #1f2937;
+  --text-p: #4b5563;
+  --text-light: #9ca3af;
+  --border: #e5e7eb;
+  --accent: #D5A738;
+  --accent-hover: #b88d29;
+  --danger: #ef4444;
+  --success: #10b981;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom Checkbox */
+.custom-checkbox {
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 1.5px solid #d1d5db;
+  border-radius: 4px;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.custom-checkbox::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em white;
+  transform-origin: center;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.custom-checkbox:checked {
+  background-color: #D5A738;
+  border-color: #D5A738;
+}
+
+.custom-checkbox:checked::before {
+  transform: scale(1);
+}
+
+.custom-checkbox:hover {
+  border-color: #D5A738;
+}
+
 /* Table */
 .admin-table-container {
   background: #ffffff;
