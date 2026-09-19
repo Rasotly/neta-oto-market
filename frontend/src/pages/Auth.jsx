@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Auth = () => {
@@ -122,7 +122,14 @@ const Auth = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="auth-container relative">
+      <button 
+        onClick={() => navigate('/')} 
+        className="absolute top-4 left-4 sm:top-8 sm:left-8 flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-all bg-white px-4 py-2.5 rounded-full shadow-sm border border-gray-200 font-medium text-sm hover:shadow-md hover:-translate-x-1"
+      >
+        <ArrowLeft size={18} />
+        Siteye Dön
+      </button>
       <div className="auth-card">
         {/* Header / Logo */}
         <div className="auth-header">
