@@ -2446,6 +2446,7 @@
   color: currentColor;
   width: 1.15em;
   height: 1.15em;
+  flex-shrink: 0;
   border: 1.5px solid #d1d5db;
   border-radius: 4px;
   display: grid;

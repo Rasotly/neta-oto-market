@@ -67,6 +67,8 @@ const Auth = () => {
   const [marketingAccepted, setMarketingAccepted] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [regGender, setRegGender] = useState('');
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -95,24 +97,14 @@ const Auth = () => {
 
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
+    setSubmitAttempted(true);
     
+    if (!regFirstName || !regLastName || !regEmail || !regPhone || regPassword.length < 6 || !regGender || !termsAccepted || !privacyAccepted) {
+      return;
+    }
+
     if (!emailRegex.test(regEmail)) {
       toast.error('Lütfen geçerli bir e-posta adresi giriniz');
-      return;
-    }
-
-    if (regPassword.length < 6) {
-      toast.error('Şifreniz en az 6 karakter uzunluğunda olmalıdır.');
-      return;
-    }
-
-    if (!termsAccepted) {
-      toast.error('Lütfen üyelik sözleşmesini kabul ediniz.');
-      return;
-    }
-
-    if (!privacyAccepted) {
-      toast.error('Lütfen aydınlatma metnini okuyup onaylayınız.');
       return;
     }
 
@@ -121,7 +113,8 @@ const Auth = () => {
       lastName: regLastName,
       email: regEmail,
       phone: regPhone,
-      password: regPassword
+      password: regPassword,
+      gender: regGender
     };
 
     const result = customerRegister(userData);
@@ -288,68 +281,91 @@ const Auth = () => {
 
         {/* Register Form */}
         {activeTab === 'register' && (
-          <form onSubmit={handleRegisterSubmit} className="auth-form">
-            <div className="auth-row">
-              <div className="auth-input-group">
+          <form onSubmit={handleRegisterSubmit} className="auth-form" noValidate>
+            <div className="auth-row gap-4">
+              <div className="auth-input-group relative w-full">
                 <input 
                   type="text" 
-                  className="auth-input" 
+                  className={`auth-input w-full ${submitAttempted && !regFirstName ? '!border-red-500' : ''}`} 
                   placeholder="Ad" 
                   value={regFirstName}
                   onChange={(e) => setRegFirstName(e.target.value)}
-                  required
                 />
+                <span className="absolute right-3 top-[14px] text-red-500">*</span>
+                {submitAttempted && !regFirstName && <span className="text-red-500 text-[11px] mt-1 block text-left">Lütfen Adı giriniz.</span>}
               </div>
-              <div className="auth-input-group">
+              <div className="auth-input-group relative w-full">
                 <input 
                   type="text" 
-                  className="auth-input" 
+                  className={`auth-input w-full ${submitAttempted && !regLastName ? '!border-red-500' : ''}`} 
                   placeholder="Soyad" 
                   value={regLastName}
                   onChange={(e) => setRegLastName(e.target.value)}
-                  required
                 />
+                <span className="absolute right-3 top-[14px] text-red-500">*</span>
+                {submitAttempted && !regLastName && <span className="text-red-500 text-[11px] mt-1 block text-left">Lütfen Soyadı giriniz.</span>}
               </div>
             </div>
 
-            <div className="auth-input-group">
+            <div className="auth-input-group relative">
               <input 
                 type="email" 
-                className="auth-input" 
+                className={`auth-input w-full ${submitAttempted && !regEmail ? '!border-red-500' : ''}`} 
                 placeholder="E-posta Adresi" 
                 value={regEmail}
                 onChange={(e) => setRegEmail(e.target.value)}
-                required
               />
+              <span className="absolute right-3 top-[14px] text-red-500">*</span>
+              {submitAttempted && !regEmail && <span className="text-red-500 text-[11px] mt-1 block text-left">Lütfen Email giriniz.</span>}
             </div>
 
-            <div className="auth-input-group">
-              <input 
-                type="tel" 
-                className="auth-input" 
-                placeholder="(5XX) XXX XX XX" 
-                value={regPhone}
-                onChange={(e) => setRegPhone(formatPhoneNumber(e.target.value))}
-                required
-              />
-            </div>
-
-            <div className="auth-input-group password-group">
+            <div className="auth-input-group password-group relative">
               <input 
                 type={showPassword ? "text" : "password"} 
-                className="auth-input" 
+                className={`auth-input w-full ${submitAttempted && regPassword.length < 6 ? '!border-red-500' : ''}`} 
                 placeholder="Şifre" 
                 value={regPassword}
                 onChange={(e) => setRegPassword(e.target.value)}
-                required
               />
+              <span className="absolute right-12 top-[14px] text-red-500">*</span>
               <button 
                 type="button" 
-                className="password-toggle-btn"
+                className="password-toggle-btn absolute right-3 top-3"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
+              {submitAttempted && regPassword.length < 6 && <span className="text-red-500 text-[11px] mt-1 block text-left">Şifre en az 6 karakter olmalıdır.</span>}
+            </div>
+
+            <div className="auth-input-group relative pl-1">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="gender" value="Erkek" onChange={(e) => setRegGender(e.target.value)} className={`accent-[#D5A738] w-[18px] h-[18px] ${submitAttempted && !regGender ? 'outline outline-1 outline-red-500 rounded-full' : ''}`} />
+                  <span className="text-[13px] text-gray-700">Erkek</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="gender" value="Kadın" onChange={(e) => setRegGender(e.target.value)} className={`accent-[#D5A738] w-[18px] h-[18px] ${submitAttempted && !regGender ? 'outline outline-1 outline-red-500 rounded-full' : ''}`} />
+                  <span className="text-[13px] text-gray-700">Kadın</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="gender" value="Belirtmek istemiyorum" onChange={(e) => setRegGender(e.target.value)} className={`accent-[#D5A738] w-[18px] h-[18px] ${submitAttempted && !regGender ? 'outline outline-1 outline-red-500 rounded-full' : ''}`} />
+                  <span className="text-[13px] text-gray-700">Belirtmek istemiyorum</span>
+                </label>
+              </div>
+              {submitAttempted && !regGender && <span className="text-red-500 text-[11px] mt-1 block text-left">Lütfen Cinsiyet giriniz.</span>}
+            </div>
+
+            <div className="auth-input-group relative">
+              <input 
+                type="tel" 
+                className={`auth-input w-full ${submitAttempted && !regPhone ? '!border-red-500' : ''}`} 
+                placeholder="(5XX) XXX XX XX" 
+                value={regPhone}
+                onChange={(e) => setRegPhone(formatPhoneNumber(e.target.value))}
+              />
+              <span className="absolute right-3 top-[14px] text-red-500">*</span>
+              {submitAttempted && !regPhone && <span className="text-red-500 text-[11px] mt-1 block text-left">Lütfen Cep Telefonu giriniz.</span>}
             </div>
 
             <div className="flex flex-col gap-3 my-4">
@@ -360,27 +376,25 @@ const Auth = () => {
                   checked={marketingAccepted}
                   onChange={(e) => setMarketingAccepted(e.target.checked)}
                 />
-                <span className="text-sm"><span onClick={() => setShowPrivacyModal(true)} className="text-blue-600 underline hover:text-[#D5A738] transition-colors cursor-pointer">Aydınlatma Metninde</span> belirtilen ilkeler nezdinde Elektronik Ticaret İletisi almak istiyorum.</span>
+                <span className="text-sm">Aydınlatma Metninde belirtilen ilkeler nezdinde Elektronik Ticaret İletisi almak istiyorum.</span>
               </label>
 
-              <label className="terms-checkbox items-start flex gap-2">
+              <label className="terms-checkbox items-start flex gap-2 relative">
                 <input 
                   type="checkbox" 
-                  className="mt-1 custom-checkbox"
+                  className={`mt-1 custom-checkbox ${submitAttempted && !termsAccepted ? '!border-red-500' : ''}`}
                   checked={termsAccepted}
                   onChange={(e) => setTermsAccepted(e.target.checked)}
-                  required
                 />
                 <span className="text-sm"><span onClick={() => setShowTermsModal(true)} className="text-blue-600 underline hover:text-[#D5A738] transition-colors cursor-pointer">Üyelik sözleşmesini</span> kabul ediyorum.</span>
               </label>
 
-              <label className="terms-checkbox items-start flex gap-2">
+              <label className="terms-checkbox items-start flex gap-2 relative">
                 <input 
                   type="checkbox" 
-                  className="mt-1 custom-checkbox"
+                  className={`mt-1 custom-checkbox ${submitAttempted && !privacyAccepted ? '!border-red-500' : ''}`}
                   checked={privacyAccepted}
                   onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                  required
                 />
                 <span className="text-sm">Kişisel verilerin işlenmesine ilişkin <span onClick={() => setShowPrivacyModal(true)} className="text-blue-600 underline hover:text-[#D5A738] transition-colors cursor-pointer">Aydınlatma Metnini</span> okudum.</span>
               </label>
