@@ -97,6 +97,11 @@ const Auth = () => {
       return;
     }
 
+    if (regPassword.length < 6) {
+      toast.error('Şifreniz en az 6 karakter uzunluğunda olmalıdır.');
+      return;
+    }
+
     if (!termsAccepted) {
       toast.error('Lütfen üyelik sözleşmesini kabul ediniz.');
       return;
