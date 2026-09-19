@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using NetaOtoMarket.API.Models;
 
 namespace NetaOtoMarket.API.Data
@@ -10,5 +10,6 @@ namespace NetaOtoMarket.API.Data
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

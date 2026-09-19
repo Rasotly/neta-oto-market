@@ -3,13 +3,47 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useGoogleLogin } from '@react-oauth/google';
+import FacebookLoginModule from 'react-facebook-login/dist/facebook-login-render-props';
+
+const FacebookLogin = FacebookLoginModule.default || FacebookLoginModule;
 
 const Auth = () => {
   const [activeTab, setActiveTab] = useState('login'); // 'login' or 'register'
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { customerLogin, customerRegister, finalizeRegistration } = useAuth();
+  const { customerLogin, customerRegister, finalizeRegistration, socialLogin } = useAuth();
   
+  const handleGoogleSuccess = async (tokenResponse) => {
+    // google sends an access_token. We need to send it to our backend.
+    const result = await socialLogin('google', tokenResponse.access_token);
+    if (result.success) {
+      toast.success('Google ile giriş başarılı!');
+      navigate('/');
+    } else {
+      toast.error(result.message);
+    }
+  };
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: () => toast.error('Google girişi başarısız oldu.')
+  });
+
+  const responseFacebook = async (response) => {
+    if (response.accessToken) {
+      const result = await socialLogin('facebook', response.accessToken);
+      if (result.success) {
+        toast.success('Facebook ile giriş başarılı!');
+        navigate('/');
+      } else {
+        toast.error(result.message);
+      }
+    } else {
+      toast.error('Facebook girişi iptal edildi veya başarısız oldu.');
+    }
+  };
+
   // OTP State
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
@@ -207,6 +241,7 @@ const Auth = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button 
                 type="button" 
+                onClick={() => loginWithGoogle()}
                 className="flex items-center justify-center gap-2 bg-white border-none outline-none shadow-sm hover:bg-gray-50 text-gray-700 font-medium text-sm py-3 rounded-xl transition-colors w-full"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -218,15 +253,22 @@ const Auth = () => {
                 Google ile Giriş
               </button>
               
-              <button 
-                type="button" 
-                className="flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white border-none outline-none font-medium text-sm py-3 rounded-xl transition-colors w-full"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M24 12.073C24 5.449 18.627 0 12 0S0 5.449 0 12.073C0 18.066 4.388 23.031 10.125 24v-8.437H7.078v-3.49h3.047V9.418c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.031 24 18.066 24 12.073z" fill="currentColor"/>
-                </svg>
-                Facebook ile Giriş
-              </button>
+              <FacebookLogin
+                appId={import.meta.env.VITE_FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID"}
+                callback={responseFacebook}
+                render={renderProps => (
+                  <button 
+                    type="button" 
+                    onClick={renderProps.onClick}
+                    className="flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white border-none outline-none font-medium text-sm py-3 rounded-xl transition-colors w-full"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M24 12.073C24 5.449 18.627 0 12 0S0 5.449 0 12.073C0 18.066 4.388 23.031 10.125 24v-8.437H7.078v-3.49h3.047V9.418c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.031 24 18.066 24 12.073z" fill="currentColor"/>
+                    </svg>
+                    Facebook ile Giriş
+                  </button>
+                )}
+              />
             </div>
           </form>
         )}
@@ -319,6 +361,7 @@ const Auth = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button 
                 type="button" 
+                onClick={() => loginWithGoogle()}
                 className="flex items-center justify-center gap-2 bg-white border-none outline-none shadow-sm hover:bg-gray-50 text-gray-700 font-medium text-sm py-3 rounded-xl transition-colors w-full"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -330,15 +373,22 @@ const Auth = () => {
                 Google ile Giriş
               </button>
               
-              <button 
-                type="button" 
-                className="flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white border-none outline-none font-medium text-sm py-3 rounded-xl transition-colors w-full"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M24 12.073C24 5.449 18.627 0 12 0S0 5.449 0 12.073C0 18.066 4.388 23.031 10.125 24v-8.437H7.078v-3.49h3.047V9.418c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.031 24 18.066 24 12.073z" fill="currentColor"/>
-                </svg>
-                Facebook ile Giriş
-              </button>
+              <FacebookLogin
+                appId={import.meta.env.VITE_FACEBOOK_APP_ID || "YOUR_FACEBOOK_APP_ID"}
+                callback={responseFacebook}
+                render={renderProps => (
+                  <button 
+                    type="button" 
+                    onClick={renderProps.onClick}
+                    className="flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white border-none outline-none font-medium text-sm py-3 rounded-xl transition-colors w-full"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M24 12.073C24 5.449 18.627 0 12 0S0 5.449 0 12.073C0 18.066 4.388 23.031 10.125 24v-8.437H7.078v-3.49h3.047V9.418c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.031 24 18.066 24 12.073z" fill="currentColor"/>
+                    </svg>
+                    Facebook ile Giriş
+                  </button>
+                )}
+              />
             </div>
           </form>
         )}

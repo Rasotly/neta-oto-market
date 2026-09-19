@@ -128,11 +128,37 @@ export const AuthProvider = ({ children }) => {
     return { success: true };
   };
 
+  const socialLogin = async (provider, token) => {
+    try {
+      const response = await fetch(`http://localhost:5246/api/auth/${provider}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setUser(data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('jwtToken', data.token); // Store real JWT
+        return { success: true, user: data.user };
+      } else {
+        return { success: false, message: data.message || 'Sosyal ağ girişi başarısız oldu.' };
+      }
+    } catch (error) {
+      console.error("Social login error:", error);
+      return { success: false, message: 'Sunucuya bağlanılamadı.' };
+    }
+  };
+
   const logout = () => {
     setIsAdmin(false);
     setUser(null);
     localStorage.removeItem('isAdmin');
     localStorage.removeItem('user');
+    localStorage.removeItem('jwtToken');
   };
 
   return (
@@ -145,6 +171,7 @@ export const AuthProvider = ({ children }) => {
       finalizeRegistration,
       updateUser,
       updateAnyUser,
+      socialLogin,
       registeredUsers,
       logout 
     }}>
