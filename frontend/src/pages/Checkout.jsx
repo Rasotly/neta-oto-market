@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { formatPrice } from '../utils/formatters';
+import { formatPrice, formatPhoneNumber } from '../utils/formatters';
 import { CheckCircle, ShieldCheck, CreditCard, ChevronLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
@@ -286,10 +286,9 @@ const Checkout = () => {
                     type="tel" 
                     name="phone" 
                     value={formData.phone}
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({...formData, phone: formatPhoneNumber(e.target.value)})}
                     className={`page-input ${errors && !formData.phone.trim() ? 'input-error' : ''}`} 
-                    placeholder="5XX XXX XX XX" 
-                    maxLength="13"
+                    placeholder="(5XX) XXX XX XX" 
                   />
                 </div>
 

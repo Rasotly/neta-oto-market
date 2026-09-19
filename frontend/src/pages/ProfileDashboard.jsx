@@ -6,29 +6,9 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Pencil, LogOut, X, PackageOpen, Heart, Car } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { formatPrice } from '../utils/formatters';
+import { formatPrice, formatPhoneNumber } from '../utils/formatters';
 
 import { CITIES, DISTRICTS } from '../utils/turkeyLocations';
-
-const formatPhoneNumber = (value) => {
-  if (!value) return value;
-  let phoneNumber = value.replace(/[^\d]/g, '');
-  
-  // Eğer ilk hane 0 değilse ve sayı girildiyse başına 0 ekle (555... girilirse 0555... olsun)
-  if (phoneNumber.length > 0 && phoneNumber[0] !== '0') {
-    phoneNumber = '0' + phoneNumber;
-  }
-
-  const phoneNumberLength = phoneNumber.length;
-  if (phoneNumberLength < 5) return phoneNumber;
-  if (phoneNumberLength < 8) {
-    return `${phoneNumber.slice(0, 4)} ${phoneNumber.slice(4)}`;
-  }
-  if (phoneNumberLength < 10) {
-    return `${phoneNumber.slice(0, 4)} ${phoneNumber.slice(4, 7)} ${phoneNumber.slice(7)}`;
-  }
-  return `${phoneNumber.slice(0, 4)} ${phoneNumber.slice(4, 7)} ${phoneNumber.slice(7, 9)} ${phoneNumber.slice(9, 11)}`;
-};
 
 const ProfileDashboard = () => {
   const { user, isAdmin, logout, updateUser } = useAuth();
@@ -318,7 +298,7 @@ const ProfileDashboard = () => {
                   className="auth-input" 
                   value={formData.phone} 
                   onChange={(e) => setFormData({ ...formData, phone: formatPhoneNumber(e.target.value) })} 
-                  placeholder="0555 555 55 55"
+                  placeholder="(5XX) XXX XX XX"
                 />
               </div>
               {hasChanges && (
@@ -616,7 +596,7 @@ const ProfileDashboard = () => {
                   className="auth-input" 
                   value={addressFormData.phone}
                   onChange={(e) => setAddressFormData({...addressFormData, phone: formatPhoneNumber(e.target.value)})}
-                  placeholder="0555 555 55 55"
+                  placeholder="(5XX) XXX XX XX"
                   required
                 />
               </div>

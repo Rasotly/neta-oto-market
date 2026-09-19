@@ -7,6 +7,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import FacebookLoginModule from 'react-facebook-login/dist/facebook-login-render-props';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { formatPhoneNumber } from '../utils/formatters';
 
 const FacebookLogin = FacebookLoginModule.default || FacebookLoginModule;
 
@@ -312,9 +313,9 @@ const Auth = () => {
               <input 
                 type="tel" 
                 className="auth-input" 
-                placeholder="Cep Telefonu" 
+                placeholder="(5XX) XXX XX XX" 
                 value={regPhone}
-                onChange={(e) => setRegPhone(e.target.value)}
+                onChange={(e) => setRegPhone(formatPhoneNumber(e.target.value))}
                 required
               />
             </div>
