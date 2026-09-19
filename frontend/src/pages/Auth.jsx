@@ -179,8 +179,8 @@ const Auth = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
       
-      <main className="flex-grow flex items-start justify-center p-4 sm:p-12 pt-8 sm:pt-16">
-        <div className="auth-card w-full max-w-md bg-white rounded-2xl shadow-lg p-6 sm:p-8 my-8">
+      <main className="flex-grow flex items-start justify-center p-4 sm:p-8 pt-4 sm:pt-8">
+        <div className="auth-card w-full max-w-md bg-white rounded-2xl shadow-lg p-6 sm:p-8 mt-2 mb-8">
         {/* Header / Logo */}
         <div className="auth-header">
           <h2>NETA OTO MARKET</h2>
@@ -517,13 +517,19 @@ const Auth = () => {
 
       {/* Terms Modal */}
       {showTermsModal && (
-        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 sm:p-6 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-lg shadow-2xl flex flex-col relative overflow-hidden">
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[999] flex items-center justify-center p-4 sm:p-6"
+          onClick={() => setShowTermsModal(false)}
+        >
+          <div 
+            className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden relative"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button 
               onClick={() => setShowTermsModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 z-10 bg-white rounded-full p-1 transition-colors"
+              className="absolute top-4 right-4 text-gray-500 hover:bg-gray-100 hover:text-gray-800 z-10 rounded-full p-2 transition-all flex items-center justify-center"
             >
-              <X size={24} />
+              <X size={20} strokeWidth={2.5} />
             </button>
             
             <div className="p-6 sm:p-10 overflow-y-auto h-full text-left">
@@ -610,13 +616,19 @@ const Auth = () => {
 
       {/* Privacy Modal */}
       {showPrivacyModal && (
-        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 sm:p-6 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-lg shadow-2xl flex flex-col relative overflow-hidden">
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[999] flex items-center justify-center p-4 sm:p-6"
+          onClick={() => setShowPrivacyModal(false)}
+        >
+          <div 
+            className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden relative"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button 
               onClick={() => setShowPrivacyModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 z-10 bg-white rounded-full p-1 transition-colors"
+              className="absolute top-4 right-4 text-gray-500 hover:bg-gray-100 hover:text-gray-800 z-10 rounded-full p-2 transition-all flex items-center justify-center"
             >
-              <X size={24} />
+              <X size={20} strokeWidth={2.5} />
             </button>
             
             <div className="p-6 sm:p-10 overflow-y-auto h-full text-left">
