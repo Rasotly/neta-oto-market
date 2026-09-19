@@ -18,6 +18,7 @@ const Auth = () => {
   const [otpTimer, setOtpTimer] = useState(180);
   const [canResendOtp, setCanResendOtp] = useState(false);
   const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
+  const [expectedOtp, setExpectedOtp] = useState('');
   const [tempUserData, setTempUserData] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -159,6 +160,7 @@ const Auth = () => {
     if (result.success) {
       // Don't register yet, show OTP modal
       setTempUserData(userData);
+      setExpectedOtp(result.otp);
       setOtpTimer(180);
       setCanResendOtp(false);
       setOtpValues(['', '', '', '', '', '']);
@@ -196,8 +198,8 @@ const Auth = () => {
       return;
     }
     
-    // Simüle edilmiş backend doğrulaması: gerçek senaryoda '/api/auth/verify-email' endpoint'ine istek atılacak.
-    if (code === '123456') {
+    // Gerçek dinamik OTP kontrolü
+    if (code === expectedOtp || (import.meta.env.DEV && code === '123456')) {
       const result = finalizeRegistration(tempUserData);
       if (result.success) {
         toast.success('Hesabınız başarıyla oluşturuldu!');
@@ -213,8 +215,9 @@ const Auth = () => {
 
   const handleResendOtp = async () => {
     if (!canResendOtp) return;
-    const result = await resendRegistrationOtp(tempUserData.email);
+    const result = await resendRegistrationOtp(tempUserData.email, tempUserData.firstName);
     if (result.success) {
+      setExpectedOtp(result.otp);
       toast.success('Yeni doğrulama kodu e-posta adresinize gönderildi.');
       setOtpTimer(180);
       setCanResendOtp(false);

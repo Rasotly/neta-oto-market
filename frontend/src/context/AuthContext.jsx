@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import emailjs from '@emailjs/browser';
 
 const AuthContext = createContext();
 
@@ -20,6 +21,34 @@ export const AuthProvider = ({ children }) => {
     const saved = localStorage.getItem('registeredUsers');
     return saved ? JSON.parse(saved) : [];
   });
+
+  const sendOtpEmail = async (email, name, otp) => {
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.warn("EmailJS anahtarları eksik. Mail gönderimi simüle edildi (Sadece konsol).");
+      return true; // We don't fail, just simulate
+    }
+
+    try {
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          to_name: name,
+          to_email: email,
+          otp_code: otp,
+        },
+        publicKey
+      );
+      return true;
+    } catch (error) {
+      console.error("EmailJS Hatası:", error);
+      return false;
+    }
+  };
 
   const login = (username, password) => {
     if (username === 'admin' || username === 'admin@admin.com') {
@@ -78,15 +107,25 @@ export const AuthProvider = ({ children }) => {
       return { success: false, message: 'Bu e-posta adresi zaten kullanılıyor.' };
     }
 
+    // Generate random 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(`[SIMULATED SMTP] ${userData.email} adresine gönderilen kod: ${otp}`);
+    
+    // Send email via EmailJS (if keys exist, otherwise just simulates)
+    await sendOtpEmail(userData.email, userData.firstName, otp);
+
     // Return success to proceed to OTP
-    return { success: true };
+    return { success: true, otp };
   };
 
-  const resendRegistrationOtp = (email) => {
-    // Simulate re-sending OTP email via SMTP
-    // In a real app, this would be a POST request to '/api/auth/resend-otp'
-    console.log(`[SIMULATED SMTP] Yeni doğrulama kodu ${email} adresine gönderildi.`);
-    return { success: true };
+  const resendRegistrationOtp = async (email, name = "Kullanıcı") => {
+    // Generate new random 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(`[SIMULATED SMTP] ${email} adresine gönderilen YENİ kod: ${otp}`);
+    
+    await sendOtpEmail(email, name, otp);
+    
+    return { success: true, otp };
   };
 
   const finalizeRegistration = (userData) => {
