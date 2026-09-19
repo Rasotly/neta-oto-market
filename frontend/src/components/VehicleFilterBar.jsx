@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { VEHICLE_DATA } from '../utils/vehicleData';
-import { Search } from 'lucide-react';
+import { Search, Eraser } from 'lucide-react';
 
-const VehicleFilterBar = ({ onFilterSubmit }) => {
+const VehicleFilterBar = ({ onFilterSubmit, onFilterClear }) => {
   const [selectedMake, setSelectedMake] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
@@ -30,9 +30,16 @@ const VehicleFilterBar = ({ onFilterSubmit }) => {
         year: selectedYear
       });
     } else {
-      // Opt: Allow partial filtering, but the prompt says "Bu 3 parametreye göre filtrele"
-      // and "Seçim yapmadan diğer kutular aktifleşmeyecek". Let's require all 3 for the demo.
       alert('Lütfen aramanızı başlatmak için tüm araç bilgilerini seçiniz.');
+    }
+  };
+
+  const handleClear = () => {
+    setSelectedMake('');
+    setSelectedModel('');
+    setSelectedYear('');
+    if (onFilterClear) {
+      onFilterClear();
     }
   };
 
@@ -47,7 +54,7 @@ const VehicleFilterBar = ({ onFilterSubmit }) => {
             onChange={(e) => setSelectedMake(e.target.value)}
             className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#D5A738] focus:border-transparent transition-shadow text-gray-700"
           >
-            <option value="">1. Marka Seçiniz</option>
+            <option value="">Marka Seçiniz</option>
             {makes.map(make => (
               <option key={make} value={make}>{make}</option>
             ))}
@@ -62,7 +69,7 @@ const VehicleFilterBar = ({ onFilterSubmit }) => {
             disabled={!selectedMake}
             className={`w-full border border-gray-200 rounded-xl px-4 py-3 ${!selectedMake ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#D5A738] focus:border-transparent transition-shadow'}`}
           >
-            <option value="">2. Model Seçiniz</option>
+            <option value="">Model Seçiniz</option>
             {models.map(model => (
               <option key={model} value={model}>{model}</option>
             ))}
@@ -77,7 +84,7 @@ const VehicleFilterBar = ({ onFilterSubmit }) => {
             disabled={!selectedModel}
             className={`w-full border border-gray-200 rounded-xl px-4 py-3 ${!selectedModel ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#D5A738] focus:border-transparent transition-shadow'}`}
           >
-            <option value="">3. Kasa/Yıl Seçiniz</option>
+            <option value="">Kasa/Yıl Seçiniz</option>
             {years.map(year => (
               <option key={year} value={year}>{year}</option>
             ))}
@@ -85,13 +92,26 @@ const VehicleFilterBar = ({ onFilterSubmit }) => {
         </div>
       </div>
 
-      {/* Filtrele Butonu */}
-      <div 
-        onClick={handleSubmit}
-        className="bg-[#D5A738] hover:opacity-90 text-white font-bold py-3 px-6 rounded-xl transition-all border-0 shadow-none w-full md:w-auto whitespace-nowrap flex items-center justify-center gap-2 cursor-pointer"
-      >
-        <Search size={18} />
-        Aracıma Uygun Ürünleri Bul
+      <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
+        {/* Temizle Butonu (Eğer seçim varsa görünür) */}
+        {(selectedMake || selectedModel || selectedYear) && (
+          <div 
+            onClick={handleClear}
+            className="bg-gray-100 hover:bg-gray-200 text-gray-600 p-3 rounded-xl transition-all border border-gray-200 shadow-none flex items-center justify-center cursor-pointer"
+            title="Seçimleri Temizle"
+          >
+            <Eraser size={20} />
+          </div>
+        )}
+
+        {/* Filtrele Butonu */}
+        <div 
+          onClick={handleSubmit}
+          className="bg-[#D5A738] hover:opacity-90 text-white font-bold py-3 px-6 rounded-xl transition-all border-0 shadow-none w-full md:w-auto whitespace-nowrap flex items-center justify-center gap-2 cursor-pointer flex-grow"
+        >
+          <Search size={18} />
+          Aracıma Uygun Ürünleri Bul
+        </div>
       </div>
     </div>
   );

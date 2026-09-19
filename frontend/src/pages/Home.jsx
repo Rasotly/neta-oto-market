@@ -186,7 +186,10 @@ function Home() {
       {!showOnlyFavorites && <HeroSlider />}
       {!showOnlyFavorites && (
         <div className="px-4">
-          <VehicleFilterBar onFilterSubmit={setActiveVehicleFilter} />
+          <VehicleFilterBar 
+            onFilterSubmit={setActiveVehicleFilter} 
+            onFilterClear={() => setActiveVehicleFilter(null)}
+          />
         </div>
       )}
     
