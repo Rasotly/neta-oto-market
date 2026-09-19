@@ -5,6 +5,8 @@ import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google';
 import FacebookLoginModule from 'react-facebook-login/dist/facebook-login-render-props';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const FacebookLogin = FacebookLoginModule.default || FacebookLoginModule;
 
@@ -156,15 +158,11 @@ const Auth = () => {
   };
 
   return (
-    <div className="auth-container relative">
-      <button 
-        onClick={() => navigate('/')} 
-        className="absolute top-4 left-4 sm:top-8 sm:left-8 flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-all bg-white px-4 py-2.5 rounded-full shadow-sm border border-gray-200 font-medium text-sm hover:shadow-md hover:-translate-x-1"
-      >
-        <ArrowLeft size={18} />
-        Siteye Dön
-      </button>
-      <div className="auth-card">
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      <Navbar />
+      
+      <main className="flex-grow flex items-start justify-center p-4 sm:p-12 pt-8 sm:pt-16">
+        <div className="auth-card w-full max-w-md bg-white rounded-2xl shadow-lg p-6 sm:p-8 my-8">
         {/* Header / Logo */}
         <div className="auth-header">
           <h2>NETA OTO MARKET</h2>
@@ -432,6 +430,9 @@ const Auth = () => {
           </div>
         </div>
       )}
+      </main>
+
+      <Footer />
     </div>
   );
 };
