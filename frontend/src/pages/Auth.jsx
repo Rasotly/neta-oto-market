@@ -14,10 +14,28 @@ const FacebookLogin = FacebookLoginModule.default || FacebookLoginModule;
 
 const Auth = () => {
   const [activeTab, setActiveTab] = useState('login'); // 'login' or 'register'
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otpTimer, setOtpTimer] = useState(180);
+  const [canResendOtp, setCanResendOtp] = useState(false);
+  const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
+  const [tempUserData, setTempUserData] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { customerLogin, customerRegister, finalizeRegistration, socialLogin } = useAuth();
+  const { customerLogin, customerRegister, finalizeRegistration, socialLogin, resendRegistrationOtp } = useAuth();
   
+  useEffect(() => {
+    let interval = null;
+    if (showOtpModal && otpTimer > 0) {
+      interval = setInterval(() => {
+        setOtpTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (otpTimer === 0) {
+      setCanResendOtp(true);
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [showOtpModal, otpTimer]);
+
   const handleGoogleSuccess = async (tokenResponse) => {
     // google sends an access_token. We need to send it to our backend.
     const result = await socialLogin('google', tokenResponse.access_token);
@@ -47,11 +65,6 @@ const Auth = () => {
       toast.error('Facebook girişi iptal edildi veya başarısız oldu.');
     }
   };
-
-  // OTP State
-  const [showOtpModal, setShowOtpModal] = useState(false);
-  const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
-  const [tempUserData, setTempUserData] = useState(null);
 
   // Login Form State
   const [loginEmail, setLoginEmail] = useState('');
@@ -146,6 +159,9 @@ const Auth = () => {
     if (result.success) {
       // Don't register yet, show OTP modal
       setTempUserData(userData);
+      setOtpTimer(180);
+      setCanResendOtp(false);
+      setOtpValues(['', '', '', '', '', '']);
       setShowOtpModal(true);
     } else {
       toast.error(result.message);
@@ -175,6 +191,12 @@ const Auth = () => {
 
   const handleOtpSubmit = () => {
     const code = otpValues.join('');
+    if (code.length < 6) {
+      toast.error('Lütfen 6 haneli doğrulama kodunu eksiksiz girin.');
+      return;
+    }
+    
+    // Simüle edilmiş backend doğrulaması: gerçek senaryoda '/api/auth/verify-email' endpoint'ine istek atılacak.
     if (code === '123456') {
       const result = finalizeRegistration(tempUserData);
       if (result.success) {
@@ -187,6 +209,30 @@ const Auth = () => {
     } else {
       toast.error('Girdiğiniz kod hatalı, lütfen tekrar deneyin.');
     }
+  };
+
+  const handleResendOtp = async () => {
+    if (!canResendOtp) return;
+    const result = await resendRegistrationOtp(tempUserData.email);
+    if (result.success) {
+      toast.success('Yeni doğrulama kodu e-posta adresinize gönderildi.');
+      setOtpTimer(180);
+      setCanResendOtp(false);
+      setOtpValues(['', '', '', '', '', '']);
+      // Focus first input
+      setTimeout(() => {
+        const firstInput = document.getElementById('otp-0');
+        if (firstInput) firstInput.focus();
+      }, 100);
+    } else {
+      toast.error(result.message || 'Kod gönderilemedi.');
+    }
+  };
+
+  const formatTimer = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -497,14 +543,14 @@ const Auth = () => {
 
       {/* OTP Modal */}
       {showOtpModal && (
-        <div className="modal-overlay" style={{ zIndex: 60 }}>
-          <div className="modal-content auth-card" style={{ maxWidth: '400px', textAlign: 'center' }}>
-            <h3 style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: '700' }}>E-posta Doğrulama</h3>
-            <p style={{ marginBottom: '1.5rem', color: '#4b5563', fontSize: '0.95rem' }}>
-              Girdiğiniz e-posta adresine 6 haneli bir kod gönderdik.
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[999] flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md flex flex-col p-8 relative items-center text-center">
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">E-postanızı Doğrulayın</h3>
+            <p className="text-gray-600 text-sm mb-6">
+              <span className="font-semibold text-gray-800">{tempUserData?.email}</span> adresine 6 haneli bir kod gönderdik.
             </p>
             
-            <div className="otp-inputs-container">
+            <div className="flex gap-2 sm:gap-3 justify-center mb-6 w-full">
               {otpValues.map((digit, index) => (
                 <input
                   key={index}
@@ -514,21 +560,44 @@ const Auth = () => {
                   value={digit}
                   onChange={(e) => handleOtpChange(index, e.target.value)}
                   onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                  className="auth-input otp-box"
+                  className="w-10 h-12 sm:w-12 sm:h-14 border-2 border-gray-200 rounded-lg text-center text-xl font-semibold text-gray-800 focus:border-[#D5A738] focus:ring-2 focus:ring-[#D5A738]/20 transition-all outline-none"
                 />
               ))}
             </div>
 
-            <button type="button" className="auth-submit-btn register-btn" onClick={handleOtpSubmit}>
-              Doğrula ve Hesabı Aç
-            </button>
             <button 
               type="button" 
-              className="text-btn" 
-              style={{ marginTop: '1rem', display: 'block', width: '100%' }}
+              className="w-full bg-[#D5A738] text-white font-semibold rounded-lg py-3 hover:bg-[#c29631] transition-colors shadow-md hover:shadow-lg mb-4" 
+              onClick={handleOtpSubmit}
+            >
+              Doğrula
+            </button>
+
+            <div className="flex flex-col items-center gap-2 mb-4">
+              <span className="text-2xl font-mono font-bold text-gray-700 bg-gray-100 px-4 py-1 rounded-md">
+                {formatTimer(otpTimer)}
+              </span>
+              
+              <button
+                type="button"
+                onClick={handleResendOtp}
+                disabled={!canResendOtp}
+                className={`text-sm font-medium transition-colors ${
+                  canResendOtp 
+                    ? 'text-[#D5A738] hover:text-[#b58b29] underline cursor-pointer' 
+                    : 'text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Kodu Tekrar Gönder
+              </button>
+            </div>
+
+            <button 
+              type="button" 
+              className="absolute top-4 right-4 text-gray-500 hover:bg-gray-100 rounded-full p-2 transition-all"
               onClick={() => setShowOtpModal(false)}
             >
-              İptal Et
+              <X size={20} strokeWidth={2.5} />
             </button>
           </div>
         </div>

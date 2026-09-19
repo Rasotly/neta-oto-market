@@ -82,6 +82,13 @@ export const AuthProvider = ({ children }) => {
     return { success: true };
   };
 
+  const resendRegistrationOtp = (email) => {
+    // Simulate re-sending OTP email via SMTP
+    // In a real app, this would be a POST request to '/api/auth/resend-otp'
+    console.log(`[SIMULATED SMTP] Yeni doğrulama kodu ${email} adresine gönderildi.`);
+    return { success: true };
+  };
+
   const finalizeRegistration = (userData) => {
     const newUser = {
       id: Date.now().toString(),
@@ -182,6 +189,7 @@ export const AuthProvider = ({ children }) => {
       updateUser,
       updateAnyUser,
       socialLogin,
+      resendRegistrationOtp,
       registeredUsers,
       logout 
     }}>
