@@ -207,7 +207,7 @@ const Auth = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button 
                 type="button" 
-                className="flex items-center justify-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium text-sm py-3 rounded-xl transition-colors w-full"
+                className="flex items-center justify-center gap-2 bg-white border-none outline-none shadow-sm hover:bg-gray-50 text-gray-700 font-medium text-sm py-3 rounded-xl transition-colors w-full"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -220,7 +220,7 @@ const Auth = () => {
               
               <button 
                 type="button" 
-                className="flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white font-medium text-sm py-3 rounded-xl transition-colors w-full"
+                className="flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white border-none outline-none font-medium text-sm py-3 rounded-xl transition-colors w-full"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M24 12.073C24 5.449 18.627 0 12 0S0 5.449 0 12.073C0 18.066 4.388 23.031 10.125 24v-8.437H7.078v-3.49h3.047V9.418c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.031 24 18.066 24 12.073z" fill="currentColor"/>
@@ -319,7 +319,7 @@ const Auth = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button 
                 type="button" 
-                className="flex items-center justify-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium text-sm py-3 rounded-xl transition-colors w-full"
+                className="flex items-center justify-center gap-2 bg-white border-none outline-none shadow-sm hover:bg-gray-50 text-gray-700 font-medium text-sm py-3 rounded-xl transition-colors w-full"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -332,7 +332,7 @@ const Auth = () => {
               
               <button 
                 type="button" 
-                className="flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white font-medium text-sm py-3 rounded-xl transition-colors w-full"
+                className="flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white border-none outline-none font-medium text-sm py-3 rounded-xl transition-colors w-full"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M24 12.073C24 5.449 18.627 0 12 0S0 5.449 0 12.073C0 18.066 4.388 23.031 10.125 24v-8.437H7.078v-3.49h3.047V9.418c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.031 24 18.066 24 12.073z" fill="currentColor"/>
