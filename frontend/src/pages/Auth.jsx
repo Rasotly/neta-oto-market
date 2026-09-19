@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google';
 import FacebookLoginModule from 'react-facebook-login/dist/facebook-login-render-props';
@@ -63,6 +63,10 @@ const Auth = () => {
   const [regPhone, setRegPhone] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [marketingAccepted, setMarketingAccepted] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -104,6 +108,11 @@ const Auth = () => {
 
     if (!termsAccepted) {
       toast.error('Lütfen üyelik sözleşmesini kabul ediniz.');
+      return;
+    }
+
+    if (!privacyAccepted) {
+      toast.error('Lütfen aydınlatma metnini okuyup onaylayınız.');
       return;
     }
 
@@ -343,14 +352,39 @@ const Auth = () => {
               </button>
             </div>
 
-            <label className="terms-checkbox">
-              <input 
-                type="checkbox" 
-                checked={termsAccepted}
-                onChange={(e) => setTermsAccepted(e.target.checked)}
-              />
-              <span><a href="#">Üyelik Sözleşmesini</a> ve <a href="#">Aydınlatma Metnini</a> okudum, kabul ediyorum.</span>
-            </label>
+            <div className="flex flex-col gap-3 my-4">
+              <label className="terms-checkbox items-start">
+                <input 
+                  type="checkbox" 
+                  className="mt-1"
+                  checked={marketingAccepted}
+                  onChange={(e) => setMarketingAccepted(e.target.checked)}
+                />
+                <span>Aydınlatma Metninde belirtilen ilkeler nezdinde Elektronik Ticaret İletisi almak istiyorum.</span>
+              </label>
+
+              <label className="terms-checkbox items-start">
+                <input 
+                  type="checkbox" 
+                  className="mt-1"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  required
+                />
+                <span><button type="button" onClick={() => setShowTermsModal(true)} className="text-blue-600 hover:underline">Üyelik sözleşmesini</button> kabul ediyorum.</span>
+              </label>
+
+              <label className="terms-checkbox items-start">
+                <input 
+                  type="checkbox" 
+                  className="mt-1"
+                  checked={privacyAccepted}
+                  onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                  required
+                />
+                <span>Kişisel verilerin işlenmesine ilişkin <button type="button" onClick={() => setShowPrivacyModal(true)} className="text-blue-600 hover:underline">Aydınlatma Metnini</button> okudum.</span>
+              </label>
+            </div>
 
             <button type="submit" className="auth-submit-btn register-btn">
               Hesap Oluştur
@@ -433,6 +467,185 @@ const Auth = () => {
             >
               İptal Et
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Terms Modal */}
+      {showTermsModal && (
+        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 sm:p-6 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-lg shadow-2xl flex flex-col relative overflow-hidden">
+            <button 
+              onClick={() => setShowTermsModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 z-10 bg-white rounded-full p-1 transition-colors"
+            >
+              <X size={24} />
+            </button>
+            
+            <div className="p-6 sm:p-10 overflow-y-auto h-full text-left">
+              <h2 className="text-2xl font-bold text-center mb-8 uppercase text-gray-800">Üyelik Sözleşmesi</h2>
+              
+              <div className="text-sm text-gray-600 space-y-6 leading-relaxed">
+                <p className="font-semibold text-red-500">**ÖRNEKTİR. KULLANMADAN ÖNCE KENDİ SİTENİZE UYGUN BİR ŞEKİLDE DÜZENLEYİNİZ**</p>
+                
+                <div>
+                  <h3 className="font-bold underline mb-2">ÜYELİK SÖZLEŞMESİ</h3>
+                  <p>Lütfen sitemizi kullanmadan evvel bu 'site kullanım şartları'nı dikkatlice okuyunuz.</p>
+                  <p className="mt-2">Bu alışveriş sitesini kullanan ve alışveriş yapan müşterilerimiz aşağıdaki şartları kabul etmiş varsayılmaktadır:</p>
+                  <p className="mt-2">Sitemizdeki web sayfaları ve ona bağlı tüm sayfalar ('site') Neta Oto Market firmasına aittir ve onun tarafından işletilir. Sizler ('Kullanıcı') sitede sunulan tüm hizmetleri kullanırken aşağıdaki şartlara tabi olduğunuzu, sitedeki hizmetten yararlanmakla ve kullanmaya devam etmekle; Bağlı olduğunuz yasalara göre sözleşme imzalama hakkına, yetkisine ve hukuki ehliyetine sahip ve 18 yaşın üzerinde olduğunuzu, bu sözleşmeyi okuduğunuzu, anladığınızı ve sözleşmede yazan şartlarla bağlı olduğunuzu kabul etmiş sayılırsınız.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold underline mb-2">1. SORUMLULUKLAR</h3>
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>Firma, fiyatlar ve sunulan ürün ve hizmetler üzerinde değişiklik yapma hakkını her zaman saklı tutar.</li>
+                    <li>Firma, üyenin sözleşme konusu hizmetlerden, teknik arızalar dışında yararlandırılacağını kabul ve taahhüt eder.</li>
+                    <li>Kullanıcı, sitenin kullanımında tersine mühendislik yapmayacağını ya da bunların kaynak kodunu bulmak veya elde etmek amacına yönelik herhangi bir başka işlemde bulunmayacağını aksi halde ve 3. Kişiler nezdinde doğacak zararlardan sorumlu olacağını, hakkında hukuki ve cezai işlem yapılacağını peşinen kabul eder.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-bold underline mb-2">2. FİKRİ MÜLKİYET HAKLARI</h3>
+                  <p>2.1. İşbu Site'de yer alan ünvan, işletme adı, marka, patent, logo, tasarım, bilgi ve yöntem gibi tescilli veya tescilsiz tüm fikri mülkiyet hakları site işleteni ve sahibi firmaya veya belirtilen ilgilisine ait olup, ulusal ve uluslararası hukukun koruması altındadır. İşbu Site'nin ziyaret edilmesi veya bu Site'deki hizmetlerden yararlanılması söz konusu fikri mülkiyet hakları konusunda hiçbir hak vermez.</p>
+                  <p className="mt-2">2.2. Site'de yer alan bilgiler hiçbir şekilde çoğaltılamaz, yayınlanamaz, kopyalanamaz, sunulamaz ve/veya aktarılamaz. Site'nin bütünü veya bir kısmı diğer bir internet sitesinde izinsiz olarak kullanılamaz.</p>
+                </div>
+                
+                <div>
+                  <h3 className="font-bold underline mb-2">3. GİZLİ BİLGİ</h3>
+                  <p>3.1. Firma, site üzerinden kullanıcıların ilettiği kişisel bilgileri 3. Kişilere açıklamayacaktır. Bu kişisel bilgiler; kişi adı-soyadı, adresi, telefon numarası, cep telefonu, e-posta adresi gibi Kullanıcı'yı tanımlamaya yönelik her türlü diğer bilgiyi içermekte olup, kısaca 'Gizli Bilgiler' olarak anılacaktır.</p>
+                  <p className="mt-2">3.2. Kullanıcı, tanıtım, reklam, kampanya, promosyon, duyuru vb. pazarlama faaliyetleri kapsamında kullanılması ile sınırlı olmak üzere, Site'nin sahibi olan firmanın kendisine ait iletişim, portföy durumu ve demografik bilgilerini iştirakleri ya da bağlı bulunduğu grup şirketleri ile paylaşmasına, kendisi veya iştiraklerine yönelik bu bağlamda elektronik ileti almaya onay verdiğini kabul ve beyan eder. Bu kişisel bilgiler firma bünyesinde müşteri profili belirlemek, müşteri profiline uygun promosyon ve kampanyalar sunmak ve istatistiksel çalışmalar yapmak amacıyla kullanılabilecektir.</p>
+                  <p className="mt-2">3.3. Kullanıcı, işbu sözleşme ile vermiş olduğu onayı, hiçbir gerekçe açıklamaksızın iptal etmek hakkına sahiptir. İptal işlemini firma, derhal işleme alıp, 3 (üç) işgünü içerisinde kullanıcıyı elektronik ileti almaktan imtina eder.</p>
+                  <p className="mt-2">3.4. Gizli Bilgiler, ancak resmi makamlarca usulü dairesinde bu bilgilerin talep edilmesi halinde ve yürürlükteki emredici mevzuat hükümleri gereğince resmi makamlara açıklama yapılmasının zorunlu olduğu durumlarda resmi makamlara açıklanabilecektir.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold underline mb-2">4. GARANTİ VERMEME:</h3>
+                  <p>İŞBU SÖZLEŞME MADDESİ UYGULANABİLİR KANUNUN İZİN VERDİĞİ AZAMİ ÖLÇÜDE GEÇERLİ OLACAKTIR. FİRMA TARAFINDAN SUNULAN HİZMETLER "OLDUĞU GİBİ" VE "MÜMKÜN OLDUĞU" TEMELDE SUNULMAKTA VE PAZARLANABİLİRLİK, BELİRLİ BİR AMACA UYGUNLUK VEYA İHLAL ETMEME KONUSUNDA TÜM ZIMNİ GARANTİLER DE DÂHİL OLMAK ÜZERE HİZMETLER VEYA UYGULAMA İLE İLGİLİ OLARAK (BUNLARDA YER ALAN TÜM BİLGİLER DÂHİL) SARİH VEYA ZIMNİ, KANUNİ VEYA BAŞKA BİR NİTELİKTE HİÇBİR GARANTİDE BULUNMAMAKTADIR.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold underline mb-2">5. KAYIT VE GÜVENLİK</h3>
+                  <p>Kullanıcı, doğru, eksiksiz ve güncel kayıt bilgilerini vermek zorundadır. Aksi halde bu Sözleşme ihlal edilmiş sayılacak ve Kullanıcı bilgilendirilmeksizin hesap kapatılabilecektir.</p>
+                  <p className="mt-2">Kullanıcı, site ve üçüncü taraf sitelerdeki şifre ve hesap güvenliğinden kendisi sorumludur. Aksi halde oluşacak veri kayıplarından ve güvenlik ihlallerinden veya donanım ve cihazların zarar görmesinden Firma sorumlu tutulamaz.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold underline mb-2">6. MÜCBİR SEBEP</h3>
+                  <p>Tarafların kontrolünde olmayan; tabii afetler, yangın, patlamalar, iç savaşlar, savaşlar, ayaklanmalar, halk hareketleri, seferberlik ilanı, grev, lokavt ve salgın hastalıklar, altyapı ve internet arızaları, elektrik kesintisi gibi sebeplerden (aşağıda birlikte "Mücbir Sebep” olarak anılacaktır.) dolayı sözleşmeden doğan yükümlülükler taraflarca ifa edilemez hale gelirse, taraflar bundan sorumlu değildir. Bu sürede Taraflar'ın işbu Sözleşme'den doğan hak ve yükümlülükleri askıya alınır.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold underline mb-2">7. SÖZLEŞMENİN BÜTÜNLÜĞÜ VE UYGULANABİLİRLİK</h3>
+                  <p>İşbu sözleşme şartlarından biri, kısmen veya tamamen geçersiz hale gelirse, sözleşmenin geri kalanı geçerliliğini korumaya devam eder.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold underline mb-2">8. SÖZLEŞMEDE YAPILACAK DEĞİŞİKLİKLER</h3>
+                  <p>Firma, dilediği zaman sitede sunulan hizmetleri ve işbu sözleşme şartlarını kısmen veya tamamen değiştirebilir. Değişiklikler sitede yayınlandığı tarihten itibaren geçerli olacaktır. Değişiklikleri takip etmek Kullanıcı'nın sorumluluğundadır. Kullanıcı, sunulan hizmetlerden yararlanmaya devam etmekle bu değişiklikleri de kabul etmiş sayılır.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold underline mb-2">9. TEBLİGAT</h3>
+                  <p>İşbu Sözleşme ile ilgili taraflara gönderilecek olan tüm bildirimler, Firma'nın bilinen e.posta adresi ve kullanıcının üyelik formunda belirttiği e.posta adresi vasıtasıyla yapılacaktır. Kullanıcı, üye olurken belirttiği adresin geçerli tebligat adresi olduğunu, değişmesi durumunda 5 gün içinde yazılı olarak diğer tarafa bildireceğini, aksi halde bu adrese yapılacak tebligatların geçerli sayılacağını kabul eder.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold underline mb-2">10. DELİL SÖZLEŞMESİ</h3>
+                  <p>Taraflar arasında işbu sözleşme ile ilgili işlemler için çıkabilecek her türlü uyuşmazlıklarda Taraflar'ın defter, kayıt ve belgeleri ile ve bilgisayar kayıtları ve faks kayıtları 6100 sayılı Hukuk Muhakemeleri Kanunu uyarınca delil olarak kabul edilecek olup, kullanıcı bu kayıtlara itiraz etmeyeceğini kabul eder.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold underline mb-2">11. UYUŞMAZLIKLARIN ÇÖZÜMÜ</h3>
+                  <p>İşbu Sözleşme'nin uygulanmasından veya yorumlanmasından doğacak her türlü uyuşmazlığın çözümünde İstanbul (Merkez) Adliyesi Mahkemeleri ve İcra Daireleri yetkilidir.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Privacy Modal */}
+      {showPrivacyModal && (
+        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 sm:p-6 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-lg shadow-2xl flex flex-col relative overflow-hidden">
+            <button 
+              onClick={() => setShowPrivacyModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 z-10 bg-white rounded-full p-1 transition-colors"
+            >
+              <X size={24} />
+            </button>
+            
+            <div className="p-6 sm:p-10 overflow-y-auto h-full text-left">
+              <h2 className="text-2xl font-bold text-center mb-8 uppercase text-gray-800">ÜYE VE ZİYARETÇİ KİŞİSEL VERİ AYDINLATMA METNİ</h2>
+              
+              <div className="text-[13px] text-gray-600 space-y-5 leading-relaxed">
+                <div>
+                  <h3 className="font-bold mb-2">KİŞİSEL VERİLERİN KORUNMASI HAKKINDA BİLGİLENDİRME</h3>
+                  <p>Gerek web sitemizi kullanırken, gerekse başka yollarla tarafımıza iletmiş olduğunuz kişisel bilgilerinizin güvenliğinin sağlanmasına son derece önem vermektedir. 6698 Sayılı “Kişisel Verilerin Korunması Kanunu” yürürlüğe girmiştir. Anılan mevzuat ve bu mevzuatta belirtilen bir takım tanımlar hakkında sizi bilgilendirmek isteriz:</p>
+                  <p className="mt-2"><span className="font-bold text-gray-800">Kişisel veri:</span> Kimliği belirli veya belirlenebilir gerçek kişiye ilişkin her türlü bilgiyi,</p>
+                  <p className="mt-2"><span className="font-bold text-gray-800">Kişisel verilerin işlenmesi:</span> Kişisel verilerin tamamen veya kısmen otomatik olan ya da herhangi bir veri kayıt sisteminin parçası olmak kaydıyla otomatik olmayan yollarla elde edilmesi, kaydedilmesi, depolanması, muhafaza edilmesi, değiştirilmesi, yeniden düzenlenmesi, açıklanması, aktarılması, devralınması, elde edilebilir hâle getirilmesi, sınıflandırılması ya da kullanılmasının engellenmesi gibi veriler üzerinde gerçekleştirilen her türlü işlemi,</p>
+                  <p className="mt-2"><span className="font-bold text-gray-800">Veri işleyen:</span> Veri sorumlusunun verdiği yetkiye dayanarak onun adına kişisel verileri işleyen gerçek veya tüzel kişiyi,</p>
+                  <p className="mt-2"><span className="font-bold text-gray-800">Veri kayıt sistemi:</span> Kişisel verilerin belirli kriterlere göre yapılandırılarak işlendiği kayıt sistemini,</p>
+                  <p className="mt-2"><span className="font-bold text-gray-800">Veri sorumlusu:</span> Kişisel verilerin işleme amaçlarını ve vasıtalarını belirleyen, veri kayıt sisteminin kurulmasından ve yönetilmesinden sorumlu olan gerçek veya tüzel kişiyi ifade eder.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold mb-2">1. Kişisel Verilerin Korunması ve Rıza Metninin Amacı ve Şirketimizin Veri Sorumlusu Konumu:</h3>
+                  <p>Alışveriş sitemizin müşterilere ilişkin kişisel veriler bakımından 6698 sayılı Kişisel Verilerin Korunması Kanunu ("Kanun") kapsamında "veri sorumlusu" sıfatına sahip olup işbu Kişisel Verilerin Korunması ve Rıza Metni ile söz konusu Kanun uyarınca müşterilerin alışveriş sitemiz tarafından gerçekleştirilen kişisel veri işleme faaliyetleri hakkında aydınlatılması ve aşağıda 3. maddede belirtilen durumlar için açık rızalarının temini hedeflenmektedir.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold mb-2">2. Müşterilere Ait Kişisel Verilerin İşlenme Amacı:</h3>
+                  <p>Müşterilere ait kişisel veriler aşağıda ve Kanun'un 5. ve 6. maddelerinde belirtilen kişisel veri işleme şartları ve amaçları çerçevesinde işlenmektedir. Müşterilere ait kişisel veriler;</p>
+                  <ul className="list-disc pl-5 mt-2 space-y-2">
+                    <li>Alışveriş sitemiz tarafından sunulan ürün ve hizmetlerden ilgili kişileri faydalandırmak için gerekli çalışmaların iş birimleri tarafından yapılması ve ilgili iş süreçlerinin yürütülmesi,</li>
+                    <li>Alışveriş sitemiz tarafından yürütülen ticari faaliyetlerin gerçekleştirilmesi için ilgili iş birimleri tarafından gerekli çalışmaların yapılması ve buna bağlı iş süreçlerinin yürütülmesi,</li>
+                    <li>Alışveriş sitemizin ticari ve/veya iş stratejilerinin planlanması ve icrası,</li>
+                    <li>Alışveriş sitemiz ile iş ilişkisi içerisinde olan ilgili kişilerin hukuki, teknik ve ticari-iş güvenliğinin temini ile tarafımızın sunduğu ürün ve hizmetlerin ilgili kişilerin beğeni, kullanım alışkanlıkları ve ihtiyaçlarına göre özelleştirilerek ilgili kişilere önerilmesi ve tanıtılması için gerekli olan aktivitelerin planlanması ve icrası,</li>
+                    <li>İlgililerin olası hak ve alacak taleplerinin tesisi,</li>
+                    <li>Yetkili kuruluşlara mevzuattan kaynaklı bilgi verilmesi,</li>
+                    <li>Ziyaretçi kayıtlarının oluşturulması ve takibi,</li>
+                    <li>Şirketimiz ve Şirketimiz adına şubelerimiz, çağrı merkezimiz, bağlı şirketlerimiz tarafından ya da internet sitelerimiz ile sosyal medya sayfalarımız veya ve bunlarla sınırlı olmamak üzere her türlü kanallar aracılığı ile Tüketicinin Korunması Hakkında Kanun, Perakende Ticaretin Düzenlenmesi Hakkında Kanun ve diğer yasal mevzuat kapsamında, yükümlülüklerin yerine getirilmesini sağlamak,</li>
+                    <li>Müşterilere daha iyi hizmet verebilme, çeşitli avantajlar sağlayıp sunma, satış, pazarlama, bilgilendirme, promosyonlar hakkında bilgi verebilme, kampanya ve koşulları hakkında bilgi sağlama, anket, müşteri memnuniyet araştırmalarını yapabilme, satın alma işlemlerinizi sağlama hızlandırma, siparişlerinizi alma ve teslim edebilme,</li>
+                    <li>Müşterilere yönelik kampanyaların oluşturulması, çapraz satış yapılması, hedef kitle belirlenmesi,</li>
+                    <li>Müşteri hareketlerinin takip edilerek kullanıcı deneyimini arttırıcı faaliyetlerin yürütülmesi ve alışveriş sitemize ait internet sitesi ile mobil uygulamanın işleyişinin geliştirilmesi ve müşteri ihtiyaçlarına göre kişiselleştirilmesi, doğrudan ve doğrudan olmayan pazarlama, kişiye özel pazarlama ve yeniden pazarlama faaliyetlerinin yürütülmesi, kişiye özel segmentasyon, hedefleme, analiz ve şirket içi raporlama faaliyetlerinin yürütülmesi, pazar araştırmaları,</li>
+                    <li>Müşteri memnuniyeti aktivitelerinin planlanması ve icrası ile müşteri ilişkileri yönetimi süreçlerinin planlanması ve icrası amaçlarıyla dahil olmak üzere dahil olmak üzere alışveriş sitemizin ürün ve/veya hizmetlerinin satış ve pazarlama süreçlerinin planlanması ve icrası, alışveriş sitemizin sunduğu ürün ve/veya hizmetlere bağlılık oluşturulması ve/veya arttırılması süreçlerinin planlanması ve icrası kapsamında Müşteri'nin vereceği onayı doğrultusunda işlenebilecek ve işbu Kişisel Verilerin Korunması Metnin'de belirtilen taraflarla paylaşılabilecektir.</li>
+                  </ul>
+                  <p className="mt-3">Alışveriş Sitemiz; online davranışsal reklamcılık ve pazarlama yapılabilmesi amacıyla siteye gelen kullanıcının üye olmasalar dahi sitedeki davranışlarını tarayıcıda bulunan bir cookie (çerez) ile ilişkilendirme ve görüntülenen sayfa sayısı, ziyaret süresi ve hedef tamamlama sayısı gibi metrikleri temel alan yeniden pazarlama listeleri tanımlama hakkını haizdir. Daha sonra bu kullanıcıya sitede ya da Görüntülü Reklam Ağı'ndaki diğer sitelerde, kullanıcıların ilgi alanlarına göre hedefe yönelik reklam içeriği gösterilebilir. Google AFS reklamlarının Alışveriş Sitemize yönlendirilmesi esnasında Google kullanıcıların tarayıcısına çerez yerleştirebilir veya bunlarda yer alan çerezleri okuyabilir veya bilgi toplamak amacı ile web işaretleri kullanabilir.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold mb-2">3. Müşterilerin Açık Rızası Doğrultusunda İşlenecek Kişisel Veriler ve İşleme Amaçları:</h3>
+                  <p>Kanun'un 5/2 ile 6/3 maddesinde yer alan kişisel veri işleme şartlarının karşılanamadığı aşağıdaki durumlar için Alışveriş sitemiz tarafından kişisel verilerin işlenebilmesi için müşterilerin açık rızasının alınması gerekmektedir.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold mb-2">4. Müşterilere Ait Kişisel Verilerin Aktarımı:</h3>
+                  <p>Müşterilere ait kişisel veriler, alışveriş sitemiz tarafından sunulan ürün ve hizmetlerden ilgili kişileri faydalandırmak için gerekli çalışmaların iş birimleri tarafından yapılması ve ilgili iş süreçlerinin yürütülmesi, alışveriş sitemiz tarafından yürütülen ticari faaliyetlerin gerçekleştirilmesi için ilgili iş birimleri tarafından gerekli çalışmaların yapılması ve buna bağlı iş süreçlerinin yürütülmesi, alışveriş sitemizin ticari ve/veya iş stratejilerinin planlanması ve icrası, alışveriş sitemizin ve alışveriş sitemiz ile iş ilişkisi içerisinde olan ilgili kişilerin hukuki, teknik ve ticari-iş güvenliğinin temini ile alışveriş sitemizin sunduğu ürün ve hizmetlerin ilgili kişilerin beğeni, kullanım alışkanlıkları ve ihtiyaçlarına göre özelleştirilerek ilgili kişilere önerilmesi ve tanıtılması için gerekli olan aktivitelerin planlanması ve icrası da dahil olmak üzere Kanun'un 8. ve 9. maddelerinde belirtilen kişisel veri işleme şartları ve amaçları çerçevesinde Şirket yetkilileri, iştiraklerimiz, iş ortaklarımız, tedarikçilerimiz, hissedarlarımız, kanunen yetkili kamu kurum ve kuruluşları ile özel kurumlar ile paylaşılabilecektir.</p>
+                  <p className="mt-2">Kullanıcının Ad ve İletişim Bilgileri, ödeme aşamasında onaylayacağı ödeme kuruluşu çerçeve sözleşmesi uyarınca ve 9 Ocak 2008 tarihli ve 26751 sayılı Resmi Gazete'de yayımlanan Suç Gelirlerinin Aklanmasının ve Terörün Finansmanının Önlenmesine Dair Tedbirler Hakkında Yönetmelik uyarınca kimlik doğrulaması gerçekleştirilmesi amacıyla ödeme kuruluşlarıyla paylaşılabilecektir.</p>
+                  <p className="mt-2">Alışveriş Sitemiz, kişisel verileri yukarıda belirtilen amaçlar dahilinde, 6698 sayılı Kanun'da öngörülen şartları sağlamak koşulu ile yurt içinde üçüncü kişilere aktarabileceği gibi yurt dışına da aktarabilecektir.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold mb-2">5. Kişisel Verilerin Toplanma Yöntemi ve Hukuki Sebebi:</h3>
+                  <p>Kişisel veriler, müşterilerden elektronik ortamda toplanmaktadır. Yukarıda belirtilen hukuki sebeplerle toplanan kişisel veriler Kanun'un 5. ve 6. maddelerinde ve bu Kişisel Verilerin Korunması Metninde belirtilen amaçlarla işlenebilmekte ve aktarılabilmektedir.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold mb-2">6. Kişisel Verilerin Saklanma Süreleri</h3>
+                  <p>Alışveriş Sitemiz, ilgili kanunlarda ve mevzuatlarda öngörülmesi durumunda kişisel verileri bu mevzuatlarda belirtilen süre boyunca saklamaktadır.</p>
+                  <p className="mt-2">Kişisel verilerin ne kadar süre boyunca saklanması gerektiğine ilişkin mevzuatta bir süre düzenlenmemişse, Kişisel Veriler Alışveriş Sitemiz'in o veriyi işlerken yürütülen faaliyet ile bağlı olarak Alışveriş Sitemiz'in uygulamaları ve ticari yaşamının teamülleri uyarınca işlenmesini gerektiren süre kadar işlenmekte daha sonra silinmekte, yok edilmekte veya anonim hale getirilmektedir.</p>
+                  <p className="mt-2">Kişisel verilerin işlenme amacı sona ermiş; ilgili mevzuat ve Alışveriş Sitemiz'in belirlediği saklama sürelerinin de sonuna gelinmişse; kişisel veriler yalnızca olası hukuki uyuşmazlıklarda delil teşkil etmesi veya kişisel veriye bağlı ilgili hakkın ileri sürülebilmesi veya savunmanın tesis edilmesi amacıyla saklanabilmektedir. Buradaki sürelerin tesisinde bahsi geçen hakkın ileri sürülebilmesine yönelik zaman aşımı süreleri ile zaman aşımı sürelerinin geçmesine rağmen daha önce aynı konularda Alışveriş Sitemiz'e yöneltilen taleplerdeki örnekler esas alınarak saklama süreleri belirlenmektedir. Bu durumda saklanan kişisel verilere herhangi bir başka amaçla erişilmemekte ve ancak ilgili hukuki uyuşmazlıkta kullanılması gerektiği zaman ilgili kişisel verilere erişim sağlanmaktadır. Burada da bahsi geçen süre sona erdikten sonra kişisel veriler silinmekte, yok edilmekte veya anonim hale getirilmektedir.</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold mb-2">7. Kişisel Veri Sahibi Olarak Müşterilerin Hakları:</h3>
+                  <p>Kanun'un 11. maddesi uyarınca veri sahipleri; (i) kendileri ile ilgili kişisel veri işlenip işlenmediğini öğrenme, (ii) kişisel verileri işlenmişse buna ilişkin bilgi talep etme, (iii) kişisel verilerin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme, (iv) yurt içinde veya yurt dışında kişisel verilerin aktarıldığı üçüncü kişileri bilme, (v) kişisel verilerin eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme ve bu kapsamda yapılan işlemin kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme, (vi) Kanun ve ilgili diğer kanun hükümlerine uygun olarak işlenmiş olmasına rağmen, işlenmesini gerektiren sebeplerin ortadan kalkması hâlinde kişisel verilerin silinmesini veya yok edilmesini isteme ve bu kapsamda yapılan işlemin kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme, (vii) işlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle kişinin kendisi aleyhine bir sonucun ortaya çıkmasına itiraz etme ve (viii) kişisel verilerin kanuna aykırı olarak işlenmesi sebebiyle zarara uğraması hâlinde zararın giderilmesini talep etme haklarına sahiptir.</p>
+                  <p className="mt-2">Söz konusu hakların kullanımına ilişkin talepler, kişisel veri sahipleri Alışveriş Sitemiz Tarafından 6698 sayılı Kanun Kapsamında belirtilen yöntemlerle iletilebilecektir. Alışveriş sitemiz söz konusu talepleri değerlendirerek 30 gün içerisinde sonuçlandıracaktır.</p>
+                  <p className="mt-2">İşbu form üzerinde yer verilen hususlar ile ilgili olarak, hukuki ve teknolojik gelişmeler doğrultusunda değişiklikler söz konusu olabilecektir.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
